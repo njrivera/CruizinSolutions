@@ -10,7 +10,6 @@ class App extends React.Component {
           <h2>Welcome to React</h2>
         </div>
         <div><Layout /></div>
-        
       </div>
     );
   }

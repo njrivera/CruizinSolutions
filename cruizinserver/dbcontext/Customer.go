@@ -1,15 +1,18 @@
 package dbcontext
 
 import (
-	"github.com/CruizinSolutions/cruizinserver/util"
-	"github.com/CruizinSolutions/cruizinserver/queries"
+	"database/sql"
+
+	"github.com/CruizinSolutions/cruizinserver/database"
 	"github.com/CruizinSolutions/cruizinserver/models"
+	"github.com/CruizinSolutions/cruizinserver/queries"
+	"github.com/CruizinSolutions/cruizinserver/util"
 )
 
-func GetAllCustumers() []models.Customer {
-	db, err := sql.Open("sqlite3", dbPath)
+func GetCustomers() []models.Customer {
+	db, err := sql.Open("sqlite3", database.DBPath)
 	util.CheckErr(err)
-	rows, err := db.Query(queries.GetAllCustumers)
+	rows, err := db.Query(queries.GetCustomers)
 	util.CheckErr(err)
 
 	var id int
@@ -23,16 +26,25 @@ func GetAllCustumers() []models.Customer {
 	var customers []models.Customer
 	for rows.Next() {
 		rows.Scan(&id, &fname, &middle, &lname, &address, &city, &state, &zip)
-		customers = append(customers, Customer{id, fname, middle, lname, address, city, state, zip})
+		customers = append(customers, models.Customer{
+			Id:        id,
+			Firstname: fname,
+			Middle:    middle,
+			Lastname:  lname,
+			Address:   address,
+			City:      city,
+			State:     state,
+			Zipcode:   zip})
 	}
 	db.Close()
+
 	return customers
 }
 
-func GetCustomer() models.Customer {
-	db, err := sql.Open("sqlite3", dbPath)
+func GetCustomer(key string) models.Customer {
+	db, err := sql.Open("sqlite3", database.DBPath)
 	util.CheckErr(err)
-	row, err := db.Query(queries.GetCustomer)
+	row, err := db.Query(queries.GetCustomer, key)
 	util.CheckErr(err)
 
 	var id int
@@ -45,23 +57,34 @@ func GetCustomer() models.Customer {
 	var zip string
 	row.Scan(&id, &fname, &middle, &lname, &address, &city, &state, &zip)
 	db.Close()
-	return models.Customer{id, fname, middle, lname, address, city, state, zip}
+	customer := models.Customer{
+		Id:        id,
+		Firstname: fname,
+		Middle:    middle,
+		Lastname:  lname,
+		Address:   address,
+		City:      city,
+		State:     state,
+		Zipcode:   zip}
+
+	return customer
 }
 
 func CreateCustomer(customer models.Customer) {
-	db, err := sql.Open("sqlite3", dbPath)
+	db, err := sql.Open("sqlite3", database.DBPath)
 	util.CheckErr(err)
 	statement, err := db.Prepare(queries.CreateCustomer)
 	util.CheckErr(err)
 
 	statement.Exec(
-		customer.Firstname, 
-		customer.Middle, 
-		customer.Lastname, 
+		customer.Firstname,
+		customer.Middle,
+		customer.Lastname,
 		customer.Address,
-		customer.City, 
-		customer.State, 
+		customer.City,
+		customer.State,
 		customer.Zipcode)
 	db.Close()
+
 	return
 }
