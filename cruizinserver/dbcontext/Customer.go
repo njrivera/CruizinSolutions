@@ -15,59 +15,28 @@ func GetCustomers() []models.Customer {
 	rows, err := db.Query(queries.GetCustomers)
 	util.CheckErr(err)
 
-	var id int
-	var fname string
-	var middle string
-	var lname string
+	var cid int
+	var name string
 	var address string
 	var city string
 	var state string
 	var zip string
+	var phone string
 	var customers []models.Customer
 	for rows.Next() {
-		rows.Scan(&id, &fname, &middle, &lname, &address, &city, &state, &zip)
+		rows.Scan(&cid, &name, &address, &city, &state, &zip, &phone)
 		customers = append(customers, models.Customer{
-			Id:        id,
-			Firstname: fname,
-			Middle:    middle,
-			Lastname:  lname,
-			Address:   address,
-			City:      city,
-			State:     state,
-			Zipcode:   zip})
+			Cid:     cid,
+			Name:    name,
+			Address: address,
+			City:    city,
+			State:   state,
+			Zipcode: zip,
+			Phone:   phone})
 	}
 	db.Close()
 
 	return customers
-}
-
-func GetCustomer(key string) models.Customer {
-	db, err := sql.Open("sqlite3", database.DBPath)
-	util.CheckErr(err)
-	row, err := db.Query(queries.GetCustomer, key)
-	util.CheckErr(err)
-
-	var id int
-	var fname string
-	var middle string
-	var lname string
-	var address string
-	var city string
-	var state string
-	var zip string
-	row.Scan(&id, &fname, &middle, &lname, &address, &city, &state, &zip)
-	db.Close()
-	customer := models.Customer{
-		Id:        id,
-		Firstname: fname,
-		Middle:    middle,
-		Lastname:  lname,
-		Address:   address,
-		City:      city,
-		State:     state,
-		Zipcode:   zip}
-
-	return customer
 }
 
 func CreateCustomer(customer models.Customer) {
@@ -77,14 +46,50 @@ func CreateCustomer(customer models.Customer) {
 	util.CheckErr(err)
 
 	statement.Exec(
-		customer.Firstname,
-		customer.Middle,
-		customer.Lastname,
+		customer.Name,
 		customer.Address,
 		customer.City,
 		customer.State,
-		customer.Zipcode)
+		customer.Zipcode,
+		customer.Phone)
 	db.Close()
+
+	return
+}
+
+func GetCustomer(key int) models.Customer {
+	db, err := sql.Open("sqlite3", database.DBPath)
+	util.CheckErr(err)
+	row, err := db.Query(queries.GetCustomer, key)
+	util.CheckErr(err)
+
+	var cid int
+	var name string
+	var address string
+	var city string
+	var state string
+	var zip string
+	var phone string
+	row.Scan(&cid, &name, &address, &city, &state, &zip, &phone)
+	db.Close()
+	customer := models.Customer{
+		Name:    name,
+		Address: address,
+		City:    city,
+		State:   state,
+		Zipcode: zip,
+		Phone:   phone}
+
+	return customer
+}
+
+func DeleteCustomer(cid int) {
+	db, err := sql.Open("sqlite3", database.DBPath)
+	util.CheckErr(err)
+	statement, err := db.Prepare(queries.DeleteCustomer)
+	util.CheckErr(err)
+
+	statement.Exec(cid)
 
 	return
 }

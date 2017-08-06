@@ -15,59 +15,26 @@ func GetTires() []models.Tire {
 	rows, err := db.Query(queries.GetTires)
 	util.CheckErr(err)
 
-	var partnum int
+	var itemnum int
 	var brand string
 	var model string
 	var size string
-	var speedrating string
-	var loadrange string
-	var price float32
-	var qty int
+	var servicedesc string
+	var notes string
 	var tires []models.Tire
 	for rows.Next() {
-		rows.Scan(&partnum, &brand, &model, &size, &speedrating, &loadrange, &price, &qty)
+		rows.Scan(&itemnum, &brand, &model, &size, &servicedesc, &notes)
 		tires = append(tires, models.Tire{
-			PartNum:     partnum,
+			ItemNum:     itemnum,
 			Brand:       brand,
 			Model:       model,
 			Size:        size,
-			SpeedRating: speedrating,
-			LoadRange:   loadrange,
-			Price:       price,
-			Qty:         qty})
+			ServiceDesc: servicedesc,
+			Notes:       notes})
 	}
 	db.Close()
 
 	return tires
-}
-
-func GetTire(key string) models.Tire {
-	db, err := sql.Open("sqlite3", database.DBPath)
-	util.CheckErr(err)
-	row, err := db.Query(queries.GetTire, key)
-	util.CheckErr(err)
-
-	var partnum int
-	var brand string
-	var model string
-	var size string
-	var speedrating string
-	var loadrange string
-	var price float32
-	var qty int
-	row.Scan(&partnum, &brand, &model, &size, &speedrating, &loadrange, &price, &qty)
-	db.Close()
-	tire := models.Tire{
-		PartNum:     partnum,
-		Brand:       brand,
-		Model:       model,
-		Size:        size,
-		SpeedRating: speedrating,
-		LoadRange:   loadrange,
-		Price:       price,
-		Qty:         qty}
-
-	return tire
 }
 
 func CreateTire(tire models.Tire) {
@@ -77,15 +44,48 @@ func CreateTire(tire models.Tire) {
 	util.CheckErr(err)
 
 	statement.Exec(
-		tire.PartNum,
 		tire.Brand,
 		tire.Model,
 		tire.Size,
-		tire.SpeedRating,
-		tire.LoadRange,
-		tire.Price,
-		tire.Qty)
+		tire.ServiceDesc,
+		tire.Notes)
 	db.Close()
+
+	return
+}
+
+func GetTire(key int) models.Tire {
+	db, err := sql.Open("sqlite3", database.DBPath)
+	util.CheckErr(err)
+	row, err := db.Query(queries.GetTire, key)
+	util.CheckErr(err)
+
+	var itemnum int
+	var brand string
+	var model string
+	var size string
+	var servicedesc string
+	var notes string
+	row.Scan(&itemnum, &brand, &model, &size, &servicedesc, &notes)
+	db.Close()
+	tire := models.Tire{
+		ItemNum:     itemnum,
+		Brand:       brand,
+		Model:       model,
+		Size:        size,
+		ServiceDesc: servicedesc,
+		Notes:       notes}
+
+	return tire
+}
+
+func DeleteTire(itemnum int) {
+	db, err := sql.Open("sqlite3", database.DBPath)
+	util.CheckErr(err)
+	statement, err := db.Prepare(queries.DeleteTire)
+	util.CheckErr(err)
+
+	statement.Exec(itemnum)
 
 	return
 }

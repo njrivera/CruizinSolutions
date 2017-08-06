@@ -5,9 +5,15 @@
   "dependencies": {
     "bootstrap": "^3.3.7",
     "react": "^15.6.1",
+    "react-addons-css-transition-group": "^15.6.0",
+    "react-addons-transition-group": "^15.6.0",
     "react-bootstrap": "^0.31.2",
+    "react-bootstrap-table": "^4.0.0",
     "react-dom": "^15.6.1",
-    "react-scripts": "1.0.10"
+    "react-history": "^0.18.2",
+    "react-router": "^4.1.2",
+    "react-scripts": "1.0.10",
+    "reactstrap": "^4.8.0"
   },
   "scripts": {
     "start": "react-scripts start",

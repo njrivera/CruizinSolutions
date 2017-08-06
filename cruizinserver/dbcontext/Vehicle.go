@@ -15,47 +15,22 @@ func GetVehicles() []models.Vehicle {
 	rows, err := db.Query(queries.GetVehicles)
 	util.CheckErr(err)
 
-	var id int
+	var vid int
 	var year int
 	var make string
 	var model string
-	var trim string
 	var vehicles []models.Vehicle
 	for rows.Next() {
-		rows.Scan(&id, &year, &make, &model, &trim)
+		rows.Scan(&vid, &year, &make, &model)
 		vehicles = append(vehicles, models.Vehicle{
-			Id:    id,
+			Vid:   vid,
 			Year:  year,
 			Make:  make,
-			Model: model,
-			Trim:  trim})
+			Model: model})
 	}
 	db.Close()
 
 	return vehicles
-}
-
-func GetVehicle(key string) models.Vehicle {
-	db, err := sql.Open("sqlite3", database.DBPath)
-	util.CheckErr(err)
-	row, err := db.Query(queries.GetVehicle, key)
-	util.CheckErr(err)
-
-	var id int
-	var year int
-	var make string
-	var model string
-	var trim string
-	row.Scan(&id, &year, &make, &model, &trim)
-	db.Close()
-	vehicle := models.Vehicle{
-		Id:    id,
-		Year:  year,
-		Make:  make,
-		Model: model,
-		Trim:  trim}
-
-	return vehicle
 }
 
 func CreateVehicle(vehicle models.Vehicle) {
@@ -65,12 +40,42 @@ func CreateVehicle(vehicle models.Vehicle) {
 	util.CheckErr(err)
 
 	statement.Exec(
-		vehicle.Id,
 		vehicle.Year,
 		vehicle.Make,
-		vehicle.Model,
-		vehicle.Trim)
+		vehicle.Model)
 	db.Close()
+
+	return
+}
+
+func GetVehicle(key int) models.Vehicle {
+	db, err := sql.Open("sqlite3", database.DBPath)
+	util.CheckErr(err)
+	row, err := db.Query(queries.GetVehicle, key)
+	util.CheckErr(err)
+
+	var vid int
+	var year int
+	var make string
+	var model string
+	row.Scan(&vid, &year, &make, &model)
+	db.Close()
+	vehicle := models.Vehicle{
+		Vid:   vid,
+		Year:  year,
+		Make:  make,
+		Model: model}
+
+	return vehicle
+}
+
+func DeleteVehicle(vid int) {
+	db, err := sql.Open("sqlite3", database.DBPath)
+	util.CheckErr(err)
+	statement, err := db.Prepare(queries.DeleteVehicle)
+	util.CheckErr(err)
+
+	statement.Exec(vid)
 
 	return
 }

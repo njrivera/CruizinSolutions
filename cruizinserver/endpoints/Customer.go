@@ -3,6 +3,7 @@ package endpoints
 import (
 	"encoding/json"
 	"net/http"
+	"strconv"
 
 	"github.com/CruizinSolutions/cruizinserver/dbcontext"
 	"github.com/CruizinSolutions/cruizinserver/models"
@@ -14,27 +15,31 @@ func RegisterCustomerEndpoints(m *martini.ClassicMartini) {
 	m.Group("/customers", func(r martini.Router) {
 		r.Get("", getCustomersHandler)
 		r.Post("", createCustomerHandler)
-		r.Get("/:id", getCustomerHandler)
+		r.Get("/:cid", getCustomerHandler)
+		r.Delete("/:cid", deleteCustomerHandler)
 	})
-
 }
 
-func getCustomersHandler(r *http.Request, w http.ResponseWriter) int {
+func getCustomersHandler(r *http.Request, w http.ResponseWriter) {
 	customers := dbcontext.GetCustomers()
 	util.JSONEncode(customers, w)
-	return http.StatusOK
 }
 
-func getCustomerHandler(r *http.Request, params martini.Params, w http.ResponseWriter) int {
-	customer := dbcontext.GetCustomer(params["id"])
-	util.JSONEncode(customer, w)
-	return http.StatusOK
-}
-
-func createCustomerHandler(r *http.Request) int {
+func createCustomerHandler(r *http.Request, w http.ResponseWriter) {
 	customer := models.Customer{}
 	err := json.NewDecoder(r.Body).Decode(&customer)
 	util.CheckErr(err)
 	dbcontext.CreateCustomer(customer)
-	return http.StatusOK
+	util.JSONEncode(customer, w)
+}
+
+func getCustomerHandler(r *http.Request, params martini.Params, w http.ResponseWriter) {
+	cid, _ := strconv.Atoi(params["cid"])
+	customer := dbcontext.GetCustomer(cid)
+	util.JSONEncode(customer, w)
+}
+
+func deleteCustomerHandler(r *http.Request, params martini.Params) {
+	cid, _ := strconv.Atoi(params["cid"])
+	dbcontext.DeleteCustomer(cid)
 }

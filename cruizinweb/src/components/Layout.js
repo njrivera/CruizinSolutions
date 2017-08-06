@@ -1,19 +1,27 @@
 import React from 'react';
-import {Button} from 'react-bootstrap';
+import '../styles/Layout.css'
+import {Container, Row, Col} from 'reactstrap';
+import CustomerGrid from './CustomerGrid'
 
 export default class Layout extends React.Component {
-    constructor(){
-        super();
-        const button = (
-            <Button bsStyle='primary'></Button>
-        )
-    }
 
-    render(){
+    render() {
         return (
-            <div>
-                {this.button}
+            <div className='Layout'>
+                <Container>
+                    <Row>
+                        <Col sm='1'>Navbar</Col>
+                        <Col sm='11'>
+                            <Row>
+                                Main Content
+                            </Row>
+                            <Row>
+                                <CustomerGrid />
+                            </Row>
+                        </Col>
+                    </Row>
+                </Container>
             </div>
-        )
+        );
     }
 }

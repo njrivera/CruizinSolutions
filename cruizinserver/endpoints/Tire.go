@@ -3,6 +3,7 @@ package endpoints
 import (
 	"encoding/json"
 	"net/http"
+	"strconv"
 
 	"github.com/CruizinSolutions/cruizinserver/dbcontext"
 	"github.com/CruizinSolutions/cruizinserver/models"
@@ -14,27 +15,31 @@ func RegisterTireEndpoints(m *martini.ClassicMartini) {
 	m.Group("/tires", func(r martini.Router) {
 		r.Get("", getTiresHandler)
 		r.Post("", createTireHandler)
-		r.Get("/:partnum", getTireHandler)
+		r.Get("/:itemnum", getTireHandler)
+		r.Delete("/:itemnum", deleteTireHandler)
 	})
-
 }
 
-func getTiresHandler(r *http.Request, w http.ResponseWriter) int {
+func getTiresHandler(r *http.Request, w http.ResponseWriter) {
 	tires := dbcontext.GetTires()
 	util.JSONEncode(tires, w)
-	return http.StatusOK
 }
 
-func getTireHandler(r *http.Request, params martini.Params, w http.ResponseWriter) int {
-	tire := dbcontext.GetTire(params["partnum"])
-	util.JSONEncode(tire, w)
-	return http.StatusOK
-}
-
-func createTireHandler(r *http.Request) int {
+func createTireHandler(r *http.Request, w http.ResponseWriter) {
 	tire := models.Tire{}
 	err := json.NewDecoder(r.Body).Decode(&tire)
 	util.CheckErr(err)
 	dbcontext.CreateTire(tire)
-	return http.StatusOK
+	util.JSONEncode(tire, w)
+}
+
+func getTireHandler(r *http.Request, params martini.Params, w http.ResponseWriter) {
+	itemnum, _ := strconv.Atoi(params["itemnum"])
+	tire := dbcontext.GetTire(itemnum)
+	util.JSONEncode(tire, w)
+}
+
+func deleteTireHandler(r *http.Request, params martini.Params) {
+	itemnum, _ := strconv.Atoi(params["itemnum"])
+	dbcontext.DeleteTire(itemnum)
 }

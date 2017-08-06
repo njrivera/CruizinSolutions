@@ -10,7 +10,7 @@ func main() {
 	m := martini.Classic()
 
 	endpoints.RegisterCustomerEndpoints(m)
-	endpoints.RegisterServiceEndpoints(m)
+	endpoints.RegisterItemEndpoints(m)
 	endpoints.RegisterTireEndpoints(m)
 	endpoints.RegisterVehicleEndpoints(m)
 
