@@ -15,7 +15,7 @@ export default class GridModal extends React.Component {
         this.assignValue = this.assignValue.bind(this);
     }
 
-    onSave(act, nodes) {
+    onSave(act, nodes, id) {
         this.state.values = {};
         this.state.keys = [];
         var record = {};
@@ -39,7 +39,19 @@ export default class GridModal extends React.Component {
             });
         }
         if(act === 'edit') {
-            
+            this.props.onUpdate(record);
+            axios.put(this.props.url + '/' + id, record)
+            .then(response => {
+                this.props.toggle('saved');
+            })
+            .catch(error => {
+                return(
+                    <Modal>
+                        <ModalHeader closeButton></ModalHeader>
+                        <ModalBody><h1>Error!</h1></ModalBody>
+                    </Modal>
+                );
+            });
         }
     }
 
@@ -106,7 +118,7 @@ export default class GridModal extends React.Component {
                             </Form>
                         </ModalBody>
                         <ModalFooter>
-                            <Button onClick={() => this.onSave(this.props.action, this.state.inputNodes)}>Save</Button>
+                            <Button onClick={() => this.onSave(this.props.action, this.state.inputNodes, this.props.id)}>Save</Button>
                             <Button onClick={() => {this.props.toggle('done'), this.onCancel()}}>Cancel</Button>
                         </ModalFooter>
                     </Modal>

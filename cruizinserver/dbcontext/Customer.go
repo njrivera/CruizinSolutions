@@ -93,3 +93,22 @@ func DeleteCustomer(cid int) {
 
 	return
 }
+
+func UpdateCustomer(customer models.Customer) {
+	db, err := sql.Open("sqlite3", database.DBPath)
+	util.CheckErr(err)
+	statement, err := db.Prepare(queries.UpdateCustomer)
+	util.CheckErr(err)
+
+	statement.Exec(
+		customer.Name,
+		customer.Address,
+		customer.City,
+		customer.State,
+		customer.Zipcode,
+		customer.Phone,
+		customer.Cid)
+	db.Close()
+
+	return
+}

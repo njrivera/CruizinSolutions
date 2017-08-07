@@ -15,6 +15,12 @@ export default class CustomerGrid extends React.Component {
         this.loadCustomers();
         this.onSelectRec = this.onSelectRec.bind(this);
         this.toggle = this.toggle.bind(this);
+        this.updateCustomer = this.updateCustomer.bind(this);
+    }
+
+    updateCustomer(data) {
+        if(data)
+            this.customer = data;
     }
 
     onSelectRec(row, isSelected) {
@@ -109,6 +115,7 @@ export default class CustomerGrid extends React.Component {
                     id={this.state.id}
                     action={this.state.option} 
                     modal={this.state.modal} 
+                    onUpdate={this.updateCustomer}
                     url='/customers'/>
             </div>
         );

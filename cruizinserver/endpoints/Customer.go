@@ -17,6 +17,7 @@ func RegisterCustomerEndpoints(m *martini.ClassicMartini) {
 		r.Post("", createCustomerHandler)
 		r.Get("/:cid", getCustomerHandler)
 		r.Delete("/:cid", deleteCustomerHandler)
+		r.Put("/:cid", updateCustomerHandler)
 	})
 }
 
@@ -42,4 +43,14 @@ func getCustomerHandler(r *http.Request, params martini.Params, w http.ResponseW
 func deleteCustomerHandler(r *http.Request, params martini.Params) {
 	cid, _ := strconv.Atoi(params["cid"])
 	dbcontext.DeleteCustomer(cid)
+}
+
+func updateCustomerHandler(r *http.Request, params martini.Params, w http.ResponseWriter) {
+	cid, _ := strconv.Atoi(params["cid"])
+	customer := models.Customer{}
+	err := json.NewDecoder(r.Body).Decode(&customer)
+	util.CheckErr(err)
+	customer.Cid = cid
+	dbcontext.UpdateCustomer(customer)
+	util.JSONEncode(customer, w)
 }
