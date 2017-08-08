@@ -7,109 +7,78 @@ export default class GridModal extends React.Component {
     constructor(props) {
         super(props);
         this.state = {
-            inputNodes: {},
-            record: {},
-            values: {},
-            keys: []
+            record : {}
         };
         this.assignValue = this.assignValue.bind(this);
+        this.onSave = this.onSave.bind(this);
     }
 
-    onSave(act, nodes, id) {
-        this.state.values = {};
-        this.state.keys = [];
-        var record = {};
-        for(var key in nodes) {
-            if (nodes[key].value === '')
-                nodes[key].value = nodes[key].placeholder;
-            record[nodes[key].id] = nodes[key].value;
-        }
-        if(act === 'add') {
-            axios.post(this.props.url, record)
+    onSave() {
+        var scope = this;
+        if(this.props.action === 'add'){
+            axios.post('/customers', this.state.record)
             .then(response => {
-                this.props.toggle('saved');
+                scope.props.setModal();
+                scope.props.loadRecords();
             })
             .catch(error => {
-                return(
-                    <Modal>
-                        <ModalHeader closeButton></ModalHeader>
-                        <ModalBody><h1>Error!</h1></ModalBody>
-                    </Modal>
-                );
+                console.log(error);
             });
         }
-        if(act === 'edit') {
-            this.props.onUpdate(record);
-            axios.put(this.props.url + '/' + id, record)
+        else{
+            axios.put('/customers/' + this.props.id, this.state.record)
             .then(response => {
-                this.props.toggle('saved');
+                scope.props.editSelected(response.data);
+                scope.props.setModal();
+                scope.props.loadRecords();
             })
             .catch(error => {
-                return(
-                    <Modal>
-                        <ModalHeader closeButton></ModalHeader>
-                        <ModalBody><h1>Error!</h1></ModalBody>
-                    </Modal>
-                );
+                console.log(error);
             });
         }
     }
 
-    onDelete(id) {
-        this.state.values = {};
-        this.state.keys = [];   
-        axios.delete(this.props.url + '/' + id)
-            .then(response => {
-                this.props.toggle('deleted');
-                this.state.values = {};
-                this.state.keys = [];   
-            })
-            .catch(error => {
-                return(
-                    <Modal>
-                        <ModalHeader closeButton></ModalHeader>
-                        <ModalBody><h1>Error!</h1></ModalBody>
-                    </Modal>
-                );
-            });
-    }
-
-    onCancel() {
-        this.state.values = {};
-        this.state.keys = [];
+    onDelete() {
+        var scope = this;
+        axios.delete('/customers/' + this.props.id)
+        .then(response => {
+            scope.props.setModal();
+            scope.props.loadRecords();
+            scope.props.deleteRecord();
+        })
+        .catch(error => {
+            console.log(error);
+        });
     }
 
     assignValue(event) {
-        this.state.inputNodes[event.target.id] = event.target;
-        var temp = JSON.parse(JSON.stringify(this.state.values));
+        var temp = JSON.parse(JSON.stringify(this.state.record));
         temp[event.target.id] = event.target.value;
-        this.setState({values: temp});
+        this.setState({record: temp});
+    }
+
+    componentDidUpdate = () => {
+        if (this.props.flag) {
+            this.state.record = this.props.record;
+            this.props.setFlag();
+        }
     }
 
     render() {
         var scope = this;
-        for(var key in scope.props.data) {
-            if (!this.state.values[key]) {
-                this.state.values[key] = scope.props.data[key];
-            }
-            if(this.state.keys.indexOf(key) <= -1) {
-                this.state.keys.push(key);
-            }
-        }
         switch(this.props.action) {
             case 'add':
             case 'edit':          
                 return (
-                    <Modal show={this.props.modal} onHide={() => {this.props.toggle('done'), this.onCancel()}}>
+                    <Modal show={this.props.modal} onHide={() => this.props.setModal()}>
                         <ModalBody>
                             <Form horizontal>
-                                {scope.state.keys.slice(1).map(function(key, i){
+                                {Object.keys(scope.props.record).map(function(key){
                                     return <FormGroup controlId={key} key={key}>
                                         <Col sm='2'>{key.charAt(0).toUpperCase() + key.slice(1)}</Col>
                                         <Col sm='10'>
                                             <FormControl 
-                                                inputRef={node => scope.state.inputNodes[key] = node} 
-                                                value={scope.state.values[key]}
+                                                value={scope.state.record[key] || ''}
                                                 onChange={scope.assignValue}>
                                             </FormControl>
                                         </Col>
@@ -118,25 +87,25 @@ export default class GridModal extends React.Component {
                             </Form>
                         </ModalBody>
                         <ModalFooter>
-                            <Button onClick={() => this.onSave(this.props.action, this.state.inputNodes, this.props.id)}>Save</Button>
-                            <Button onClick={() => {this.props.toggle('done'), this.onCancel()}}>Cancel</Button>
+                            <Button onClick={() => this.onSave()}>Save</Button>
+                            <Button onClick={() => this.props.setModal()}>Cancel</Button>
                         </ModalFooter>
                     </Modal>
                 );
                 break;
             case 'delete':
                 return (
-                <Modal show={this.props.modal} onHide={() => {this.props.toggle('done'), this.onCancel()}}>
-                    <ModalBody>
-                        <h1>Are You Sure?</h1>
-                    </ModalBody>
-                    <ModalFooter>
-                        <Button onClick={() => this.onDelete(this.props.id)}>Yes</Button>
-                        <Button onClick={() => {this.props.toggle('done'), this.onCancel()}}>No</Button>
-                    </ModalFooter>
-                </Modal>
-            );
-            break;
+                    <Modal show={this.props.modal} onHide={() => this.props.setModal()}>
+                        <ModalBody>
+                            <h1>Are You Sure?</h1>
+                        </ModalBody>
+                        <ModalFooter>
+                            <Button onClick={() => this.onDelete()}>Yes</Button>
+                            <Button onClick={() => this.props.setModal()}>No</Button>
+                        </ModalFooter>
+                    </Modal>
+                );
+                break;
             default: return (<div></div>);
         }
     }

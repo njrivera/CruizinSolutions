@@ -9,27 +9,49 @@ export default class CustomerGrid extends React.Component {
         super();
         this.state = {
             customers: [],
+            selected: null,
             modal: false,
-            id: null
+            flag: true,
+            action: null
         };
         this.loadCustomers();
-        this.onSelectRec = this.onSelectRec.bind(this);
-        this.toggle = this.toggle.bind(this);
-        this.updateCustomer = this.updateCustomer.bind(this);
+        this.loadCustomers = this.loadCustomers.bind(this);
+        this.deleteSelected = this.deleteSelected.bind(this);
+        this.setModal = this.setModal.bind(this);
+        this.onSelectCustomer = this.onSelectCustomer.bind(this);
+        this.setFlag = this.setFlag.bind(this);
+        this.editSelected = this.editSelected.bind(this);
     }
 
-    updateCustomer(data) {
-        if(data)
-            this.customer = data;
-    }
-
-    onSelectRec(row, isSelected) {
+    onSelectCustomer(row, isSelected) {
         if (isSelected) {
-            this.selected = row;
-            this.customer = row;
+            this.setState({selected: row});
         }
         else
-            this.selected = null;
+            this.setState({selected: null});
+    }
+
+    setFlag() {
+        this.setState({flag: false});
+    }
+
+    editSelected(record) {
+        this.setState({selected: record});
+    }
+
+    deleteSelected() {
+        this.setState({selected: null});
+    }
+
+    setModal() {
+        this.setState({modal: false});
+    }
+
+    checkSelected() {
+        if (this.state.selected) {
+            this.setState({modal: true});
+            this.setState({flag: true});
+        }
     }
 
     loadCustomers() {
@@ -40,36 +62,6 @@ export default class CustomerGrid extends React.Component {
         .catch(error => {
             console.log(error);
         });
-    }
-
-    toggle(act) {
-        this.loadCustomers();
-        if(act === 'deleted') {
-            this.selected = null;
-            this.customer = null;
-        }
-        if(act === 'edit' || act === 'delete') {
-            if (!this.selected)
-                return;
-            this.customer = this.selected;
-        }
-        if(act === 'add')
-            this.customer = {
-                cid: '',
-                name: '',
-                address: '',
-                city: '',
-                state: '',
-                zipcode: '',
-                phone: ''
-            };
-        this.setState({modal: !this.state.modal});
-        if(act === 'done') {
-            this.customer = null;
-            return;
-        }
-        this.setState({option: act});
-        this.setState({id: this.customer.cid})
     }
 
     render() {
@@ -87,7 +79,7 @@ export default class CustomerGrid extends React.Component {
                                 clickToSelect: true, 
                                 bgColor: 'black',
                                 hideSelectColumn: true,
-                                onSelect: this.onSelectRec
+                                onSelect: this.onSelectCustomer
                             }} 
                             containerStyle={{
                                 background: '#2F2F2F'
@@ -103,20 +95,40 @@ export default class CustomerGrid extends React.Component {
                     </Row>
                     <Row>
                         <Col>
-                            <Button color='success' onClick={() => this.toggle('add')}>Add</Button>
-                            <Button color='info' onClick={() => this.toggle('edit')}>Edit</Button>
-                            <Button color='danger' onClick={() => this.toggle('delete')}>Delete</Button>
+                            <Button color='success' onClick={() => {this.setState({action: 'add'}), this.setState({modal: true}), this.setState({flag: true})}}>Add</Button>
+                            <Button color='info' onClick={() => {this.checkSelected(), this.setState({action: 'edit'})}}>Edit</Button>
+                            <Button color='danger' onClick={() => {this.checkSelected(), this.setState({action: 'delete'})}}>Delete</Button>
                         </Col>
                     </Row>
                 </Container>
                 <GridModal 
-                    toggle={this.toggle}
-                    data={this.customer}
-                    id={this.state.id}
-                    action={this.state.option} 
-                    modal={this.state.modal} 
-                    onUpdate={this.updateCustomer}
-                    url='/customers'/>
+                    url='/customers'
+                    record={this.state.action === 'add' ? {
+                            name: '',
+                            address: '',
+                            city: '',
+                            state: '',
+                            zipcode: '',
+                            phone: ''
+                        } : this.state.selected ? {
+                                name: this.state.selected.name,
+                                address: this.state.selected.address,
+                                city: this.state.selected.city,
+                                state: this.state.selected.state,
+                                zipcode: this.state.selected.zipcode,
+                                phone: this.state.selected.phone
+                            } : {}
+                    }
+                    id={this.state.selected ? JSON.parse(JSON.stringify(this.state.selected)).cid : null}
+                    deleteRecord={this.deleteSelected}
+                    modal={this.state.modal}
+                    setModal={this.setModal}
+                    loadRecords={this.loadCustomers}
+                    action={this.state.action}
+                    setFlag={this.setFlag}
+                    flag={this.state.flag}
+                    editSelected={this.editSelected}
+                    />
             </div>
         );
     }
