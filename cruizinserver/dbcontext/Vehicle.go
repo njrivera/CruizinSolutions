@@ -19,14 +19,16 @@ func GetVehicles() []models.Vehicle {
 	var year int
 	var make string
 	var model string
+	var trim string
 	var vehicles []models.Vehicle
 	for rows.Next() {
-		rows.Scan(&vid, &year, &make, &model)
+		rows.Scan(&vid, &year, &make, &model, &trim)
 		vehicles = append(vehicles, models.Vehicle{
 			Vid:   vid,
 			Year:  year,
 			Make:  make,
-			Model: model})
+			Model: model,
+			Trim:  trim})
 	}
 	db.Close()
 
@@ -42,7 +44,8 @@ func CreateVehicle(vehicle models.Vehicle) {
 	statement.Exec(
 		vehicle.Year,
 		vehicle.Make,
-		vehicle.Model)
+		vehicle.Model,
+		vehicle.Trim)
 	db.Close()
 
 	return
@@ -58,13 +61,15 @@ func GetVehicle(key int) models.Vehicle {
 	var year int
 	var make string
 	var model string
-	row.Scan(&vid, &year, &make, &model)
+	var trim string
+	row.Scan(&vid, &year, &make, &model, &trim)
 	db.Close()
 	vehicle := models.Vehicle{
 		Vid:   vid,
 		Year:  year,
 		Make:  make,
-		Model: model}
+		Model: model,
+		Trim:  trim}
 
 	return vehicle
 }
@@ -76,6 +81,23 @@ func DeleteVehicle(vid int) {
 	util.CheckErr(err)
 
 	statement.Exec(vid)
+
+	return
+}
+
+func UpdateVehicle(vehicle models.Vehicle) {
+	db, err := sql.Open("sqlite3", database.DBPath)
+	util.CheckErr(err)
+	statement, err := db.Prepare(queries.UpdateVehicle)
+	util.CheckErr(err)
+
+	statement.Exec(
+		vehicle.Year,
+		vehicle.Make,
+		vehicle.Model,
+		vehicle.Trim,
+		vehicle.Vid)
+	db.Close()
 
 	return
 }

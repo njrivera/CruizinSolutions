@@ -9,38 +9,11 @@ export default class GridModal extends React.Component {
         this.state = {
             record : {}
         };
-        this.assignValue = this.assignValue.bind(this);
-        this.onSave = this.onSave.bind(this);
-    }
-
-    onSave() {
-        var scope = this;
-        if(this.props.action === 'add'){
-            axios.post('/customers', this.state.record)
-            .then(response => {
-                scope.props.setModal();
-                scope.props.loadRecords();
-            })
-            .catch(error => {
-                console.log(error);
-            });
-        }
-        else{
-            axios.put('/customers/' + this.props.id, this.state.record)
-            .then(response => {
-                scope.props.editSelected(response.data);
-                scope.props.setModal();
-                scope.props.loadRecords();
-            })
-            .catch(error => {
-                console.log(error);
-            });
-        }
     }
 
     onDelete() {
         var scope = this;
-        axios.delete('/customers/' + this.props.id)
+        axios.delete(this.props.url + '/' + this.props.id)
         .then(response => {
             scope.props.setModal();
             scope.props.loadRecords();
@@ -49,12 +22,6 @@ export default class GridModal extends React.Component {
         .catch(error => {
             console.log(error);
         });
-    }
-
-    assignValue(event) {
-        var temp = JSON.parse(JSON.stringify(this.state.record));
-        temp[event.target.id] = event.target.value;
-        this.setState({record: temp});
     }
 
     componentDidUpdate = () => {
@@ -79,7 +46,7 @@ export default class GridModal extends React.Component {
                                         <Col sm='10'>
                                             <FormControl 
                                                 value={scope.state.record[key] || ''}
-                                                onChange={scope.assignValue}>
+                                                onChange={(event) => scope.props.validateInput(scope, event)}>
                                             </FormControl>
                                         </Col>
                                     </FormGroup>
@@ -87,7 +54,7 @@ export default class GridModal extends React.Component {
                             </Form>
                         </ModalBody>
                         <ModalFooter>
-                            <Button onClick={() => this.onSave()}>Save</Button>
+                            <Button onClick={() => this.props.onSave(scope)}>Save</Button>
                             <Button onClick={() => this.props.setModal()}>Cancel</Button>
                         </ModalFooter>
                     </Modal>

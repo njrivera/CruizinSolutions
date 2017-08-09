@@ -128,7 +128,39 @@ export default class CustomerGrid extends React.Component {
                     setFlag={this.setFlag}
                     flag={this.state.flag}
                     editSelected={this.editSelected}
-                    />
+                    validateInput={
+                            (scope, event) => {
+                                var temp = JSON.parse(JSON.stringify(scope.state.record));
+                                temp[event.target.id] = event.target.value;
+                                scope.setState({record: temp});
+                            }
+                    }
+                    onSave={
+                        (scope) => {
+                            var temp = JSON.parse(JSON.stringify(scope.state.record));
+                            if(scope.props.action === 'add'){
+                                axios.post(scope.props.url, temp)
+                                .then(response => {
+                                    scope.props.setModal();
+                                    scope.props.loadRecords();
+                                })
+                                .catch(error => {
+                                    console.log(error);
+                                });
+                            }
+                            else{
+                                axios.put(scope.props.url + '/' + scope.props.id, temp)
+                                .then(response => {
+                                    scope.props.editSelected(response.data);
+                                    scope.props.setModal();
+                                    scope.props.loadRecords();
+                                })
+                                .catch(error => {
+                                    console.log(error);
+                                });
+                            }
+                        }
+                    }/>
             </div>
         );
     }

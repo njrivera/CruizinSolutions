@@ -17,6 +17,7 @@ func RegisterVehicleEndpoints(m *martini.ClassicMartini) {
 		r.Post("", createVehicleHandler)
 		r.Get("/:vid", getVehicleHandler)
 		r.Delete("/:vid", deleteVehicleHandler)
+		r.Put("/:vid", updateVehicleHandler)
 	})
 }
 
@@ -42,4 +43,14 @@ func getVehicleHandler(r *http.Request, params martini.Params, w http.ResponseWr
 func deleteVehicleHandler(r *http.Request, params martini.Params) {
 	vid, _ := strconv.Atoi(params["vid"])
 	dbcontext.DeleteVehicle(vid)
+}
+
+func updateVehicleHandler(r *http.Request, params martini.Params, w http.ResponseWriter) {
+	vid, _ := strconv.Atoi(params["vid"])
+	vehicle := models.Vehicle{}
+	err := json.NewDecoder(r.Body).Decode(&vehicle)
+	util.CheckErr(err)
+	vehicle.Vid = vid
+	dbcontext.UpdateVehicle(vehicle)
+	util.JSONEncode(vehicle, w)
 }
