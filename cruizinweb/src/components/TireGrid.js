@@ -4,26 +4,26 @@ import GridModal from './GridModal';
 import {Container, Row, Col, Button} from 'reactstrap';
 import axios from 'axios';
 
-export default class VehicleGrid extends React.Component {
+export default class TireGrid extends React.Component {
     constructor() {
         super();
         this.state = {
-            vehicles: [],
+            tires: [],
             selected: null,
             modal: false,
             flag: true,
             action: null
         };
-        this.loadVehicles();
-        this.loadVehicles = this.loadVehicles.bind(this);
+        this.loadTires();
+        this.loadTires = this.loadTires.bind(this);
         this.deleteSelected = this.deleteSelected.bind(this);
         this.setModal = this.setModal.bind(this);
-        this.onSelectVehicle = this.onSelectVehicle.bind(this);
+        this.onSelectTire = this.onSelectTire.bind(this);
         this.setFlag = this.setFlag.bind(this);
         this.editSelected = this.editSelected.bind(this);
     }
 
-    onSelectVehicle(row, isSelected) {
+    onSelectTire(row, isSelected) {
         if (isSelected) {
             this.setState({selected: row});
         }
@@ -54,10 +54,10 @@ export default class VehicleGrid extends React.Component {
         }
     }
 
-    loadVehicles() {
-        axios.get('/api/vehicles')
+    loadTires() {
+        axios.get('/api/tires')
         .then(response => {
-            this.setState({vehicles: response.data});
+            this.setState({tires: response.data});
         })
         .catch(error => {
             console.log(error);
@@ -70,7 +70,7 @@ export default class VehicleGrid extends React.Component {
                 <Container>
                     <Row>
                         <BootstrapTable 
-                            data={this.state.vehicles} 
+                            data={this.state.tires} 
                             maxHeight='500px'
                             scrollTop={'Bottom'} 
                             hover
@@ -79,16 +79,19 @@ export default class VehicleGrid extends React.Component {
                                 clickToSelect: true, 
                                 bgColor: 'black',
                                 hideSelectColumn: true,
-                                onSelect: this.onSelectVehicle
+                                onSelect: this.onSelectTire
                             }} 
                             containerStyle={{
                                 background: '#2F2F2F'
                             }}>
-                            <TableHeaderColumn dataField="vid" width='auto' isKey hidden>ID</TableHeaderColumn>
-                            <TableHeaderColumn dataField="year" width='auto' dataSort filter={{type: 'TextFilter'}}>Year</TableHeaderColumn>
-                            <TableHeaderColumn dataField="make" width='auto' dataSort filter={{type: 'TextFilter'}}>Make</TableHeaderColumn>
+                            <TableHeaderColumn dataField="itemnum" width='auto' isKey hidden>ID</TableHeaderColumn>
+                            <TableHeaderColumn dataField="brand" width='auto' dataSort filter={{type: 'TextFilter'}}>Brand</TableHeaderColumn>
                             <TableHeaderColumn dataField="model" width='auto' dataSort filter={{type: 'TextFilter'}}>Model</TableHeaderColumn>
-                            <TableHeaderColumn dataField="trim" width='auto' dataSort filter={{type: 'TextFilter'}}>Trim</TableHeaderColumn>
+                            <TableHeaderColumn dataField="size" width='auto' dataSort filter={{type: 'TextFilter'}}>Size</TableHeaderColumn>
+                            <TableHeaderColumn dataField="servicedesc" width='auto' dataSort filter={{type: 'TextFilter'}}>Service Description</TableHeaderColumn>
+                            <TableHeaderColumn dataField="notes" width='auto' dataSort filter={{type: 'TextFilter'}}>Notes</TableHeaderColumn>
+                            <TableHeaderColumn dataField="price" width='auto' dataSort filter={{type: 'TextFilter'}}>Price</TableHeaderColumn>
+                            <TableHeaderColumn dataField="qty" width='auto' dataSort filter={{type: 'TextFilter'}}>Qty</TableHeaderColumn>
                         </BootstrapTable>
                     </Row>
                     <Row>
@@ -103,40 +106,36 @@ export default class VehicleGrid extends React.Component {
                     </div>
                 </Container>
                 <GridModal 
-                    url='/api/vehicles'
+                    url='/api/tires'
                     record={this.state.action === 'add' ? {
-                            year: '',
-                            make: '',
+                            brand: '',
                             model: '',
-                            trim: ''
+                            size: '',
+                            servicedesc: '',
+                            notes: '',
+                            price: '',
+                            qty: ''
                         } : this.state.selected ? {
-                                year: this.state.selected.year,
-                                make: this.state.selected.make,
+                                brand: this.state.selected.brand,
                                 model: this.state.selected.model,
-                                trim: this.state.selected.trim
+                                size: this.state.selected.size,
+                                servicedesc: this.state.selected.servicedesc,
+                                notes: this.state.selected.notes,
+                                price: this.state.selected.price,
+                                qty: this.state.selected.qty
                             } : {}
                     }
-                    id={this.state.selected ? JSON.parse(JSON.stringify(this.state.selected)).vid : null}
+                    id={this.state.selected ? JSON.parse(JSON.stringify(this.state.selected)).itemnum : null}
                     deleteRecord={this.deleteSelected}
                     modal={this.state.modal}
                     setModal={this.setModal}
-                    loadRecords={this.loadVehicles}
+                    loadRecords={this.loadTires}
                     action={this.state.action}
                     setFlag={this.setFlag}
                     flag={this.state.flag}
                     editSelected={this.editSelected}
                     validateInput={
                             (scope, event) => {
-                                switch(event.target.id) {
-                                    case 'year':
-                                        if(event.target.value.length === 0)
-                                            break;
-                                        if(event.target.value.length > 4 || !Number(event.target.value)) {
-                                            event.target.value = event.target.value.slice(1);
-                                            return;
-                                        }
-                                        event.target.value = parseInt(event.target.value);
-                                }
                                 var temp = JSON.parse(JSON.stringify(scope.state.record));
                                 temp[event.target.id] = event.target.value;
                                 scope.setState({record: temp});
@@ -144,30 +143,29 @@ export default class VehicleGrid extends React.Component {
                     }
                     onSave={
                         (scope) => {
-                            if(scope.state.record.year.toString().length === 4){
-                                var temp = JSON.parse(JSON.stringify(scope.state.record));
-                                temp.year = parseInt(temp.year);
-                                if(scope.props.action === 'add'){
-                                    axios.post(scope.props.url, temp)
-                                    .then(response => {
-                                        scope.props.setModal();
-                                        scope.props.loadRecords();
-                                    })
-                                    .catch(error => {
-                                        console.log(error);
-                                    });
-                                }
-                                else{
-                                    axios.put(scope.props.url + '/' + scope.props.id, temp)
-                                    .then(response => {
-                                        scope.props.editSelected(response.data);
-                                        scope.props.setModal();
-                                        scope.props.loadRecords();
-                                    })
-                                    .catch(error => {
-                                        console.log(error);
-                                    });
-                                }
+                            var temp = JSON.parse(JSON.stringify(scope.state.record));
+                            temp.price = parseFloat(temp.price);
+                            temp.qty = parseInt(temp.qty);
+                            if(scope.props.action === 'add'){
+                                axios.post(scope.props.url, temp)
+                                .then(response => {
+                                    scope.props.setModal();
+                                    scope.props.loadRecords();
+                                })
+                                .catch(error => {
+                                    console.log(error);
+                                });
+                            }
+                            else{
+                                axios.put(scope.props.url + '/' + scope.props.id, temp)
+                                .then(response => {
+                                    scope.props.editSelected(response.data);
+                                    scope.props.setModal();
+                                    scope.props.loadRecords();
+                                })
+                                .catch(error => {
+                                    console.log(error);
+                                });
                             }
                         }
                     }/>

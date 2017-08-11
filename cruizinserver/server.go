@@ -8,11 +8,11 @@ import (
 
 func main() {
 	m := martini.Classic()
-
-	endpoints.RegisterCustomerEndpoints(m)
-	endpoints.RegisterItemEndpoints(m)
-	endpoints.RegisterTireEndpoints(m)
-	endpoints.RegisterVehicleEndpoints(m)
-
+	m.Group("/api", func(r martini.Router) {
+		endpoints.RegisterCustomerEndpoints(m)
+		endpoints.RegisterItemEndpoints(m)
+		endpoints.RegisterTireEndpoints(m)
+		endpoints.RegisterVehicleEndpoints(m)
+	})
 	m.Run()
 }

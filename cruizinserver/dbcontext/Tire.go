@@ -21,16 +21,20 @@ func GetTires() []models.Tire {
 	var size string
 	var servicedesc string
 	var notes string
+	var price float32
+	var qty int
 	var tires []models.Tire
 	for rows.Next() {
-		rows.Scan(&itemnum, &brand, &model, &size, &servicedesc, &notes)
+		rows.Scan(&itemnum, &brand, &model, &size, &servicedesc, &notes, &price, &qty)
 		tires = append(tires, models.Tire{
 			ItemNum:     itemnum,
 			Brand:       brand,
 			Model:       model,
 			Size:        size,
 			ServiceDesc: servicedesc,
-			Notes:       notes})
+			Notes:       notes,
+			Price:       price,
+			Qty:         qty})
 	}
 	db.Close()
 
@@ -44,11 +48,14 @@ func CreateTire(tire models.Tire) {
 	util.CheckErr(err)
 
 	statement.Exec(
+		tire.ItemNum,
 		tire.Brand,
 		tire.Model,
 		tire.Size,
 		tire.ServiceDesc,
-		tire.Notes)
+		tire.Notes,
+		tire.Price,
+		tire.Qty)
 	db.Close()
 
 	return
@@ -66,7 +73,9 @@ func GetTire(key int) models.Tire {
 	var size string
 	var servicedesc string
 	var notes string
-	row.Scan(&itemnum, &brand, &model, &size, &servicedesc, &notes)
+	var price float32
+	var qty int
+	row.Scan(&itemnum, &brand, &model, &size, &servicedesc, &notes, &price, &qty)
 	db.Close()
 	tire := models.Tire{
 		ItemNum:     itemnum,
@@ -74,7 +83,9 @@ func GetTire(key int) models.Tire {
 		Model:       model,
 		Size:        size,
 		ServiceDesc: servicedesc,
-		Notes:       notes}
+		Notes:       notes,
+		Price:       price,
+		Qty:         qty}
 
 	return tire
 }
@@ -86,6 +97,26 @@ func DeleteTire(itemnum int) {
 	util.CheckErr(err)
 
 	statement.Exec(itemnum)
+
+	return
+}
+
+func UpdateTire(tire models.Tire) {
+	db, err := sql.Open("sqlite3", database.DBPath)
+	util.CheckErr(err)
+	statement, err := db.Prepare(queries.UpdateTire)
+	util.CheckErr(err)
+
+	statement.Exec(
+		tire.Brand,
+		tire.Model,
+		tire.Size,
+		tire.ServiceDesc,
+		tire.Notes,
+		tire.Price,
+		tire.Qty,
+		tire.ItemNum)
+	db.Close()
 
 	return
 }

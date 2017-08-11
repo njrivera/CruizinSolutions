@@ -1,6 +1,6 @@
 import React from 'react';
 
-export default class Navbar extends React.Component {
+export default class Quote extends React.Component {
 
     render() {
         return (

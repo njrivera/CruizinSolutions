@@ -5,8 +5,8 @@ import {Container, Row, Col, Button} from 'reactstrap';
 import axios from 'axios';
 
 export default class CustomerGrid extends React.Component {
-    constructor() {
-        super();
+    constructor(props) {
+        super(props);
         this.state = {
             customers: [],
             selected: null,
@@ -55,7 +55,7 @@ export default class CustomerGrid extends React.Component {
     }
 
     loadCustomers() {
-        axios.get('/customers')
+        axios.get('/api/customers')
         .then(response => {
             this.setState({customers: response.data});
         })
@@ -100,9 +100,12 @@ export default class CustomerGrid extends React.Component {
                             <Button color='danger' onClick={() => {this.checkSelected(), this.setState({action: 'delete'})}}>Delete</Button>
                         </Col>
                     </Row>
+                    <div className={!this.props.extra ? 'hidden' : ''}>
+                        <Button onClick={() => this.props.extraFunction(this.state.selected)}>{this.props.extraTitle}</Button>
+                    </div>
                 </Container>
                 <GridModal 
-                    url='/customers'
+                    url='/api/customers'
                     record={this.state.action === 'add' ? {
                             name: '',
                             address: '',

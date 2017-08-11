@@ -9,6 +9,7 @@ export default class Layout extends React.Component {
         return (
             <div className='Layout'>
                 <h1>Hi there!</h1>
+                <button onClick={() => window.print()}>Print</button>
             </div>
         );
     }

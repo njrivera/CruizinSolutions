@@ -4,26 +4,26 @@ import GridModal from './GridModal';
 import {Container, Row, Col, Button} from 'reactstrap';
 import axios from 'axios';
 
-export default class VehicleGrid extends React.Component {
+export default class ItemsGrid extends React.Component {
     constructor() {
         super();
         this.state = {
-            vehicles: [],
+            items: [],
             selected: null,
             modal: false,
             flag: true,
             action: null
         };
-        this.loadVehicles();
-        this.loadVehicles = this.loadVehicles.bind(this);
+        this.loadItems();
+        this.loadItems = this.loadItems.bind(this);
         this.deleteSelected = this.deleteSelected.bind(this);
         this.setModal = this.setModal.bind(this);
-        this.onSelectVehicle = this.onSelectVehicle.bind(this);
+        this.onSelectItems = this.onSelectItems.bind(this);
         this.setFlag = this.setFlag.bind(this);
         this.editSelected = this.editSelected.bind(this);
     }
 
-    onSelectVehicle(row, isSelected) {
+    onSelectItems(row, isSelected) {
         if (isSelected) {
             this.setState({selected: row});
         }
@@ -54,10 +54,10 @@ export default class VehicleGrid extends React.Component {
         }
     }
 
-    loadVehicles() {
-        axios.get('/api/vehicles')
+    loadItems() {
+        axios.get('/api/items')
         .then(response => {
-            this.setState({vehicles: response.data});
+            this.setState({items: response.data});
         })
         .catch(error => {
             console.log(error);
@@ -70,7 +70,7 @@ export default class VehicleGrid extends React.Component {
                 <Container>
                     <Row>
                         <BootstrapTable 
-                            data={this.state.vehicles} 
+                            data={this.state.items} 
                             maxHeight='500px'
                             scrollTop={'Bottom'} 
                             hover
@@ -79,16 +79,14 @@ export default class VehicleGrid extends React.Component {
                                 clickToSelect: true, 
                                 bgColor: 'black',
                                 hideSelectColumn: true,
-                                onSelect: this.onSelectVehicle
+                                onSelect: this.onSelectItems
                             }} 
                             containerStyle={{
                                 background: '#2F2F2F'
                             }}>
-                            <TableHeaderColumn dataField="vid" width='auto' isKey hidden>ID</TableHeaderColumn>
-                            <TableHeaderColumn dataField="year" width='auto' dataSort filter={{type: 'TextFilter'}}>Year</TableHeaderColumn>
-                            <TableHeaderColumn dataField="make" width='auto' dataSort filter={{type: 'TextFilter'}}>Make</TableHeaderColumn>
-                            <TableHeaderColumn dataField="model" width='auto' dataSort filter={{type: 'TextFilter'}}>Model</TableHeaderColumn>
-                            <TableHeaderColumn dataField="trim" width='auto' dataSort filter={{type: 'TextFilter'}}>Trim</TableHeaderColumn>
+                            <TableHeaderColumn dataField="itemnum" width='auto' isKey hidden>ID</TableHeaderColumn>
+                            <TableHeaderColumn dataField="description" width='auto' dataSort filter={{type: 'TextFilter'}}>Description</TableHeaderColumn>
+                            <TableHeaderColumn dataField="price" width='auto' dataSort filter={{type: 'TextFilter'}}>Price</TableHeaderColumn>
                         </BootstrapTable>
                     </Row>
                     <Row>
@@ -103,40 +101,26 @@ export default class VehicleGrid extends React.Component {
                     </div>
                 </Container>
                 <GridModal 
-                    url='/api/vehicles'
+                    url='/api/items'
                     record={this.state.action === 'add' ? {
-                            year: '',
-                            make: '',
-                            model: '',
-                            trim: ''
+                            description: '',
+                            price: ''
                         } : this.state.selected ? {
-                                year: this.state.selected.year,
-                                make: this.state.selected.make,
-                                model: this.state.selected.model,
-                                trim: this.state.selected.trim
+                                description: this.state.selected.description,
+                                price: this.state.selected.price
                             } : {}
                     }
-                    id={this.state.selected ? JSON.parse(JSON.stringify(this.state.selected)).vid : null}
+                    id={this.state.selected ? JSON.parse(JSON.stringify(this.state.selected)).itemnum : null}
                     deleteRecord={this.deleteSelected}
                     modal={this.state.modal}
                     setModal={this.setModal}
-                    loadRecords={this.loadVehicles}
+                    loadRecords={this.loadItems}
                     action={this.state.action}
                     setFlag={this.setFlag}
                     flag={this.state.flag}
                     editSelected={this.editSelected}
                     validateInput={
                             (scope, event) => {
-                                switch(event.target.id) {
-                                    case 'year':
-                                        if(event.target.value.length === 0)
-                                            break;
-                                        if(event.target.value.length > 4 || !Number(event.target.value)) {
-                                            event.target.value = event.target.value.slice(1);
-                                            return;
-                                        }
-                                        event.target.value = parseInt(event.target.value);
-                                }
                                 var temp = JSON.parse(JSON.stringify(scope.state.record));
                                 temp[event.target.id] = event.target.value;
                                 scope.setState({record: temp});
@@ -144,30 +128,28 @@ export default class VehicleGrid extends React.Component {
                     }
                     onSave={
                         (scope) => {
-                            if(scope.state.record.year.toString().length === 4){
-                                var temp = JSON.parse(JSON.stringify(scope.state.record));
-                                temp.year = parseInt(temp.year);
-                                if(scope.props.action === 'add'){
-                                    axios.post(scope.props.url, temp)
-                                    .then(response => {
-                                        scope.props.setModal();
-                                        scope.props.loadRecords();
-                                    })
-                                    .catch(error => {
-                                        console.log(error);
-                                    });
-                                }
-                                else{
-                                    axios.put(scope.props.url + '/' + scope.props.id, temp)
-                                    .then(response => {
-                                        scope.props.editSelected(response.data);
-                                        scope.props.setModal();
-                                        scope.props.loadRecords();
-                                    })
-                                    .catch(error => {
-                                        console.log(error);
-                                    });
-                                }
+                            var temp = JSON.parse(JSON.stringify(scope.state.record));
+                            temp.price = parseFloat(temp.price);
+                            if(scope.props.action === 'add'){
+                                axios.post(scope.props.url, temp)
+                                .then(response => {
+                                    scope.props.setModal();
+                                    scope.props.loadRecords();
+                                })
+                                .catch(error => {
+                                    console.log(error);
+                                });
+                            }
+                            else{
+                                axios.put(scope.props.url + '/' + scope.props.id, temp)
+                                .then(response => {
+                                    scope.props.editSelected(response.data);
+                                    scope.props.setModal();
+                                    scope.props.loadRecords();
+                                })
+                                .catch(error => {
+                                    console.log(error);
+                                });
                             }
                         }
                     }/>

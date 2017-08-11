@@ -18,34 +18,34 @@ func GetItems() []models.Item {
 	var itemnum int
 	var description string
 	var price float32
-	var qty int
 	var items []models.Item
 	for rows.Next() {
-		rows.Scan(&itemnum, &description, &price, &qty)
+		rows.Scan(&itemnum, &description, &price)
 		items = append(items, models.Item{
 			ItemNum:     itemnum,
 			Description: description,
-			Price:       price,
-			Qty:         qty})
+			Price:       price})
 	}
 	db.Close()
 
 	return items
 }
 
-func CreateItem(item models.Item) {
+func CreateItem(item models.Item) int {
 	db, err := sql.Open("sqlite3", database.DBPath)
 	util.CheckErr(err)
 	statement, err := db.Prepare(queries.CreateItem)
 	util.CheckErr(err)
 
-	statement.Exec(
+	row, err := statement.Exec(
 		item.Description,
-		item.Price,
-		item.Qty)
+		item.Price)
+	util.CheckErr(err)
+	id, err := row.LastInsertId()
+	util.CheckErr(err)
 	db.Close()
 
-	return
+	return int(id)
 }
 
 func GetItem(key int) models.Item {
@@ -57,14 +57,12 @@ func GetItem(key int) models.Item {
 	var itemnum int
 	var description string
 	var price float32
-	var qty int
-	row.Scan(&itemnum, &description, &price, &qty)
+	row.Scan(&itemnum, &description, &price)
 	db.Close()
 	item := models.Item{
 		ItemNum:     itemnum,
 		Description: description,
-		Price:       price,
-		Qty:         qty}
+		Price:       price}
 
 	return item
 }
