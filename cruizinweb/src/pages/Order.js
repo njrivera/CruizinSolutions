@@ -5,6 +5,7 @@ import VehicleGrid from '../components/VehicleGrid';
 import {DropdownButton, MenuItem} from 'react-bootstrap';
 import OrderOptions from '../components/OrderOptions';
 import ItemList from '../components/ItemList';
+import Invoice from '../components/Invoice';
 
 export default class Order extends React.Component {
     constructor() {
@@ -15,7 +16,8 @@ export default class Order extends React.Component {
             vehicle: null,
             product: 'tires',
             items: [],
-            defaultPrices: []
+            defaultPrices: [],
+            finished: false
         };
         this.chooseCustomer = this.chooseCustomer.bind(this);
         this.addVehicle = this.addVehicle.bind(this);
@@ -23,6 +25,7 @@ export default class Order extends React.Component {
         this.addItem = this.addItem.bind(this);
         this.removeItem = this.removeItem.bind(this);
         this.changePrice = this.changePrice.bind(this);
+        this.finishOrder = this.finishOrder.bind(this);
     }
 
     chooseCustomer(customer) {
@@ -40,6 +43,13 @@ export default class Order extends React.Component {
         if(vehicle) {
             this.setState({vehicle: vehicle});
             this.setState({grid: 'items'});
+        }
+    }
+
+    finishOrder() {
+        if(this.state.items.length > 0) {
+            this.setState({grid: 'invoice'});
+            this.setState({finished: true});
         }
     }
 
@@ -151,10 +161,15 @@ export default class Order extends React.Component {
                     <ItemList
                         items={this.state.items}
                         removeItem={this.removeItem}
-                        changePrice={this.changePrice}/>
+                        changePrice={this.changePrice}
+                        finishOrder={this.finishOrder}/>
                 </div>
             );
             break;
+            case 'invoice':
+            return (
+                <Invoice finished={this.state.finished}/>
+            );
             default: return (<div></div>);
         }
     }
