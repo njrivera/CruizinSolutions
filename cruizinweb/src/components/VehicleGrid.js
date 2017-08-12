@@ -8,22 +8,22 @@ export default class VehicleGrid extends React.Component {
     constructor() {
         super();
         this.state = {
-            vehicles: [],
+            records: [],
             selected: null,
             modal: false,
             flag: true,
             action: null
         };
-        this.loadVehicles();
-        this.loadVehicles = this.loadVehicles.bind(this);
+        this.loadRecords();
+        this.loadRecords = this.loadRecords.bind(this);
         this.deleteSelected = this.deleteSelected.bind(this);
         this.setModal = this.setModal.bind(this);
-        this.onSelectVehicle = this.onSelectVehicle.bind(this);
+        this.onSelectRecord = this.onSelectRecord.bind(this);
         this.setFlag = this.setFlag.bind(this);
         this.editSelected = this.editSelected.bind(this);
     }
 
-    onSelectVehicle(row, isSelected) {
+    onSelectRecord(row, isSelected) {
         if (isSelected) {
             this.setState({selected: row});
         }
@@ -54,10 +54,10 @@ export default class VehicleGrid extends React.Component {
         }
     }
 
-    loadVehicles() {
+    loadRecords() {
         axios.get('/api/vehicles')
         .then(response => {
-            this.setState({vehicles: response.data});
+            this.setState({records: response.data});
         })
         .catch(error => {
             console.log(error);
@@ -70,7 +70,7 @@ export default class VehicleGrid extends React.Component {
                 <Container>
                     <Row>
                         <BootstrapTable 
-                            data={this.state.vehicles} 
+                            data={this.state.records} 
                             maxHeight='500px'
                             scrollTop={'Bottom'} 
                             hover
@@ -79,7 +79,7 @@ export default class VehicleGrid extends React.Component {
                                 clickToSelect: true, 
                                 bgColor: 'black',
                                 hideSelectColumn: true,
-                                onSelect: this.onSelectVehicle
+                                onSelect: this.onSelectRecord
                             }} 
                             containerStyle={{
                                 background: '#2F2F2F'
@@ -88,7 +88,6 @@ export default class VehicleGrid extends React.Component {
                             <TableHeaderColumn dataField="year" width='auto' dataSort filter={{type: 'TextFilter'}}>Year</TableHeaderColumn>
                             <TableHeaderColumn dataField="make" width='auto' dataSort filter={{type: 'TextFilter'}}>Make</TableHeaderColumn>
                             <TableHeaderColumn dataField="model" width='auto' dataSort filter={{type: 'TextFilter'}}>Model</TableHeaderColumn>
-                            <TableHeaderColumn dataField="trim" width='auto' dataSort filter={{type: 'TextFilter'}}>Trim</TableHeaderColumn>
                         </BootstrapTable>
                     </Row>
                     <Row>
@@ -107,20 +106,18 @@ export default class VehicleGrid extends React.Component {
                     record={this.state.action === 'add' ? {
                             year: '',
                             make: '',
-                            model: '',
-                            trim: ''
+                            model: ''
                         } : this.state.selected ? {
                                 year: this.state.selected.year,
                                 make: this.state.selected.make,
-                                model: this.state.selected.model,
-                                trim: this.state.selected.trim
+                                model: this.state.selected.model
                             } : {}
                     }
                     id={this.state.selected ? JSON.parse(JSON.stringify(this.state.selected)).vid : null}
                     deleteRecord={this.deleteSelected}
                     modal={this.state.modal}
                     setModal={this.setModal}
-                    loadRecords={this.loadVehicles}
+                    loadRecords={this.loadRecords}
                     action={this.state.action}
                     setFlag={this.setFlag}
                     flag={this.state.flag}
@@ -136,6 +133,7 @@ export default class VehicleGrid extends React.Component {
                                             return;
                                         }
                                         event.target.value = parseInt(event.target.value);
+                                    default:
                                 }
                                 var temp = JSON.parse(JSON.stringify(scope.state.record));
                                 temp[event.target.id] = event.target.value;

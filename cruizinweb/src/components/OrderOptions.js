@@ -1,10 +1,8 @@
 import React from 'react';
-import {BootstrapTable, TableHeaderColumn} from 'react-bootstrap-table';
-import GridModal from './GridModal';
-import {Container, Row, Col, Button} from 'reactstrap';
-import axios from 'axios';
 import TireGrid from './TireGrid';
-import ItemGrid from './ItemGrid';
+import RimGrid from './RimGrid';
+import PartGrid from './PartGrid';
+import ServiceGrid from './ServiceGrid';
 
 export default class OrderOptions extends React.Component {
     constructor(props) {
@@ -22,17 +20,33 @@ export default class OrderOptions extends React.Component {
                         extraFunction={this.props.extraFunction}/>
                 </div>
             );
-            break;
-            case 'items':
+            case 'rims':
             return (
                 <div>
-                    <ItemGrid 
+                    <RimGrid 
                         extra={true}
                         extraTitle={'Add Item'}
                         extraFunction={this.props.extraFunction}/>
                 </div>
             );
-            break;
+            case 'parts':
+            return (
+                <div>
+                    <PartGrid 
+                        extra={true}
+                        extraTitle={'Add Item'}
+                        extraFunction={this.props.extraFunction}/>
+                </div>
+            );
+            case 'services':
+            return (
+                <div>
+                    <ServiceGrid 
+                        extra={true}
+                        extraTitle={'Add Item'}
+                        extraFunction={this.props.extraFunction}/>
+                </div>
+            );
             default: return (<div></div>);
         }
     }

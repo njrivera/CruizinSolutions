@@ -5,5 +5,4 @@ type Vehicle struct {
 	Year  int    `json:"year"`
 	Make  string `json:"make"`
 	Model string `json:"model"`
-	Trim  string `json:"trim"`
 }

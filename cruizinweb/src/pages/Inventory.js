@@ -1,4 +1,8 @@
 import React from 'react';
+import TireGrid from '../components/TireGrid'
+import RimGrid from '../components/RimGrid'
+import PartGrid from '../components/PartGrid'
+import ServiceGrid from '../components/ServiceGrid'
 
 export default class Inventory extends React.Component {
 
@@ -6,31 +10,24 @@ export default class Inventory extends React.Component {
         switch(this.props.match.params.option) {
             case 'tires':
                 return (
-                    <div>
-                        <h1>Tires</h1>
-                    </div>
+                    <TireGrid/>
                 );
-            break;
             case 'rims':
                 return (
-                    <div>
-                        <h1>Rims</h1>
-                    </div>
+                    <RimGrid/>
                 );
-            break;
-            case 'items':
+            case 'parts':
                 return (
-                    <div>
-                        <h1>Items</h1>
-                    </div>
+                    <PartGrid/>
                 );
-            break;
+            case 'services':
+                return (
+                    <ServiceGrid/>
+                );
             default:
                 return (
-                    <div>
-                        <h1>none selected</h1>
-                    </div>
-                    );
+                    <div>Sorry!!!</div>
+                );
         }
     }
 }

@@ -17,16 +17,16 @@ export default class Invoice extends React.Component {
                     <ModalBody>
                 <Container>
                     <Row>
-                        <Col>Logo</Col>
-                        <Col>Other Logo</Col>
+                        <Col sm='6'>Logo</Col>
+                        <Col sm='6'>Other Logo</Col>
                     </Row>
                     <Row>
-                        <Col>Extra Info</Col>
-                        <Col>Invoice # and Date</Col>
+                        <Col sm='6'>Extra Info</Col>
+                        <Col sm='6'>{}</Col>
                     </Row>
                     <Row>
-                        <Col>Customer</Col>
-                        <Col>Vehicle</Col>
+                        <Col sm='6'>Customer</Col>
+                        <Col sm='6'>Vehicle</Col>
                     </Row>
                     <Row>
                         <Col sm='1'>Qty</Col>

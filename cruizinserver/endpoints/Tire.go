@@ -18,6 +18,7 @@ func RegisterTireEndpoints(m *martini.ClassicMartini) {
 		r.Get("/:itemnum", getTireHandler)
 		r.Delete("/:itemnum", deleteTireHandler)
 		r.Put("/:itemnum", updateTireHandler)
+		r.Put("/:itemnum/:qty", updateTireQtyHandler)
 	})
 }
 
@@ -34,9 +35,13 @@ func createTireHandler(r *http.Request, w http.ResponseWriter) {
 	item.Description = tire.Brand + " " +
 		tire.Model + " " +
 		tire.Size + " " +
-		tire.ServiceDesc + " " +
-		tire.Notes
-	item.Price = tire.Price
+		tire.ServiceDesc + " (" +
+		tire.Condition + ")"
+	if tire.Condition == "NEW" {
+		item.Taxable = "true"
+	} else {
+		item.Taxable = "false"
+	}
 	tire.ItemNum = dbcontext.CreateItem(item)
 	dbcontext.CreateTire(tire)
 	util.JSONEncode(tire, w)
@@ -60,5 +65,12 @@ func updateTireHandler(r *http.Request, params martini.Params, w http.ResponseWr
 	util.CheckErr(err)
 	tire.ItemNum = itemnum
 	dbcontext.UpdateTire(tire)
+	util.JSONEncode(tire, w)
+}
+
+func updateTireQtyHandler(r *http.Request, params martini.Params, w http.ResponseWriter) {
+	itemnum, _ := strconv.Atoi(params["itemnum"])
+	qty, _ := strconv.Atoi(params["qty"])
+	tire := dbcontext.UpdateTireQty(itemnum, qty)
 	util.JSONEncode(tire, w)
 }

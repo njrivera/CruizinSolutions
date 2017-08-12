@@ -19,16 +19,14 @@ func GetVehicles() []models.Vehicle {
 	var year int
 	var make string
 	var model string
-	var trim string
 	var vehicles []models.Vehicle
 	for rows.Next() {
-		rows.Scan(&vid, &year, &make, &model, &trim)
+		rows.Scan(&vid, &year, &make, &model)
 		vehicles = append(vehicles, models.Vehicle{
 			Vid:   vid,
 			Year:  year,
 			Make:  make,
-			Model: model,
-			Trim:  trim})
+			Model: model})
 	}
 	db.Close()
 
@@ -44,8 +42,7 @@ func CreateVehicle(vehicle models.Vehicle) {
 	statement.Exec(
 		vehicle.Year,
 		vehicle.Make,
-		vehicle.Model,
-		vehicle.Trim)
+		vehicle.Model)
 	db.Close()
 
 	return
@@ -61,15 +58,13 @@ func GetVehicle(key int) models.Vehicle {
 	var year int
 	var make string
 	var model string
-	var trim string
-	row.Scan(&vid, &year, &make, &model, &trim)
+	row.Scan(&vid, &year, &make, &model)
 	db.Close()
 	vehicle := models.Vehicle{
 		Vid:   vid,
 		Year:  year,
 		Make:  make,
-		Model: model,
-		Trim:  trim}
+		Model: model}
 
 	return vehicle
 }
@@ -95,7 +90,6 @@ func UpdateVehicle(vehicle models.Vehicle) {
 		vehicle.Year,
 		vehicle.Make,
 		vehicle.Model,
-		vehicle.Trim,
 		vehicle.Vid)
 	db.Close()
 

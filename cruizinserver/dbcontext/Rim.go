@@ -9,91 +9,96 @@ import (
 	"github.com/CruizinSolutions/cruizinserver/util"
 )
 
-func GetTires() []models.Tire {
+func GetRims() []models.Rim {
 	db, err := sql.Open("sqlite3", database.DBPath)
 	util.CheckErr(err)
-	rows, err := db.Query(queries.GetTires)
+	rows, err := db.Query(queries.GetRims)
 	util.CheckErr(err)
 
 	var itemnum int
 	var brand string
 	var model string
 	var size string
-	var servicedesc string
+	var boltpattern string
+	var finish string
 	var condition string
 	var price float32
 	var qty int
-	var tires []models.Tire
+	var rims []models.Rim
 	for rows.Next() {
-		rows.Scan(&itemnum, &brand, &model, &size, &servicedesc, &condition, &price, &qty)
-		tires = append(tires, models.Tire{
+		rows.Scan(&itemnum, &brand, &model, &size, &boltpattern, &finish, &condition, &price, &qty)
+		rims = append(rims, models.Rim{
 			ItemNum:     itemnum,
 			Brand:       brand,
 			Model:       model,
 			Size:        size,
-			ServiceDesc: servicedesc,
+			BoltPattern: boltpattern,
+			Finish:      finish,
 			Condition:   condition,
 			Price:       price,
 			Qty:         qty})
 	}
 	db.Close()
 
-	return tires
+	return rims
 }
 
-func CreateTire(tire models.Tire) {
+func CreateRim(rim models.Rim) {
 	db, err := sql.Open("sqlite3", database.DBPath)
 	util.CheckErr(err)
-	statement, err := db.Prepare(queries.CreateTire)
+	statement, err := db.Prepare(queries.CreateRim)
 	util.CheckErr(err)
 
 	statement.Exec(
-		tire.ItemNum,
-		tire.Brand,
-		tire.Model,
-		tire.Size,
-		tire.ServiceDesc,
-		tire.Condition,
-		tire.Price,
-		tire.Qty)
+		rim.ItemNum,
+		rim.Brand,
+		rim.Model,
+		rim.Size,
+		rim.BoltPattern,
+		rim.Finish,
+		rim.Condition,
+		rim.Price,
+		rim.Qty)
 	db.Close()
 
 	return
 }
 
-func GetTire(key int) models.Tire {
+func GetRim(key int) models.Rim {
 	db, err := sql.Open("sqlite3", database.DBPath)
 	util.CheckErr(err)
-	row, err := db.Query(queries.GetTire, key)
+	row, err := db.Query(queries.GetRim, key)
 	util.CheckErr(err)
 
 	var itemnum int
 	var brand string
 	var model string
 	var size string
-	var servicedesc string
+	var boltpattern string
+	var finish string
 	var condition string
 	var price float32
 	var qty int
-	row.Scan(&itemnum, &brand, &model, &size, &servicedesc, &condition, &price, &qty)
+	row.Scan(&itemnum, &brand, &model, &size, &boltpattern, &finish, &condition, &price, &qty)
 	db.Close()
-	tire := models.Tire{
+	rim := models.Rim{
 		ItemNum:     itemnum,
 		Brand:       brand,
 		Model:       model,
 		Size:        size,
-		ServiceDesc: servicedesc,
+		BoltPattern: boltpattern,
+		Finish:      finish,
 		Condition:   condition,
 		Price:       price,
 		Qty:         qty}
 
-	return tire
+	return rim
 }
 
-func DeleteTire(itemnum int) {
+func DeleteRim(itemnum int) {
 	db, err := sql.Open("sqlite3", database.DBPath)
 	util.CheckErr(err)
-	statement, err := db.Prepare(queries.DeleteTire)
+	statement, err := db.Prepare(queries.DeleteRim)
 	util.CheckErr(err)
 
 	statement.Exec(itemnum)
@@ -101,35 +106,36 @@ func DeleteTire(itemnum int) {
 	return
 }
 
-func UpdateTire(tire models.Tire) {
+func UpdateRim(rim models.Rim) {
 	db, err := sql.Open("sqlite3", database.DBPath)
 	util.CheckErr(err)
-	statement, err := db.Prepare(queries.UpdateTire)
+	statement, err := db.Prepare(queries.UpdateRim)
 	util.CheckErr(err)
 
 	statement.Exec(
-		tire.Brand,
-		tire.Model,
-		tire.Size,
-		tire.ServiceDesc,
-		tire.Condition,
-		tire.Price,
-		tire.Qty,
-		tire.ItemNum)
+		rim.Brand,
+		rim.Model,
+		rim.Size,
+		rim.BoltPattern,
+		rim.Finish,
+		rim.Condition,
+		rim.Price,
+		rim.Qty,
+		rim.ItemNum)
 	db.Close()
 
 	return
 }
 
-func UpdateTireQty(itemnum int, qty int) models.Tire {
+func UpdateRimQty(itemnum int, qty int) models.Rim {
 	db, err := sql.Open("sqlite3", database.DBPath)
 	util.CheckErr(err)
-	statement, err := db.Prepare(queries.UpdateTireQty)
+	statement, err := db.Prepare(queries.UpdateRimQty)
 	util.CheckErr(err)
 
 	statement.Exec(qty, itemnum)
-	tire := GetTire(itemnum)
+	rim := GetRim(itemnum)
 	db.Close()
 
-	return tire
+	return rim
 }

@@ -4,7 +4,7 @@ import GridModal from './GridModal';
 import {Container, Row, Col, Button} from 'reactstrap';
 import axios from 'axios';
 
-export default class ItemGrid extends React.Component {
+export default class PartGrid extends React.Component {
     constructor() {
         super();
         this.state = {
@@ -18,12 +18,12 @@ export default class ItemGrid extends React.Component {
         this.loadRecords = this.loadRecords.bind(this);
         this.deleteSelected = this.deleteSelected.bind(this);
         this.setModal = this.setModal.bind(this);
-        this.onSelectRecords = this.onSelectRecords.bind(this);
+        this.onSelectRecord = this.onSelectRecord.bind(this);
         this.setFlag = this.setFlag.bind(this);
         this.editSelected = this.editSelected.bind(this);
     }
 
-    onSelectRecords(row, isSelected) {
+    onSelectRecord(row, isSelected) {
         if (isSelected) {
             this.setState({selected: row});
         }
@@ -55,7 +55,7 @@ export default class ItemGrid extends React.Component {
     }
 
     loadRecords() {
-        axios.get('/api/items')
+        axios.get('/api/parts')
         .then(response => {
             this.setState({records: response.data});
         })
@@ -79,13 +79,14 @@ export default class ItemGrid extends React.Component {
                                 clickToSelect: true, 
                                 bgColor: 'black',
                                 hideSelectColumn: true,
-                                onSelect: this.onSelectRecords
+                                onSelect: this.onSelectRecord
                             }} 
                             containerStyle={{
                                 background: '#2F2F2F'
                             }}>
-                            <TableHeaderColumn dataField="recordnum" width='auto' isKey hidden>ID</TableHeaderColumn>
+                            <TableHeaderColumn dataField="itemnum" width='auto' isKey hidden>ID</TableHeaderColumn>
                             <TableHeaderColumn dataField="description" width='auto' dataSort filter={{type: 'TextFilter'}}>Description</TableHeaderColumn>
+                            <TableHeaderColumn dataField="condition" width='auto' dataSort filter={{type: 'TextFilter'}}>Condition</TableHeaderColumn>
                             <TableHeaderColumn dataField="price" width='auto' dataSort filter={{type: 'TextFilter'}}>Price</TableHeaderColumn>
                         </BootstrapTable>
                     </Row>
@@ -101,16 +102,18 @@ export default class ItemGrid extends React.Component {
                     </div>
                 </Container>
                 <GridModal 
-                    url='/api/items'
+                    url='/api/parts'
                     record={this.state.action === 'add' ? {
                             description: '',
+                            condition: '',
                             price: ''
                         } : this.state.selected ? {
                                 description: this.state.selected.description,
+                                condition: this.state.selected.condition,
                                 price: this.state.selected.price
                             } : {}
                     }
-                    id={this.state.selected ? JSON.parse(JSON.stringify(this.state.selected)).recordnum : null}
+                    id={this.state.selected ? JSON.parse(JSON.stringify(this.state.selected)).itemnum : null}
                     deleteRecord={this.deleteSelected}
                     modal={this.state.modal}
                     setModal={this.setModal}

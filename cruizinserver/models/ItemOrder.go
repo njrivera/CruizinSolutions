@@ -5,5 +5,5 @@ type ItemOrder struct {
 	OrderNum int `json:"ordernum"`
 	ItemNum  int `json:"itemnum"`
 	Qty      int `json:"qty"`
-	Subtotal int `json:"subtotal"`
+	Amount   int `json:"amount"`
 }

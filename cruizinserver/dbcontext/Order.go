@@ -19,16 +19,14 @@ func GetCustVehicles(key int) []models.Vehicle {
 	var year int
 	var make string
 	var model string
-	var trim string
 	var vehicles []models.Vehicle
 	for rows.Next() {
-		rows.Scan(&vid, &year, &make, &model, &trim)
+		rows.Scan(&vid, &year, &make, &model)
 		vehicles = append(vehicles, models.Vehicle{
 			Vid:   vid,
 			Year:  year,
 			Make:  make,
-			Model: model,
-			Trim:  trim})
+			Model: model})
 	}
 	db.Close()
 

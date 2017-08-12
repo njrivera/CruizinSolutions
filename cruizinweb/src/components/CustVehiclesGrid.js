@@ -1,6 +1,5 @@
 import React from 'react';
 import {BootstrapTable, TableHeaderColumn} from 'react-bootstrap-table';
-import GridModal from './GridModal';
 import {Container, Row, Col, Button} from 'reactstrap';
 import axios from 'axios';
 

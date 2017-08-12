@@ -10,12 +10,10 @@ export default class Info extends React.Component {
                 return (
                     <CustomerGrid />
                 );
-            break;
             case 'vehicles':
                 return (
                     <VehicleGrid />
                 );
-            break;
             default:
                 return (
                         <div>

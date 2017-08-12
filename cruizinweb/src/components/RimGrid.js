@@ -4,7 +4,7 @@ import GridModal from './GridModal';
 import {Container, Row, Col, Button} from 'reactstrap';
 import axios from 'axios';
 
-export default class ItemGrid extends React.Component {
+export default class RimGrid extends React.Component {
     constructor() {
         super();
         this.state = {
@@ -18,12 +18,12 @@ export default class ItemGrid extends React.Component {
         this.loadRecords = this.loadRecords.bind(this);
         this.deleteSelected = this.deleteSelected.bind(this);
         this.setModal = this.setModal.bind(this);
-        this.onSelectRecords = this.onSelectRecords.bind(this);
+        this.onSelectRecord = this.onSelectRecord.bind(this);
         this.setFlag = this.setFlag.bind(this);
         this.editSelected = this.editSelected.bind(this);
     }
 
-    onSelectRecords(row, isSelected) {
+    onSelectRecord(row, isSelected) {
         if (isSelected) {
             this.setState({selected: row});
         }
@@ -55,7 +55,7 @@ export default class ItemGrid extends React.Component {
     }
 
     loadRecords() {
-        axios.get('/api/items')
+        axios.get('/api/rims')
         .then(response => {
             this.setState({records: response.data});
         })
@@ -79,14 +79,20 @@ export default class ItemGrid extends React.Component {
                                 clickToSelect: true, 
                                 bgColor: 'black',
                                 hideSelectColumn: true,
-                                onSelect: this.onSelectRecords
+                                onSelect: this.onSelectRecord
                             }} 
                             containerStyle={{
                                 background: '#2F2F2F'
                             }}>
-                            <TableHeaderColumn dataField="recordnum" width='auto' isKey hidden>ID</TableHeaderColumn>
-                            <TableHeaderColumn dataField="description" width='auto' dataSort filter={{type: 'TextFilter'}}>Description</TableHeaderColumn>
+                            <TableHeaderColumn dataField="itemnum" width='auto' isKey hidden>ID</TableHeaderColumn>
+                            <TableHeaderColumn dataField="brand" width='auto' dataSort filter={{type: 'TextFilter'}}>Brand</TableHeaderColumn>
+                            <TableHeaderColumn dataField="model" width='auto' dataSort filter={{type: 'TextFilter'}}>Model</TableHeaderColumn>
+                            <TableHeaderColumn dataField="size" width='auto' dataSort filter={{type: 'TextFilter'}}>Size</TableHeaderColumn>
+                            <TableHeaderColumn dataField="boltpattern" width='auto' dataSort filter={{type: 'TextFilter'}}>Bolt Pattern</TableHeaderColumn>
+                            <TableHeaderColumn dataField="finish" width='auto' dataSort filter={{type: 'TextFilter'}}>Finish</TableHeaderColumn>
+                            <TableHeaderColumn dataField="condition" width='auto' dataSort filter={{type: 'TextFilter'}}>Condition</TableHeaderColumn>
                             <TableHeaderColumn dataField="price" width='auto' dataSort filter={{type: 'TextFilter'}}>Price</TableHeaderColumn>
+                            <TableHeaderColumn dataField="qty" width='auto' dataSort filter={{type: 'TextFilter'}}>Qty</TableHeaderColumn>
                         </BootstrapTable>
                     </Row>
                     <Row>
@@ -101,16 +107,28 @@ export default class ItemGrid extends React.Component {
                     </div>
                 </Container>
                 <GridModal 
-                    url='/api/items'
+                    url='/api/rims'
                     record={this.state.action === 'add' ? {
-                            description: '',
-                            price: ''
+                            brand: '',
+                            model: '',
+                            size: '',
+                            boltpattern: '',
+                            finish: '',
+                            condition: '',
+                            price: '',
+                            qty: '',
                         } : this.state.selected ? {
-                                description: this.state.selected.description,
-                                price: this.state.selected.price
+                                brand: this.state.selected.brand,
+                                model: this.state.selected.model,
+                                size: this.state.selected.size,
+                                boltpattern: this.state.selected.boltpattern,
+                                finish: this.state.selected.finish,
+                                condition: this.state.selected.condition,
+                                price: this.state.selected.price,
+                                qty: this.state.selected.qty
                             } : {}
                     }
-                    id={this.state.selected ? JSON.parse(JSON.stringify(this.state.selected)).recordnum : null}
+                    id={this.state.selected ? JSON.parse(JSON.stringify(this.state.selected)).itemnum : null}
                     deleteRecord={this.deleteSelected}
                     modal={this.state.modal}
                     setModal={this.setModal}
@@ -130,6 +148,7 @@ export default class ItemGrid extends React.Component {
                         (scope) => {
                             var temp = JSON.parse(JSON.stringify(scope.state.record));
                             temp.price = parseFloat(temp.price);
+                            temp.qty = parseInt(temp.qty);
                             if(scope.props.action === 'add'){
                                 axios.post(scope.props.url, temp)
                                 .then(response => {

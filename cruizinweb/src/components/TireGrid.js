@@ -8,22 +8,22 @@ export default class TireGrid extends React.Component {
     constructor() {
         super();
         this.state = {
-            tires: [],
+            records: [],
             selected: null,
             modal: false,
             flag: true,
             action: null
         };
-        this.loadTires();
-        this.loadTires = this.loadTires.bind(this);
+        this.loadRecords();
+        this.loadRecords = this.loadRecords.bind(this);
         this.deleteSelected = this.deleteSelected.bind(this);
         this.setModal = this.setModal.bind(this);
-        this.onSelectTire = this.onSelectTire.bind(this);
+        this.onSelectRecord = this.onSelectRecord.bind(this);
         this.setFlag = this.setFlag.bind(this);
         this.editSelected = this.editSelected.bind(this);
     }
 
-    onSelectTire(row, isSelected) {
+    onSelectRecord(row, isSelected) {
         if (isSelected) {
             this.setState({selected: row});
         }
@@ -54,10 +54,10 @@ export default class TireGrid extends React.Component {
         }
     }
 
-    loadTires() {
+    loadRecords() {
         axios.get('/api/tires')
         .then(response => {
-            this.setState({tires: response.data});
+            this.setState({records: response.data});
         })
         .catch(error => {
             console.log(error);
@@ -70,7 +70,7 @@ export default class TireGrid extends React.Component {
                 <Container>
                     <Row>
                         <BootstrapTable 
-                            data={this.state.tires} 
+                            data={this.state.records} 
                             maxHeight='500px'
                             scrollTop={'Bottom'} 
                             hover
@@ -79,7 +79,7 @@ export default class TireGrid extends React.Component {
                                 clickToSelect: true, 
                                 bgColor: 'black',
                                 hideSelectColumn: true,
-                                onSelect: this.onSelectTire
+                                onSelect: this.onSelectRecord
                             }} 
                             containerStyle={{
                                 background: '#2F2F2F'
@@ -89,7 +89,7 @@ export default class TireGrid extends React.Component {
                             <TableHeaderColumn dataField="model" width='auto' dataSort filter={{type: 'TextFilter'}}>Model</TableHeaderColumn>
                             <TableHeaderColumn dataField="size" width='auto' dataSort filter={{type: 'TextFilter'}}>Size</TableHeaderColumn>
                             <TableHeaderColumn dataField="servicedesc" width='auto' dataSort filter={{type: 'TextFilter'}}>Service Description</TableHeaderColumn>
-                            <TableHeaderColumn dataField="notes" width='auto' dataSort filter={{type: 'TextFilter'}}>Notes</TableHeaderColumn>
+                            <TableHeaderColumn dataField="condition" width='auto' dataSort filter={{type: 'TextFilter'}}>Condition</TableHeaderColumn>
                             <TableHeaderColumn dataField="price" width='auto' dataSort filter={{type: 'TextFilter'}}>Price</TableHeaderColumn>
                             <TableHeaderColumn dataField="qty" width='auto' dataSort filter={{type: 'TextFilter'}}>Qty</TableHeaderColumn>
                         </BootstrapTable>
@@ -112,7 +112,7 @@ export default class TireGrid extends React.Component {
                             model: '',
                             size: '',
                             servicedesc: '',
-                            notes: '',
+                            condition: '',
                             price: '',
                             qty: ''
                         } : this.state.selected ? {
@@ -120,7 +120,7 @@ export default class TireGrid extends React.Component {
                                 model: this.state.selected.model,
                                 size: this.state.selected.size,
                                 servicedesc: this.state.selected.servicedesc,
-                                notes: this.state.selected.notes,
+                                condition: this.state.selected.condition,
                                 price: this.state.selected.price,
                                 qty: this.state.selected.qty
                             } : {}
@@ -129,7 +129,7 @@ export default class TireGrid extends React.Component {
                     deleteRecord={this.deleteSelected}
                     modal={this.state.modal}
                     setModal={this.setModal}
-                    loadRecords={this.loadTires}
+                    loadRecords={this.loadRecords}
                     action={this.state.action}
                     setFlag={this.setFlag}
                     flag={this.state.flag}

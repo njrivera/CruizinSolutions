@@ -81,19 +81,44 @@ export default class Order extends React.Component {
                             record.brand + ' ' + 
                             record.model + ' ' + 
                             record.size + ' ' +
-                            record.servicedesc + ' ',
+                            record.servicedesc + ' (' +
+                            record.condition + ')',
                         qty: 1,
                         amount: record.price
                     });
                     break;
-                    case 'items':
+                    case 'rims':
+                    temp.push({
+                        itemnum: record.itemnum,
+                        description: 
+                            record.brand + ' ' +
+                            record.model + ' ' +
+                            record.size + ' ' +
+                            record.boltpattern + ' ' +
+                            record.finish + ' (' +
+                            record.condition + ')',
+                        qty: 1,
+                        amount: record.price
+                    });
+                    break;
+                    case 'parts':
+                    temp.push({
+                        itemnum: record.itemnum,
+                        description: 
+                            record.description + ' (' +
+                            record.condition + ')',
+                        qty: 1,
+                        amount: record.price
+                    });
+                    break;
+                    case 'services':
                     temp.push({
                         itemnum: record.itemnum,
                         description: record.description,
                         qty: 1,
                         amount: record.price
                     });
-                    break;
+                    default: break;
                 }
                 tempPrices.push({itemnum: record.itemnum, price: record.price});
                 this.setState({defaultPrices: tempPrices});
@@ -125,7 +150,6 @@ export default class Order extends React.Component {
                         extraFunction={this.chooseCustomer}/>
                 </div>
             );
-            break;
             case 'custVehicles':
             return (
                 <div>
@@ -136,7 +160,6 @@ export default class Order extends React.Component {
                         onChoose={this.chooseVehicle}/>
                 </div>
             );
-            break;
             case 'vehicles':
             return (
                 <div>
@@ -147,13 +170,14 @@ export default class Order extends React.Component {
                         extraFunction={this.chooseVehicle}/>
                 </div>
             );
-            break;
             case 'items':
             return (
                 <div>
                     <DropdownButton title='Choose Product' id='products' onSelect={(event) => {this.setState({product: event})}}>
                         <MenuItem eventKey='tires'>Tires</MenuItem>
-                        <MenuItem eventKey='items'>Items</MenuItem>
+                        <MenuItem eventKey='rims'>Rims</MenuItem>
+                        <MenuItem eventKey='parts'>Parts</MenuItem>
+                        <MenuItem eventKey='services'>Services</MenuItem>
                     </DropdownButton>
                     <OrderOptions
                         product={this.state.product}
@@ -165,7 +189,6 @@ export default class Order extends React.Component {
                         finishOrder={this.finishOrder}/>
                 </div>
             );
-            break;
             case 'invoice':
             return (
                 <Invoice finished={this.state.finished}/>

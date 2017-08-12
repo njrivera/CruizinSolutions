@@ -21,7 +21,8 @@ export default class NavBar extends React.Component {
                     <NavDropdown title='Inventory' id='inventoryDropDown'>
                         <LinkContainer to='/inventory/tires'><MenuItem>Tires</MenuItem></LinkContainer>
                         <LinkContainer to='/inventory/rims'><MenuItem>Rims</MenuItem></LinkContainer>
-                        <LinkContainer to='/inventory/items'><MenuItem>Items</MenuItem></LinkContainer>
+                        <LinkContainer to='/inventory/parts'><MenuItem>Parts</MenuItem></LinkContainer>
+                        <LinkContainer to='/inventory/services'><MenuItem>Services</MenuItem></LinkContainer>
                     </NavDropdown>
                     <LinkContainer to='/past'><NavItem>History</NavItem></LinkContainer>
                     <LinkContainer to='/quote'><NavItem>Quote</NavItem></LinkContainer>
