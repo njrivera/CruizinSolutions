@@ -36,7 +36,6 @@ func CreateService(service models.Service) {
 	util.CheckErr(err)
 	statement, err := db.Prepare(queries.CreateService)
 	util.CheckErr(err)
-
 	statement.Exec(
 		service.ItemNum,
 		service.Description,

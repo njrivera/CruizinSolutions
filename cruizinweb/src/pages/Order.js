@@ -6,6 +6,8 @@ import {DropdownButton, MenuItem} from 'react-bootstrap';
 import OrderOptions from '../components/OrderOptions';
 import ItemList from '../components/ItemList';
 import Invoice from '../components/Invoice';
+import {Container, Row, Col, Button} from 'reactstrap';
+
 
 export default class Order extends React.Component {
     constructor() {
@@ -16,8 +18,13 @@ export default class Order extends React.Component {
             vehicle: null,
             product: 'tires',
             items: [],
-            defaultPrices: [],
-            finished: false
+            finished: false,
+            subtotal: "",
+            tax: "",
+            total: "",
+            taxRate: .07,
+            date: new Date(),
+            invoiceNum: null
         };
         this.chooseCustomer = this.chooseCustomer.bind(this);
         this.addVehicle = this.addVehicle.bind(this);
@@ -26,6 +33,21 @@ export default class Order extends React.Component {
         this.removeItem = this.removeItem.bind(this);
         this.changePrice = this.changePrice.bind(this);
         this.finishOrder = this.finishOrder.bind(this);
+        this.addUpTotal = this.addUpTotal.bind(this);
+    }
+
+    addUpTotal() {
+        var subtotal = 0.00;
+        var tax = 0.00;
+        for(var i = 0; i < this.state.items.length; i++) {
+            subtotal += this.state.items[i].amount;
+            if (this.state.items[i].tax) {
+                tax += this.state.taxRate * this.state.items[i].amount;
+            }
+        }
+        this.setState({subtotal: subtotal.toFixed(2)});
+        this.setState({tax: tax.toFixed(2)});
+        this.setState({total: (subtotal + tax).toFixed(2)});
     }
 
     chooseCustomer(customer) {
@@ -56,22 +78,16 @@ export default class Order extends React.Component {
     removeItem(record) {
         if(record) {
             var temp = JSON.parse(JSON.stringify(this.state.items));
-            var tempPrices = JSON.parse(JSON.stringify(this.state.defaultPrices));
             temp = temp.filter(function(r) {
                 return r.itemnum !== record.itemnum;
             });
-            tempPrices = tempPrices.filter(function(r) {
-                return r.itemnum !== record.itemnum;
-            });
-            this.setState({defaultPrices: tempPrices});
-            this.setState({items: temp});
+            this.setState({items: temp}, this.addUpTotal);
         }
     }
 
     addItem(record) {
         if(record) {
             var temp = JSON.parse(JSON.stringify(this.state.items));
-            var tempPrices = JSON.parse(JSON.stringify(this.state.defaultPrices));
             if(temp.filter(function(r){return r.itemnum === record.itemnum;}).length === 0) {
                 switch(this.state.product) {
                     case 'tires':
@@ -84,7 +100,9 @@ export default class Order extends React.Component {
                             record.servicedesc + ' (' +
                             record.condition + ')',
                         qty: 1,
-                        amount: record.price
+                        amount: record.price,
+                        price: record.price,
+                        tax: record.condition === 'NEW' ? true : false
                     });
                     break;
                     case 'rims':
@@ -98,7 +116,9 @@ export default class Order extends React.Component {
                             record.finish + ' (' +
                             record.condition + ')',
                         qty: 1,
-                        amount: record.price
+                        amount: record.price,
+                        price: record.price,
+                        tax: record.condition === 'NEW' ? true : false
                     });
                     break;
                     case 'parts':
@@ -108,7 +128,9 @@ export default class Order extends React.Component {
                             record.description + ' (' +
                             record.condition + ')',
                         qty: 1,
-                        amount: record.price
+                        amount: record.price,
+                        price: record.price,
+                        tax: record.condition === 'NEW' ? true : false
                     });
                     break;
                     case 'services':
@@ -116,13 +138,14 @@ export default class Order extends React.Component {
                         itemnum: record.itemnum,
                         description: record.description,
                         qty: 1,
-                        amount: record.price
+                        amount: record.price,
+                        price: record.price,
+                        tax: true
                     });
+                    break;
                     default: break;
                 }
-                tempPrices.push({itemnum: record.itemnum, price: record.price});
-                this.setState({defaultPrices: tempPrices});
-                this.setState({items: temp});
+                this.setState({items: temp}, this.addUpTotal);
             }
         }
     }
@@ -131,11 +154,11 @@ export default class Order extends React.Component {
         var temp = JSON.parse(JSON.stringify(this.state.items));
         for (var i = 0; i < temp.length; i++) {
             if (temp[i].itemnum === itemnum) {
-                temp[i].amount = (Math.round(this.state.defaultPrices[i].price * parseFloat(qty) * 100) / 100).toFixed(2);
+                temp[i].amount = temp[i].price * parseFloat(qty);
                 break;
             }
         }
-        this.setState({items: temp});
+        this.setState({items: temp}, this.addUpTotal);
     }
 
     render() {
@@ -172,26 +195,57 @@ export default class Order extends React.Component {
             );
             case 'items':
             return (
-                <div>
-                    <DropdownButton title='Choose Product' id='products' onSelect={(event) => {this.setState({product: event})}}>
-                        <MenuItem eventKey='tires'>Tires</MenuItem>
-                        <MenuItem eventKey='rims'>Rims</MenuItem>
-                        <MenuItem eventKey='parts'>Parts</MenuItem>
-                        <MenuItem eventKey='services'>Services</MenuItem>
-                    </DropdownButton>
-                    <OrderOptions
-                        product={this.state.product}
-                        extraFunction={this.addItem}/>
-                    <ItemList
-                        items={this.state.items}
-                        removeItem={this.removeItem}
-                        changePrice={this.changePrice}
-                        finishOrder={this.finishOrder}/>
-                </div>
+                <Container>
+                    <Row>
+                        <DropdownButton title='Choose Product' id='products' onSelect={(event) => {this.setState({product: event})}}>
+                            <MenuItem eventKey='tires'>Tires</MenuItem>
+                            <MenuItem eventKey='rims'>Rims</MenuItem>
+                            <MenuItem eventKey='parts'>Parts</MenuItem>
+                            <MenuItem eventKey='services'>Services</MenuItem>
+                        </DropdownButton>
+                        <p></p>
+                        <OrderOptions
+                            product={this.state.product}
+                            extraFunction={this.addItem}/>
+                    </Row>
+                    <p></p>
+                    <Row>
+                        <Col sm='6'>
+                            <p className="text-left">{this.state.customer.name}</p>
+                            <p className="text-left">{this.state.customer.address}</p>
+                            <p className="text-left">{this.state.customer.city}, {this.state.customer.state} {this.state.customer.zipcode}</p>
+                        </Col>
+                        <Col sm='6'>
+                            <p className="text-right">{this.state.vehicle.year} {this.state.vehicle.make} {this.state.vehicle.model}</p>
+                        </Col>
+                    </Row>
+                    <Row>
+                        <ItemList
+                            items={this.state.items}
+                            removeItem={this.removeItem}
+                            changePrice={this.changePrice}
+                            finishOrder={this.finishOrder}/>
+                    </Row>
+                    <Row>
+                        <p></p>
+                        <p className="text-right">Subtotal: {this.state.subtotal}</p>
+                        <p className="text-right">Tax: {this.state.tax}</p>
+                        <p className="text-right">Total: {this.state.total}</p>
+                    </Row>
+                </Container>
             );
             case 'invoice':
             return (
-                <Invoice finished={this.state.finished}/>
+                <Invoice 
+                    finished={this.state.finished}
+                    invoiceNum={this.state.invoiceNum}
+                    date={this.state.date.getMonth() + 1 + '/' + this.state.date.getDate() + '/' + this.state.date.getFullYear()}
+                    customer={this.state.customer}
+                    vehicle={this.state.vehicle}
+                    items={this.state.items}
+                    subtotal={this.state.subtotal}
+                    tax={this.state.tax}
+                    total={this.state.total}/>
             );
             default: return (<div></div>);
         }

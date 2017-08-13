@@ -67,9 +67,11 @@ export default class CustVehicleGrid extends React.Component {
                             <TableHeaderColumn dataField="trim" width='auto' dataSort filter={{type: 'TextFilter'}}>Trim</TableHeaderColumn>
                         </BootstrapTable>
                     </Row>
+                    <p></p>
                     <Row>
                         <Col>
                             <Button onClick={() => this.props.onChoose(this.state.selected)}>Choose Vehicle</Button>
+                            <p></p>
                             <Button onClick={() => this.props.onAdd()}>Add Vehicle</Button>
                         </Col>
                     </Row>

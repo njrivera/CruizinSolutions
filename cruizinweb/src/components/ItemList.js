@@ -63,12 +63,14 @@ export default class ItemList extends React.Component {
                             <TableHeaderColumn dataField="description" width='auto' editable={false}>Description</TableHeaderColumn>
                             <TableHeaderColumn dataField="qty" editable={{validator: this.qtyValidator}} width='auto'>Qty</TableHeaderColumn>
                             <TableHeaderColumn dataField="amount" editable={false} width='auto'>Amount</TableHeaderColumn>
+                            <TableHeaderColumn dataField="taxable" hidden width='auto'>Taxable</TableHeaderColumn>
                         </BootstrapTable>
                     </Row>
+                    <p></p>
                     <Row>
                         <Col>
                             <Button onClick={() => this.props.removeItem(this.state.selected)}>Remove Item</Button>
-                            <Button onClick={() => this.props.finishOrder()}>Confirm</Button>
+                            {' '}<Button onClick={() => this.props.finishOrder()}>Confirm</Button>
                         </Col>
                     </Row>
                 </Container>

@@ -93,13 +93,15 @@ export default class CustomerGrid extends React.Component {
                             <TableHeaderColumn dataField="phone" width='auto' dataSort filter={{type: 'TextFilter'}}>Phone</TableHeaderColumn>
                         </BootstrapTable>
                     </Row>
+                    <p></p>
                     <Row>
                         <Col>
                             <Button color='success' onClick={() => {this.setState({action: 'add'}), this.setState({modal: true}), this.setState({flag: true})}}>Add</Button>
-                            <Button color='info' onClick={() => {this.checkSelected(), this.setState({action: 'edit'})}}>Edit</Button>
-                            <Button color='danger' onClick={() => {this.checkSelected(), this.setState({action: 'delete'})}}>Delete</Button>
+                            {' '}<Button color='info' onClick={() => {this.checkSelected(), this.setState({action: 'edit'})}}>Edit</Button>
+                            {' '}<Button color='danger' onClick={() => {this.checkSelected(), this.setState({action: 'delete'})}}>Delete</Button>
                         </Col>
                     </Row>
+                    <p></p>
                     <div className={!this.props.extra ? 'hidden' : ''}>
                         <Button onClick={() => this.props.extraFunction(this.state.selected)}>{this.props.extraTitle}</Button>
                     </div>
