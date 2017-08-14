@@ -74,6 +74,7 @@ export default class TireGrid extends React.Component {
                             maxHeight='500px'
                             scrollTop={'Bottom'} 
                             hover
+                            condensed
                             selectRow={{
                                 mode: 'radio', 
                                 clickToSelect: true, 
@@ -85,9 +86,9 @@ export default class TireGrid extends React.Component {
                                 background: '#2F2F2F'
                             }}>
                             <TableHeaderColumn dataField="itemnum" width='auto' isKey hidden>ID</TableHeaderColumn>
-                            <TableHeaderColumn dataField="brand" width='auto' dataSort filter={{type: 'TextFilter'}}>Brand</TableHeaderColumn>
-                            <TableHeaderColumn dataField="model" width='auto' dataSort filter={{type: 'TextFilter'}}>Model</TableHeaderColumn>
-                            <TableHeaderColumn dataField="size" width='auto' dataSort filter={{type: 'TextFilter'}}>Size</TableHeaderColumn>
+                            <TableHeaderColumn dataField="brand" width='auto' columnTitle dataSort filter={{type: 'TextFilter'}}>Brand</TableHeaderColumn>
+                            <TableHeaderColumn dataField="model" width='auto' columnTitle dataSort filter={{type: 'TextFilter'}}>Model</TableHeaderColumn>
+                            <TableHeaderColumn dataField="size" width='auto' columnTitle dataSort filter={{type: 'TextFilter'}}>Size</TableHeaderColumn>
                             <TableHeaderColumn dataField="servicedesc" width='auto' dataSort filter={{type: 'TextFilter'}}>Service Description</TableHeaderColumn>
                             <TableHeaderColumn dataField="condition" width='auto' dataSort filter={{type: 'TextFilter'}}>Condition</TableHeaderColumn>
                             <TableHeaderColumn dataField="price" width='auto' dataSort filter={{type: 'TextFilter'}}>Price</TableHeaderColumn>

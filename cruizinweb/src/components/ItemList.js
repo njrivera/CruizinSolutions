@@ -49,6 +49,7 @@ export default class ItemList extends React.Component {
                             maxHeight='500px'
                             scrollTop={'Bottom'} 
                             hover
+                            condensed
                             selectRow={{
                                 mode: 'radio', 
                                 clickToSelect: true, 
@@ -60,7 +61,7 @@ export default class ItemList extends React.Component {
                             }}
                             cellEdit={cellEditProp}>
                             <TableHeaderColumn dataField="itemnum" width='auto' isKey>Item Number</TableHeaderColumn>
-                            <TableHeaderColumn dataField="description" width='auto' editable={false}>Description</TableHeaderColumn>
+                            <TableHeaderColumn dataField="description" width='auto' columnTitle editable={false}>Description</TableHeaderColumn>
                             <TableHeaderColumn dataField="qty" editable={{validator: this.qtyValidator}} width='auto'>Qty</TableHeaderColumn>
                             <TableHeaderColumn dataField="amount" editable={false} width='auto'>Amount</TableHeaderColumn>
                             <TableHeaderColumn dataField="taxable" hidden width='auto'>Taxable</TableHeaderColumn>

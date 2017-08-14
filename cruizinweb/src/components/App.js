@@ -15,7 +15,7 @@ class App extends React.Component {
     return (
       <div className="App">
         <div className="App-header">
-          <h1>Cruizin Manager</h1>
+          <h1 className='title text-left'>CRUIZIN' SOLUTIONS</h1>
         </div>
         <div>
           <NavBar />

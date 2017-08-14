@@ -2,7 +2,7 @@ import React from 'react';
 import CustomerGrid from '../components/CustomerGrid';
 import CustVehiclesGrid from '../components/CustVehiclesGrid';
 import VehicleGrid from '../components/VehicleGrid';
-import {DropdownButton, MenuItem} from 'react-bootstrap';
+import {DropdownButton, MenuItem, FormGroup, FormControl, ControlLabel} from 'react-bootstrap';
 import OrderOptions from '../components/OrderOptions';
 import ItemList from '../components/ItemList';
 import Invoice from '../components/Invoice';
@@ -24,7 +24,9 @@ export default class Order extends React.Component {
             total: "",
             taxRate: .07,
             date: new Date(),
-            invoiceNum: null
+            invoiceNum: null,
+            comments: '',
+            odometer: ''
         };
         this.chooseCustomer = this.chooseCustomer.bind(this);
         this.addVehicle = this.addVehicle.bind(this);
@@ -217,6 +219,16 @@ export default class Order extends React.Component {
                         </Col>
                         <Col sm='6'>
                             <p className="text-right">{this.state.vehicle.year} {this.state.vehicle.make} {this.state.vehicle.model}</p>
+                            <Row>
+                                <Col sm='9' className='text-right'><h4>Odometer:</h4></Col>
+                                <Col sm='3'>
+                                    <form>
+                                        <FormGroup controlId='commentForm'>
+                                            <FormControl type='text' value={this.state.odometer} onChange={(event) => this.setState({odometer: event.target.value})}/>
+                                        </FormGroup>
+                                    </form>
+                                </Col>
+                            </Row>
                         </Col>
                     </Row>
                     <Row>
@@ -227,10 +239,22 @@ export default class Order extends React.Component {
                             finishOrder={this.finishOrder}/>
                     </Row>
                     <Row>
+                        <Col sm='8'>
+                            <Row className='text-left'>
+                                <form>
+                                    <FormGroup controlId='commentForm'>
+                                        <h4>Comments:</h4>
+                                        <FormControl type='text' componentClass='textarea' value={this.state.comments} onChange={(event) => this.setState({comments: event.target.value})}/>
+                                    </FormGroup>
+                                </form>
+                            </Row>
+                        </Col>
                         <p></p>
-                        <p className="text-right">Subtotal: {this.state.subtotal}</p>
-                        <p className="text-right">Tax: {this.state.tax}</p>
-                        <p className="text-right">Total: {this.state.total}</p>
+                        <Col sm='4'>
+                            <p className="text-right">Subtotal: {this.state.subtotal}</p>
+                            <p className="text-right">Tax: {this.state.tax}</p>
+                            <p className="text-right">Total: {this.state.total}</p>
+                        </Col>
                     </Row>
                 </Container>
             );
@@ -245,7 +269,9 @@ export default class Order extends React.Component {
                     items={this.state.items}
                     subtotal={this.state.subtotal}
                     tax={this.state.tax}
-                    total={this.state.total}/>
+                    total={this.state.total}
+                    odometer={this.state.odometer}
+                    comments={this.state.comments}/>
             );
             default: return (<div></div>);
         }

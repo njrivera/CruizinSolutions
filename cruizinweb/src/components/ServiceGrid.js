@@ -74,6 +74,7 @@ export default class ServiceGrid extends React.Component {
                             maxHeight='500px'
                             scrollTop={'Bottom'} 
                             hover
+                            condensed
                             selectRow={{
                                 mode: 'radio', 
                                 clickToSelect: true, 
@@ -85,7 +86,7 @@ export default class ServiceGrid extends React.Component {
                                 background: '#2F2F2F'
                             }}>
                             <TableHeaderColumn dataField="itemnum" width='auto' isKey hidden>ID</TableHeaderColumn>
-                            <TableHeaderColumn dataField="description" width='auto' dataSort filter={{type: 'TextFilter'}}>Description</TableHeaderColumn>
+                            <TableHeaderColumn dataField="description" width='auto' columnTitle dataSort filter={{type: 'TextFilter'}}>Description</TableHeaderColumn>
                             <TableHeaderColumn dataField="price" width='auto' dataSort filter={{type: 'TextFilter'}}>Price</TableHeaderColumn>
                         </BootstrapTable>
                     </Row>

@@ -74,6 +74,7 @@ export default class CustomerGrid extends React.Component {
                             maxHeight='500px'
                             scrollTop={'Bottom'} 
                             hover
+                            condensed
                             selectRow={{
                                 mode: 'radio', 
                                 clickToSelect: true, 
@@ -85,8 +86,8 @@ export default class CustomerGrid extends React.Component {
                                 background: '#2F2F2F'
                             }}>
                             <TableHeaderColumn dataField="cid" width='auto' isKey hidden>ID</TableHeaderColumn>
-                            <TableHeaderColumn dataField="name" width='auto' dataSort filter={{type: 'TextFilter'}}>Name</TableHeaderColumn>
-                            <TableHeaderColumn dataField="address" width='auto' dataSort filter={{type: 'TextFilter'}}>Address</TableHeaderColumn>
+                            <TableHeaderColumn dataField="name" width='auto' columnTitle dataSort filter={{type: 'TextFilter'}}>Name</TableHeaderColumn>
+                            <TableHeaderColumn dataField="address" width='auto' columnTitle dataSort filter={{type: 'TextFilter'}}>Address</TableHeaderColumn>
                             <TableHeaderColumn dataField="city" width='auto' dataSort filter={{type: 'TextFilter'}}>City</TableHeaderColumn>
                             <TableHeaderColumn dataField="state" width='auto' dataSort filter={{type: 'TextFilter'}}>State</TableHeaderColumn>
                             <TableHeaderColumn dataField="zipcode" width='auto' dataSort filter={{type: 'TextFilter'}}>Zipcode</TableHeaderColumn>

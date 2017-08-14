@@ -50,6 +50,7 @@ export default class CustVehicleGrid extends React.Component {
                             maxHeight='500px'
                             scrollTop={'Bottom'} 
                             hover
+                            condensed
                             selectRow={{
                                 mode: 'radio', 
                                 clickToSelect: true, 
@@ -62,9 +63,8 @@ export default class CustVehicleGrid extends React.Component {
                             }}>
                             <TableHeaderColumn dataField="vid" width='auto' isKey hidden>ID</TableHeaderColumn>
                             <TableHeaderColumn dataField="year" width='auto' dataSort filter={{type: 'TextFilter'}}>Year</TableHeaderColumn>
-                            <TableHeaderColumn dataField="make" width='auto' dataSort filter={{type: 'TextFilter'}}>Make</TableHeaderColumn>
-                            <TableHeaderColumn dataField="model" width='auto' dataSort filter={{type: 'TextFilter'}}>Model</TableHeaderColumn>
-                            <TableHeaderColumn dataField="trim" width='auto' dataSort filter={{type: 'TextFilter'}}>Trim</TableHeaderColumn>
+                            <TableHeaderColumn dataField="make" width='auto' columnTitle dataSort filter={{type: 'TextFilter'}}>Make</TableHeaderColumn>
+                            <TableHeaderColumn dataField="model" width='auto' columnTitle dataSort filter={{type: 'TextFilter'}}>Model</TableHeaderColumn>
                         </BootstrapTable>
                     </Row>
                     <p></p>
