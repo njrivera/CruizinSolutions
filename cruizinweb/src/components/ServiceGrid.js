@@ -57,6 +57,9 @@ export default class ServiceGrid extends React.Component {
     loadRecords() {
         axios.get('/api/services')
         .then(response => {
+            if(response)
+                for(var i = 0; i < response.data.length; i++)
+                    response.data[i].price = response.data[i].price.toFixed(2);
             this.setState({records: response.data});
         })
         .catch(error => {
@@ -124,6 +127,23 @@ export default class ServiceGrid extends React.Component {
                     editSelected={this.editSelected}
                     validateInput={
                             (scope, event) => {
+                                if(event.target.id === 'price') {
+                                    var val = event.target.value;
+                                    val = val.replace('.', '');
+                                    val = parseInt(val).toString();
+                                    if(val === 'NaN') val = '0.00';
+                                    else
+                                        switch(val.length) {
+                                            case 0: val = '0.00';
+                                            break;
+                                            case 1: val = '0.0' + val;
+                                            break;
+                                            case 2: val = '0.' + val;
+                                            break;
+                                            default: val = val.substring(0, val.length - 2) + '.' + val.substring(val.length - 2)
+                                        }
+                                    event.target.value = val;
+                                }
                                 var temp = JSON.parse(JSON.stringify(scope.state.record));
                                 temp[event.target.id] = event.target.value;
                                 scope.setState({record: temp});

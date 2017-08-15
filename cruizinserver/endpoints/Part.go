@@ -33,11 +33,6 @@ func createPartHandler(r *http.Request, w http.ResponseWriter) {
 	util.CheckErr(err)
 	item.Description = part.Description + " (" +
 		part.Condition + ")"
-	if part.Condition == "NEW" {
-		item.Taxable = "true"
-	} else {
-		item.Taxable = "false"
-	}
 	part.ItemNum = dbcontext.CreateItem(item)
 	dbcontext.CreatePart(part)
 	util.JSONEncode(part, w)

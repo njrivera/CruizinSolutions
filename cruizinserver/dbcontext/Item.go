@@ -17,14 +17,12 @@ func GetItems() []models.Item {
 
 	var itemnum int
 	var description string
-	var taxable string
 	var items []models.Item
 	for rows.Next() {
-		rows.Scan(&itemnum, &description, &taxable)
+		rows.Scan(&itemnum, &description)
 		items = append(items, models.Item{
 			ItemNum:     itemnum,
-			Description: description,
-			Taxable:     taxable})
+			Description: description})
 	}
 	db.Close()
 
@@ -38,8 +36,7 @@ func CreateItem(item models.Item) int {
 	util.CheckErr(err)
 
 	row, err := statement.Exec(
-		item.Description,
-		item.Taxable)
+		item.Description)
 	util.CheckErr(err)
 	id, err := row.LastInsertId()
 	util.CheckErr(err)
@@ -56,13 +53,11 @@ func GetItem(key int) models.Item {
 
 	var itemnum int
 	var description string
-	var taxable string
-	row.Scan(&itemnum, &description, &taxable)
+	row.Scan(&itemnum, &description)
 	db.Close()
 	item := models.Item{
 		ItemNum:     itemnum,
-		Description: description,
-		Taxable:     taxable}
+		Description: description}
 
 	return item
 }

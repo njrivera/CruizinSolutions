@@ -57,6 +57,9 @@ export default class RimGrid extends React.Component {
     loadRecords() {
         axios.get('/api/rims')
         .then(response => {
+            if(response)
+                for(var i = 0; i < response.data.length; i++)
+                    response.data[i].price = response.data[i].price.toFixed(2);
             this.setState({records: response.data});
         })
         .catch(error => {
@@ -141,7 +144,30 @@ export default class RimGrid extends React.Component {
                     flag={this.state.flag}
                     editSelected={this.editSelected}
                     validateInput={
+                        
                             (scope, event) => {
+                                if(event.target.id === 'price') {
+                                    var val = event.target.value;
+                                    val = val.replace('.', '');
+                                    val = parseInt(val).toString();
+                                    if(val === 'NaN') val = '0.00';
+                                    else
+                                        switch(val.length) {
+                                            case 0: val = '0.00';
+                                            break;
+                                            case 1: val = '0.0' + val;
+                                            break;
+                                            case 2: val = '0.' + val;
+                                            break;
+                                            default: val = val.substring(0, val.length - 2) + '.' + val.substring(val.length - 2)
+                                        }
+                                    event.target.value = val;
+                                }
+                                if (event.target.id === 'qty') {
+                                    if(event.target.value.length === 0)
+                                        event.target.value = 0;
+                                    event.target.value = parseInt(event.target.value);
+                                }
                                 var temp = JSON.parse(JSON.stringify(scope.state.record));
                                 temp[event.target.id] = event.target.value;
                                 scope.setState({record: temp});
@@ -152,6 +178,7 @@ export default class RimGrid extends React.Component {
                             var temp = JSON.parse(JSON.stringify(scope.state.record));
                             temp.price = parseFloat(temp.price);
                             temp.qty = parseInt(temp.qty);
+                            temp.condition = document.getElementById('condition').value;
                             if(scope.props.action === 'add'){
                                 axios.post(scope.props.url, temp)
                                 .then(response => {

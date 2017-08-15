@@ -38,11 +38,6 @@ func createRimHandler(r *http.Request, w http.ResponseWriter) {
 		rim.BoltPattern + " (" +
 		rim.Finish + " " +
 		rim.Condition + ")"
-	if rim.Condition == "NEW" {
-		item.Taxable = "true"
-	} else {
-		item.Taxable = "false"
-	}
 	rim.ItemNum = dbcontext.CreateItem(item)
 	dbcontext.CreateRim(rim)
 	util.JSONEncode(rim, w)

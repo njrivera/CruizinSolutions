@@ -37,11 +37,6 @@ func createTireHandler(r *http.Request, w http.ResponseWriter) {
 		tire.Size + " " +
 		tire.ServiceDesc + " (" +
 		tire.Condition + ")"
-	if tire.Condition == "NEW" {
-		item.Taxable = "true"
-	} else {
-		item.Taxable = "false"
-	}
 	tire.ItemNum = dbcontext.CreateItem(item)
 	dbcontext.CreateTire(tire)
 	util.JSONEncode(tire, w)

@@ -42,13 +42,30 @@ export default class GridModal extends React.Component {
                             <Form horizontal>
                                 {Object.keys(scope.props.record).map(function(key){
                                     return <FormGroup controlId={key} key={key}>
-                                        <Col sm='2'>{key.charAt(0).toUpperCase() + key.slice(1)}</Col>
-                                        <Col sm='10'>
-                                            <FormControl 
-                                                value={scope.state.record[key] || ''}
-                                                onChange={(event) => scope.props.validateInput(scope, event)}>
-                                            </FormControl>
-                                        </Col>
+                                        {key === 'condition' ? (
+                                            <div>
+                                                <Col sm='2'>{key.charAt(0).toUpperCase() + key.slice(1)}</Col>
+                                                <Col sm='10'>
+                                                    <FormControl 
+                                                        componentClass='select' 
+                                                        placeholder='USED' 
+                                                        onSelect={(event) => scope.props.validateInput(scope, event)}>
+                                                            <option value="NEW">NEW</option>
+                                                            <option value="USED">USED</option>
+                                                    </FormControl>
+                                                </Col>
+                                            </div>
+                                        ) : (
+                                            <div>
+                                                <Col sm='2'>{key.charAt(0).toUpperCase() + key.slice(1)}</Col>
+                                                <Col sm='10'>
+                                                    <FormControl 
+                                                        value={scope.state.record[key] || ''}
+                                                        onChange={(event) => scope.props.validateInput(scope, event)}>
+                                                    </FormControl>
+                                                </Col>
+                                            </div>
+                                        )}
                                     </FormGroup>
                                 })}
                             </Form>

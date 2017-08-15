@@ -42,9 +42,9 @@ export default class Order extends React.Component {
         var subtotal = 0.00;
         var tax = 0.00;
         for(var i = 0; i < this.state.items.length; i++) {
-            subtotal += this.state.items[i].amount;
+            subtotal += parseFloat(this.state.items[i].amount);
             if (this.state.items[i].tax) {
-                tax += this.state.taxRate * this.state.items[i].amount;
+                tax += this.state.taxRate * parseFloat(this.state.items[i].amount);
             }
         }
         this.setState({subtotal: subtotal.toFixed(2)});
@@ -156,7 +156,7 @@ export default class Order extends React.Component {
         var temp = JSON.parse(JSON.stringify(this.state.items));
         for (var i = 0; i < temp.length; i++) {
             if (temp[i].itemnum === itemnum) {
-                temp[i].amount = temp[i].price * parseFloat(qty);
+                temp[i].amount = (parseFloat(temp[i].price) * parseInt(qty)).toFixed(2);
                 break;
             }
         }

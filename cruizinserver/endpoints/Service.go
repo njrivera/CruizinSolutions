@@ -32,7 +32,6 @@ func createServiceHandler(r *http.Request, w http.ResponseWriter) {
 	err := json.NewDecoder(r.Body).Decode(&service)
 	util.CheckErr(err)
 	item.Description = service.Description
-	item.Taxable = "true"
 	service.ItemNum = dbcontext.CreateItem(item)
 	dbcontext.CreateService(service)
 	util.JSONEncode(service, w)

@@ -30,7 +30,7 @@ export default class Invoice extends React.Component {
                         <Col sm='6' className='text-right'>
                             <br/>
                             <h4>6901 SHELDON ROAD | TAMPA, FL 33615</h4>
-                            <h4>(813) 886-8072 | FAX: (813) 866-8092)</h4>
+                            <h4>(813) 886-8072 | FAX: (813) 866-8092</h4>
                             <h4>cruzinsolutions@juno.com</h4>
                         </Col>
                     </Row>
@@ -58,7 +58,7 @@ export default class Invoice extends React.Component {
                         }}>
                         <TableHeaderColumn dataField="itemnum" width='60' isKey>Item #</TableHeaderColumn>
                         <TableHeaderColumn dataField="description" width='auto'>Description</TableHeaderColumn>
-                        <TableHeaderColumn dataField="price" width='100'>Price Per</TableHeaderColumn>
+                        <TableHeaderColumn dataField="price" width='100'>Price</TableHeaderColumn>
                         <TableHeaderColumn dataField="qty" width='60'>Qty</TableHeaderColumn>
                         <TableHeaderColumn dataField="amount" width='100'>Amount</TableHeaderColumn>
                     </BootstrapTable>
@@ -112,7 +112,7 @@ export default class Invoice extends React.Component {
                         </Col>
                         <Col sm='6'>
                             <p>BALANCING: FREE BALANCING AT TIME OF PURCHASE ONLY UNLESS OTHER ARRANGEMENTS MADE</p>
-                            <p>SALE PRICE: NO WARRANTY ON ANY SPECIAL MARK DOWN PRODUCTS - ALL SPECIAL MARK DOWN PRODUCTS ARE SOLD AS NONAVAILABILITY AND ARE NOT COVERED UNDER WARRANTY - SEE STORE FOR DETIALS</p>
+                            <p>SALE PRICE: NO WARRANTY ON ANY SPECIAL MARK DOWN PRODUCTS - ALL SPECIAL MARK DOWN PRODUCTS ARE SOLD AS NON-AVAILABILITY AND ARE NOT COVERED UNDER WARRANTY - SEE STORE FOR DETIALS</p>
                         </Col>
                     </Row>
                 </Container>
