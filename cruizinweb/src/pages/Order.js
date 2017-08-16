@@ -18,15 +18,14 @@ export default class Order extends React.Component {
             vehicle: null,
             product: 'tires',
             items: [],
-            finished: false,
-            subtotal: "",
-            tax: "",
-            total: "",
+            subtotal: '',
+            tax: '',
+            total: '',
             taxRate: .07,
             date: new Date(),
             invoiceNum: null,
             comments: '',
-            odometer: ''
+            odometer: '0'
         };
         this.chooseCustomer = this.chooseCustomer.bind(this);
         this.addVehicle = this.addVehicle.bind(this);
@@ -36,6 +35,40 @@ export default class Order extends React.Component {
         this.changePrice = this.changePrice.bind(this);
         this.finishOrder = this.finishOrder.bind(this);
         this.addUpTotal = this.addUpTotal.bind(this);
+        this.onBack = this.onBack.bind(this);
+        this.onFinish = this.onFinish.bind(this);
+    }
+
+    onBack() {
+        switch(this.state.grid) {
+            case 'custVehicles': this.setState({grid: 'customer'});
+            break;
+            case 'vehicles': this.setState({grid: 'custVehicles'});
+            break;
+            case 'items': this.setState({grid: 'custVehicles'});
+            break;
+            case 'invoice': this.setState({grid: 'items'});
+            break;
+            default: break;
+        }
+    }
+
+    onFinish() {
+        setTimeout(() => {
+            this.setState({grid: 'customer'});
+            this.setState({customer: null});
+            this.setState({vehicle: null});
+            this.setState({product: 'tires'});
+            this.setState({items: []});
+            this.setState({subtotal: ''});
+            this.setState({tax: ''});
+            this.setState({total: ''});
+            this.setState({date: new Date()});
+            this.setState({invoiceNum: null});
+            this.setState({comments: ''});
+            this.setState({odometer: '0'});
+        }, 100);
+        
     }
 
     addUpTotal() {
@@ -73,7 +106,6 @@ export default class Order extends React.Component {
     finishOrder() {
         if(this.state.items.length > 0) {
             this.setState({grid: 'invoice'});
-            this.setState({finished: true});
         }
     }
 
@@ -167,37 +199,49 @@ export default class Order extends React.Component {
         switch(this.state.grid){
             case 'customer':
             return (
-                <div>
+                <Container>
                     <h1>Choose Customer</h1>
                     <CustomerGrid
                         extra={true}
                         extraTitle={'Choose Customer'}
                         extraFunction={this.chooseCustomer}/>
-                </div>
+                </Container>
             );
             case 'custVehicles':
             return (
-                <div>
+                <Container>
+                    <Row>
+                        <Col sm='1'><Button className='text-left' onClick={this.onBack}>Back</Button></Col>
+                        <Col sm='11'></Col>
+                    </Row>
                     <h1>Choose Customer Vehicle</h1>
                     <CustVehiclesGrid
                         id={this.state.customer.cid}
                         onAdd={this.addVehicle}
                         onChoose={this.chooseVehicle}/>
-                </div>
+                </Container>
             );
             case 'vehicles':
             return (
-                <div>
+                <Container>
+                    <Row>
+                        <Col sm='1'><Button className='text-left' onClick={this.onBack}>Back</Button></Col>
+                        <Col sm='11'></Col>
+                    </Row>
                     <h1>Add Vehicle</h1>
                     <VehicleGrid
                         extra={true}
                         extraTitle={'Choose Vehicle'}
                         extraFunction={this.chooseVehicle}/>
-                </div>
+                </Container>
             );
             case 'items':
             return (
                 <Container>
+                    <Row>
+                        <Col sm='1'><Button className='text-left' onClick={this.onBack}>Back</Button></Col>
+                        <Col sm='11'></Col>
+                    </Row>
                     <Row>
                         <DropdownButton title='Choose Product' id='products' onSelect={(event) => {this.setState({product: event})}}>
                             <MenuItem eventKey='tires'>Tires</MenuItem>
@@ -224,7 +268,7 @@ export default class Order extends React.Component {
                                 <Col sm='3'>
                                     <form>
                                         <FormGroup controlId='commentForm'>
-                                            <FormControl type='text' value={this.state.odometer} onChange={(event) => this.setState({odometer: event.target.value})}/>
+                                            <FormControl type='text' value={this.state.odometer} onChange={(event) => this.setState({odometer: event.target.value})} value={this.state.odometer}/>
                                         </FormGroup>
                                     </form>
                                 </Col>
@@ -260,18 +304,24 @@ export default class Order extends React.Component {
             );
             case 'invoice':
             return (
-                <Invoice 
-                    finished={this.state.finished}
-                    invoiceNum={this.state.invoiceNum}
-                    date={this.state.date.getMonth() + 1 + '/' + this.state.date.getDate() + '/' + this.state.date.getFullYear()}
-                    customer={this.state.customer}
-                    vehicle={this.state.vehicle}
-                    items={this.state.items}
-                    subtotal={this.state.subtotal}
-                    tax={this.state.tax}
-                    total={this.state.total}
-                    odometer={this.state.odometer}
-                    comments={this.state.comments}/>
+                <Container>
+                    <Row>
+                        <Col sm='1'><Button className='text-left hidden-sm' onClick={this.onBack}>Back</Button></Col>
+                        <Col sm='11'></Col>
+                    </Row>
+                    <Invoice
+                        onFinish={this.onFinish}
+                        invoiceNum={this.state.invoiceNum}
+                        date={this.state.date.getMonth() + 1 + '/' + this.state.date.getDate() + '/' + this.state.date.getFullYear()}
+                        customer={this.state.customer}
+                        vehicle={this.state.vehicle}
+                        items={this.state.items}
+                        subtotal={this.state.subtotal}
+                        tax={this.state.tax}
+                        total={this.state.total}
+                        odometer={this.state.odometer}
+                        comments={this.state.comments}/>
+                </Container>
             );
             default: return (<div></div>);
         }

@@ -52,9 +52,13 @@ func deletePartHandler(r *http.Request, params martini.Params) {
 func updatePartHandler(r *http.Request, params martini.Params, w http.ResponseWriter) {
 	itemnum, _ := strconv.Atoi(params["itemnum"])
 	part := models.Part{}
+	item := models.Item{}
 	err := json.NewDecoder(r.Body).Decode(&part)
 	util.CheckErr(err)
+	item.Description = part.Description + " (" +
+		part.Condition + ")"
 	part.ItemNum = itemnum
+	dbcontext.UpdateItem(itemnum, item.Description)
 	dbcontext.UpdatePart(part)
 	util.JSONEncode(part, w)
 }

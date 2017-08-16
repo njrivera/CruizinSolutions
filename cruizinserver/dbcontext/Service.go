@@ -17,7 +17,7 @@ func GetServices() []models.Service {
 
 	var itemnum int
 	var description string
-	var price float32
+	var price string
 	var services []models.Service
 	for rows.Next() {
 		rows.Scan(&itemnum, &description, &price)
@@ -53,7 +53,7 @@ func GetService(key int) models.Service {
 
 	var itemnum int
 	var description string
-	var price float32
+	var price string
 	row.Scan(&itemnum, &description, &price)
 	db.Close()
 	service := models.Service{

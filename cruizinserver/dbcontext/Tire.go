@@ -21,7 +21,7 @@ func GetTires() []models.Tire {
 	var size string
 	var servicedesc string
 	var condition string
-	var price float32
+	var price string
 	var qty int
 	var tires []models.Tire
 	for rows.Next() {
@@ -73,7 +73,7 @@ func GetTire(key int) models.Tire {
 	var size string
 	var servicedesc string
 	var condition string
-	var price float32
+	var price string
 	var qty int
 	row.Scan(&itemnum, &brand, &model, &size, &servicedesc, &condition, &price, &qty)
 	db.Close()

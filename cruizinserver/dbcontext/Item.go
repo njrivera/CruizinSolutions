@@ -72,3 +72,17 @@ func DeleteItem(itemnum int) {
 
 	return
 }
+
+func UpdateItem(itemnum int, description string) {
+	db, err := sql.Open("sqlite3", database.DBPath)
+	util.CheckErr(err)
+	statement, err := db.Prepare(queries.UpdateItem)
+	util.CheckErr(err)
+
+	statement.Exec(
+		description,
+		itemnum)
+	db.Close()
+
+	return
+}

@@ -7,6 +7,6 @@ type Tire struct {
 	Size        string  `json:"size"`
 	ServiceDesc string  `json:"servicedesc"`
 	Condition   string  `json:"condition"`
-	Price       float32 `json:"price"`
+	Price       string `json:"price"`
 	Qty         int     `json:"qty"`
 }

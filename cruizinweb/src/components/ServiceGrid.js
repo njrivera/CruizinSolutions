@@ -57,9 +57,6 @@ export default class ServiceGrid extends React.Component {
     loadRecords() {
         axios.get('/api/services')
         .then(response => {
-            if(response)
-                for(var i = 0; i < response.data.length; i++)
-                    response.data[i].price = response.data[i].price.toFixed(2);
             this.setState({records: response.data});
         })
         .catch(error => {
@@ -152,7 +149,6 @@ export default class ServiceGrid extends React.Component {
                     onSave={
                         (scope) => {
                             var temp = JSON.parse(JSON.stringify(scope.state.record));
-                            temp.price = parseFloat(temp.price);
                             if(scope.props.action === 'add'){
                                 axios.post(scope.props.url, temp)
                                 .then(response => {

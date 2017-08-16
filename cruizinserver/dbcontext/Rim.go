@@ -22,7 +22,7 @@ func GetRims() []models.Rim {
 	var boltpattern string
 	var finish string
 	var condition string
-	var price float32
+	var price string
 	var qty int
 	var rims []models.Rim
 	for rows.Next() {
@@ -77,7 +77,7 @@ func GetRim(key int) models.Rim {
 	var boltpattern string
 	var finish string
 	var condition string
-	var price float32
+	var price string
 	var qty int
 	row.Scan(&itemnum, &brand, &model, &size, &boltpattern, &finish, &condition, &price, &qty)
 	db.Close()

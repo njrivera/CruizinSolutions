@@ -4,6 +4,7 @@ import {Modal, ModalBody, ModalFooter, ModalHeader, Form, FormGroup, FormControl
 import tire_icon from '../styles/tire_icon.jpg';
 import {BootstrapTable, TableHeaderColumn} from 'react-bootstrap-table';
 import caret from '../styles/fa-caret-right.png';
+import axios from 'axios';
 
 export default class Invoice extends React.Component {
     constructor(props) {
@@ -11,6 +12,39 @@ export default class Invoice extends React.Component {
         this.state = {
             comments: ''
         };
+        this.onConfirm = this.onConfirm.bind(this);
+    }
+
+    onConfirm(window) {
+        var orderItems = [];
+        for (var i = 0; i < this.props.items.length; i++) {
+            orderItems.push({
+                itemnum: this.props.items[i].itemnum,
+                qty: parseInt(this.props.items[i].qty),
+                amount: this.props.items[i].amount
+            })
+        }
+        var invoice = {
+            order: {
+                date: this.props.date,
+                cid: this.props.customer.cid,
+                vid: this.props.vehicle.vid,
+                odometer: parseInt(this.props.odometer),
+                comments: this.props.comments,
+                subtotal: this.props.subtotal,
+                tax: this.props.tax,
+                total: this.props.total
+            },
+            items: orderItems
+        };
+        axios.post('/api/orders', invoice)
+        .then(response => {
+            this.props.onFinish();
+            window.print();
+        })
+        .catch(error => {
+            console.log(error);
+        });
     }
 
     render() {
@@ -81,7 +115,8 @@ export default class Invoice extends React.Component {
                     <Row className='text-left'>
                         Signature:   _______________________________________________
                     </Row>
-                    <button className='hidden-sm' onClick={() => window.print()}>Print</button>
+                    <br/>
+                    <Button className='hidden-sm' onClick={() => this.onConfirm(window)}>Confirm {'&'} Print</Button>
                     <br/><br/><br/>
                     <Row className='text-left'>
                         <Col sm='6'>

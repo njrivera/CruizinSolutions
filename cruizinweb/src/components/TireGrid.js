@@ -57,9 +57,6 @@ export default class TireGrid extends React.Component {
     loadRecords() {
         axios.get('/api/tires')
         .then(response => {
-            if(response)
-                for(var i = 0; i < response.data.length; i++)
-                    response.data[i].price = response.data[i].price.toFixed(2);
             this.setState({records: response.data});
         })
         .catch(error => {
@@ -172,7 +169,6 @@ export default class TireGrid extends React.Component {
                     onSave={
                         (scope) => {
                             var temp = JSON.parse(JSON.stringify(scope.state.record));
-                            temp.price = parseFloat(temp.price);
                             temp.qty = parseInt(temp.qty);
                             temp.condition = document.getElementById('condition').value;
                             if(scope.props.action === 'add'){

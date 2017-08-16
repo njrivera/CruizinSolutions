@@ -132,7 +132,6 @@ export default class ItemGrid extends React.Component {
                     onSave={
                         (scope) => {
                             var temp = JSON.parse(JSON.stringify(scope.state.record));
-                            temp.price = parseFloat(temp.price);
                             if(scope.props.action === 'add'){
                                 axios.post(scope.props.url, temp)
                                 .then(response => {

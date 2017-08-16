@@ -9,6 +9,39 @@ import (
 	"github.com/CruizinSolutions/cruizinserver/util"
 )
 
+func CreateOrder(order models.Order, items []models.ItemOrder) int {
+	db, err := sql.Open("sqlite3", database.DBPath)
+	util.CheckErr(err)
+	statement, err := db.Prepare(queries.CreateOrder)
+	util.CheckErr(err)
+
+	row, err := statement.Exec(
+		order.Date,
+		order.Cid,
+		order.Vid,
+		order.Odometer,
+		order.Comments,
+		order.Subtotal,
+		order.Tax,
+		order.Total)
+	util.CheckErr(err)
+	ordernum, err := row.LastInsertId()
+	util.CheckErr(err)
+
+	statement, err = db.Prepare(queries.CreateItemOrder)
+	util.CheckErr(err)
+	for _, item := range items {
+		statement.Exec(
+			ordernum,
+			item.ItemNum,
+			item.Qty,
+			item.Amount)
+	}
+	db.Close()
+
+	return int(ordernum)
+}
+
 func GetCustVehicles(key int) []models.Vehicle {
 	db, err := sql.Open("sqlite3", database.DBPath)
 	util.CheckErr(err)

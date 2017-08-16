@@ -18,7 +18,7 @@ func GetParts() []models.Part {
 	var itemnum int
 	var description string
 	var condition string
-	var price float32
+	var price string
 	var parts []models.Part
 	for rows.Next() {
 		rows.Scan(&itemnum, &description, &condition, &price)
@@ -58,7 +58,7 @@ func GetPart(key int) models.Part {
 	var itemnum int
 	var description string
 	var condition string
-	var price float32
+	var price string
 	row.Scan(&itemnum, &description, &condition, &price)
 	db.Close()
 	part := models.Part{

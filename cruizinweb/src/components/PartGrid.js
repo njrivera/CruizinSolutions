@@ -57,9 +57,6 @@ export default class PartGrid extends React.Component {
     loadRecords() {
         axios.get('/api/parts')
         .then(response => {
-            if(response)
-                for(var i = 0; i < response.data.length; i++)
-                    response.data[i].price = response.data[i].price.toFixed(2);
             this.setState({records: response.data});
         })
         .catch(error => {
@@ -160,7 +157,6 @@ export default class PartGrid extends React.Component {
                     onSave={
                         (scope) => {
                             var temp = JSON.parse(JSON.stringify(scope.state.record));
-                            temp.price = parseFloat(temp.price);
                             temp.condition = document.getElementById('condition').value;
                             if(scope.props.action === 'add'){
                                 axios.post(scope.props.url, temp)

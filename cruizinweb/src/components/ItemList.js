@@ -36,7 +36,7 @@ export default class ItemList extends React.Component {
 
     render() {
         const cellEditProp = {
-            mode: 'dbclick',
+            mode: 'click',
             blurToSave: true,
             afterSaveCell: this.onAfterSaveCell
         };
