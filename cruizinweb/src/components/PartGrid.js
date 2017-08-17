@@ -147,6 +147,10 @@ export default class PartGrid extends React.Component {
                                 if (event.target.id === 'qty') {
                                     if(event.target.value.length === 0)
                                         event.target.value = 0;
+                                    else if(!Number(event.target.value)) {
+                                            event.target.value = event.target.value.slice(1);
+                                            return;
+                                    }
                                     event.target.value = parseInt(event.target.value);
                                 }
                                 var temp = JSON.parse(JSON.stringify(scope.state.record));

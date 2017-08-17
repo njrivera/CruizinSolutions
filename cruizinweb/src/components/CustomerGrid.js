@@ -16,7 +16,6 @@ export default class CustomerGrid extends React.Component {
         };
         this.loadCustomers();
         this.loadCustomers = this.loadCustomers.bind(this);
-        this.deleteSelected = this.deleteSelected.bind(this);
         this.setModal = this.setModal.bind(this);
         this.onSelectCustomer = this.onSelectCustomer.bind(this);
         this.setFlag = this.setFlag.bind(this);
@@ -37,10 +36,6 @@ export default class CustomerGrid extends React.Component {
 
     editSelected(record) {
         this.setState({selected: record});
-    }
-
-    deleteSelected() {
-        this.setState({selected: null});
     }
 
     setModal() {
@@ -99,7 +94,6 @@ export default class CustomerGrid extends React.Component {
                         <Col>
                             <Button color='success' onClick={() => {this.setState({action: 'add'}), this.setState({modal: true}), this.setState({flag: true})}}>Add</Button>
                             {' '}<Button color='info' onClick={() => {this.checkSelected(), this.setState({action: 'edit'})}}>Edit</Button>
-                            {' '}<Button color='danger' onClick={() => {this.checkSelected(), this.setState({action: 'delete'})}}>Delete</Button>
                         </Col>
                     </Row>
                     <p></p>
@@ -126,7 +120,6 @@ export default class CustomerGrid extends React.Component {
                             } : {}
                     }
                     id={this.state.selected ? JSON.parse(JSON.stringify(this.state.selected)).cid : null}
-                    deleteRecord={this.deleteSelected}
                     modal={this.state.modal}
                     setModal={this.setModal}
                     loadRecords={this.loadCustomers}

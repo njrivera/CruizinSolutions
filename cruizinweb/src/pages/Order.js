@@ -37,6 +37,7 @@ export default class Order extends React.Component {
         this.addUpTotal = this.addUpTotal.bind(this);
         this.onBack = this.onBack.bind(this);
         this.onFinish = this.onFinish.bind(this);
+        this.validateOdometer = this.validateOdometer.bind(this);
     }
 
     onBack() {
@@ -195,6 +196,17 @@ export default class Order extends React.Component {
         this.setState({items: temp}, this.addUpTotal);
     }
 
+    validateOdometer(event) {
+        if(event.target.value.length === 0)
+            event.target.value = 0;
+        else if(!Number(event.target.value)) {
+                event.target.value = event.target.value.slice(1);
+                return;
+        }
+        event.target.value = parseInt(event.target.value);
+        this.setState({odometer: event.target.value});
+    }
+
     render() {
         switch(this.state.grid){
             case 'customer':
@@ -268,7 +280,7 @@ export default class Order extends React.Component {
                                 <Col sm='3'>
                                     <form>
                                         <FormGroup controlId='commentForm'>
-                                            <FormControl type='text' value={this.state.odometer} onChange={(event) => this.setState({odometer: event.target.value})} value={this.state.odometer}/>
+                                            <FormControl type='text' value={this.state.odometer} onChange={(event) => this.validateOdometer(event)}/>
                                         </FormGroup>
                                     </form>
                                 </Col>
@@ -320,7 +332,8 @@ export default class Order extends React.Component {
                         tax={this.state.tax}
                         total={this.state.total}
                         odometer={this.state.odometer}
-                        comments={this.state.comments}/>
+                        comments={this.state.comments}
+                        printTitle={'Confirm & Print'}/>
                 </Container>
             );
             default: return (<div></div>);

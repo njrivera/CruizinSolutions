@@ -10,7 +10,8 @@ export default class Invoice extends React.Component {
     constructor(props) {
         super(props);
         this.state = {
-            comments: ''
+            comments: '',
+            orderNum: ''
         };
         this.onConfirm = this.onConfirm.bind(this);
     }
@@ -20,6 +21,7 @@ export default class Invoice extends React.Component {
         for (var i = 0; i < this.props.items.length; i++) {
             orderItems.push({
                 itemnum: this.props.items[i].itemnum,
+                price: this.props.items[i].price,
                 qty: parseInt(this.props.items[i].qty),
                 amount: this.props.items[i].amount
             })
@@ -39,6 +41,7 @@ export default class Invoice extends React.Component {
         };
         axios.post('/api/orders', invoice)
         .then(response => {
+            this.setState({orderNum: response.data.order.ordernum.toString()});
             this.props.onFinish();
             window.print();
         })
@@ -78,7 +81,7 @@ export default class Invoice extends React.Component {
                         </Col>
                         <Col sm='6' className='text-right'>
                             <Row>Date of Order: {this.props.date}</Row>
-                            <br/>
+                            <Row>Order Number: {this.props.invoiceNum ? this.props.invoiceNum : this.state.orderNum}</Row>
                             <Row>{this.props.vehicle.year} {this.props.vehicle.make} {this.props.vehicle.model}</Row>
                             <Row>Odometer: {this.props.odometer}</Row>
                         </Col>
@@ -116,7 +119,7 @@ export default class Invoice extends React.Component {
                         Signature:   _______________________________________________
                     </Row>
                     <br/>
-                    <Button className='hidden-sm' onClick={() => this.onConfirm(window)}>Confirm {'&'} Print</Button>
+                    <Button className='hidden-sm' onClick={this.props.onPrint ? () => this.props.onPrint() : () => this.onConfirm(window)}>{this.props.printTitle}</Button>
                     <br/><br/><br/>
                     <Row className='text-left'>
                         <Col sm='6'>

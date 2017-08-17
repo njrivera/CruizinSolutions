@@ -31,7 +31,7 @@ export default class CustVehicleGrid extends React.Component {
     }
 
     loadVehicles(id) {
-        axios.get('/api/orders/' + id)
+        axios.get('/api/orders/vehicles/' + id)
         .then(response => {
             this.setState({vehicles: response.data});
         })
