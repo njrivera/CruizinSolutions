@@ -1,3 +1,3 @@
 package database
 
-const DBPath = "./database/CruizinSolutions.sqlite"
+const DBPath = "./database/CruizinSolutions.db"
