@@ -1,7 +1,5 @@
 import React from 'react';
-import {Button, Col, Row, Container, ListGroup, ListGroupItem} from 'reactstrap';
-import {Modal, ModalBody, ModalFooter, ModalHeader, Form, FormGroup, FormControl, ControlLabel} from 'react-bootstrap';
-import tire_icon from '../styles/tire_icon.jpg';
+import {Button, Col, Row, Container} from 'reactstrap';
 import {BootstrapTable, TableHeaderColumn} from 'react-bootstrap-table';
 import caret from '../styles/fa-caret-right.png';
 import axios from 'axios';
@@ -22,7 +20,7 @@ export default class Invoice extends React.Component {
             orderItems.push({
                 itemnum: this.props.items[i].itemnum,
                 price: this.props.items[i].price,
-                qty: parseInt(this.props.items[i].qty),
+                qty: parseInt(this.props.items[i].qty, 10),
                 amount: this.props.items[i].amount
             })
         }
@@ -31,7 +29,7 @@ export default class Invoice extends React.Component {
                 date: this.props.date,
                 cid: this.props.customer.cid,
                 vid: this.props.vehicle.vid,
-                odometer: parseInt(this.props.odometer),
+                odometer: parseInt(this.props.odometer, 10),
                 comments: this.props.comments,
                 subtotal: this.props.subtotal,
                 tax: this.props.tax,
@@ -51,18 +49,17 @@ export default class Invoice extends React.Component {
     }
 
     render() {
-        var scope = this;
         return (
             <div>
                 <Container>
                     <Row>
                         <Col sm='6' className='text-left'>
                             <Row><h3>YOUR ULTIMATE DRIVING EXPERIENCE</h3></Row>
-                            <Row><img style={{width: 5, height: 5}} src={caret}/> NEW {'&'} USED TIRES ALL BRANDS</Row>
-                            <Row><img style={{width: 5, height: 5}} src={caret}/> COMPUTER BALANCING</Row>
-                            <Row><img style={{width: 5, height: 5}} src={caret}/> WHEELS {'&'} TIRES</Row>
-                            <Row><img style={{width: 5, height: 5}} src={caret}/> LAY-AWAY AVAILABLE</Row>
-                            <Row><img style={{width: 5, height: 5}} src={caret}/> CAR ACCESSORIES</Row>
+                            <Row><img style={{width: 5, height: 5}} src={caret} alt=''/> NEW {'&'} USED TIRES ALL BRANDS</Row>
+                            <Row><img style={{width: 5, height: 5}} src={caret} alt=''/> COMPUTER BALANCING</Row>
+                            <Row><img style={{width: 5, height: 5}} src={caret} alt=''/> WHEELS {'&'} TIRES</Row>
+                            <Row><img style={{width: 5, height: 5}} src={caret} alt=''/> LAY-AWAY AVAILABLE</Row>
+                            <Row><img style={{width: 5, height: 5}} src={caret} alt=''/> CAR ACCESSORIES</Row>
                         </Col>
                         <Col sm='6' className='text-right'>
                             <br/>

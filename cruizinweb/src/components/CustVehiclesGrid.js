@@ -57,7 +57,7 @@ export default class CustVehicleGrid extends React.Component {
                                 bgColor: 'black',
                                 hideSelectColumn: true,
                                 onSelect: this.onSelectVehicle
-                            }} 
+                            }}
                             containerStyle={{
                                 background: '#2F2F2F'
                             }}>

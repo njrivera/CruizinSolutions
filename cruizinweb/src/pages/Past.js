@@ -1,17 +1,12 @@
 import React from 'react';
 import CustomerGrid from '../components/CustomerGrid';
-import CustVehiclesGrid from '../components/CustVehiclesGrid';
-import VehicleGrid from '../components/VehicleGrid';
-import {DropdownButton, MenuItem, FormGroup, FormControl, ControlLabel} from 'react-bootstrap';
-import OrderOptions from '../components/OrderOptions';
-import ItemList from '../components/ItemList';
 import Invoice from '../components/Invoice';
 import {Container, Row, Col, Button} from 'reactstrap';
 import {BootstrapTable, TableHeaderColumn} from 'react-bootstrap-table';
 import axios from 'axios';
 
 
-export default class Order extends React.Component {
+export default class Past extends React.Component {
     constructor() {
         super();
         this.state = {
@@ -93,7 +88,6 @@ export default class Order extends React.Component {
         if(this.state.selected) {
             axios.get('/api/orders/items/' + this.state.selected.ordernum)
             .then(response => {
-                var vehicle;
                 for(var i = 0; i < this.state.orders.length; i++) {
                     if (this.state.selected.ordernum === this.state.orders[i].ordernum) {
                         this.setState({vehicle: {
@@ -185,6 +179,7 @@ export default class Order extends React.Component {
                             printTitle={'Print'}/>
                     </Container>
                 );
+            default: return (<div></div>);
         }
     }
 }

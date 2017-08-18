@@ -1,5 +1,5 @@
-import {Modal, ModalBody, ModalFooter, ModalHeader, Form, FormGroup, FormControl} from 'react-bootstrap';
-import {Button, Col, Row} from 'reactstrap';
+import {Modal, ModalBody, ModalFooter, Form, FormGroup, FormControl} from 'react-bootstrap';
+import {Button, Col} from 'reactstrap';
 import React from 'react';
 import axios from 'axios';
 
@@ -26,7 +26,7 @@ export default class GridModal extends React.Component {
 
     componentDidUpdate = () => {
         if (this.props.flag) {
-            this.state.record = this.props.record;
+            this.setState({record: this.props.record});
             this.props.setFlag();
         }
     }
@@ -76,7 +76,6 @@ export default class GridModal extends React.Component {
                         </ModalFooter>
                     </Modal>
                 );
-                break;
             case 'delete':
                 return (
                     <Modal show={this.props.modal} onHide={() => this.props.setModal()}>
@@ -89,7 +88,6 @@ export default class GridModal extends React.Component {
                         </ModalFooter>
                     </Modal>
                 );
-                break;
             default: return (<div></div>);
         }
     }

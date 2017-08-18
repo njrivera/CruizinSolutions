@@ -81,7 +81,7 @@ export default class PartGrid extends React.Component {
                                 bgColor: 'black',
                                 hideSelectColumn: true,
                                 onSelect: this.onSelectRecord
-                            }} 
+                            }}
                             containerStyle={{
                                 background: '#2F2F2F'
                             }}>
@@ -94,9 +94,19 @@ export default class PartGrid extends React.Component {
                     <p></p>
                     <Row>
                         <Col>
-                            <Button color='success' onClick={() => {this.setState({action: 'add'}), this.setState({modal: true}), this.setState({flag: true})}}>Add</Button>
-                            {' '}<Button color='info' onClick={() => {this.checkSelected(), this.setState({action: 'edit'})}}>Edit</Button>
-                            {' '}<Button color='danger' onClick={() => {this.checkSelected(), this.setState({action: 'delete'})}}>Delete</Button>
+                            <Button color='success' onClick={() => {
+                                this.setState({action: 'add'});
+                                this.setState({modal: true});
+                                this.setState({flag: true});
+                            }}>Add</Button>
+                            {' '}<Button color='info' onClick={() => {
+                                this.checkSelected();
+                                this.setState({action: 'edit'});
+                            }}>Edit</Button>
+                            {' '}<Button color='danger' onClick={() => {
+                                this.checkSelected();
+                                this.setState({action: 'delete'});
+                            }}>Delete</Button>
                         </Col>
                     </Row>
                     <p></p>
@@ -130,7 +140,7 @@ export default class PartGrid extends React.Component {
                                 if(event.target.id === 'price') {
                                     var val = event.target.value;
                                     val = val.replace('.', '');
-                                    val = parseInt(val).toString();
+                                    val = parseInt(val, 10).toString();
                                     if(val === 'NaN') val = '0.00';
                                     else
                                         switch(val.length) {
@@ -151,7 +161,7 @@ export default class PartGrid extends React.Component {
                                             event.target.value = event.target.value.slice(1);
                                             return;
                                     }
-                                    event.target.value = parseInt(event.target.value);
+                                    event.target.value = parseInt(event.target.value, 10);
                                 }
                                 var temp = JSON.parse(JSON.stringify(scope.state.record));
                                 temp[event.target.id] = event.target.value;
@@ -161,6 +171,8 @@ export default class PartGrid extends React.Component {
                     onSave={
                         (scope) => {
                             var temp = JSON.parse(JSON.stringify(scope.state.record));
+                            if(temp.qty === '') temp.qty = 0;
+                            if(temp.price === '') temp.price = '0.00';
                             temp.condition = document.getElementById('condition').value;
                             if(scope.props.action === 'add'){
                                 axios.post(scope.props.url, temp)

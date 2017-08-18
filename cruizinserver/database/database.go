@@ -1,3 +1,3 @@
 package database
 
-const DBPath = "./database/TiosShop.sqlite"
+const DBPath = "./database/CruizinSolutions.sqlite"

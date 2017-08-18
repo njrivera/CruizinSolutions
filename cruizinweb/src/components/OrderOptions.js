@@ -5,10 +5,6 @@ import PartGrid from './PartGrid';
 import ServiceGrid from './ServiceGrid';
 
 export default class OrderOptions extends React.Component {
-    constructor(props) {
-        super(props);
-    }
-
     render() {
         switch(this.props.product) {
             case 'tires':

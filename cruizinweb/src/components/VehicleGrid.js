@@ -76,7 +76,7 @@ export default class VehicleGrid extends React.Component {
                                 bgColor: 'black',
                                 hideSelectColumn: true,
                                 onSelect: this.onSelectRecord
-                            }} 
+                            }}
                             containerStyle={{
                                 background: '#2F2F2F'
                             }}>
@@ -89,8 +89,15 @@ export default class VehicleGrid extends React.Component {
                     <p></p>
                     <Row>
                         <Col>
-                            <Button color='success' onClick={() => {this.setState({action: 'add'}), this.setState({modal: true}), this.setState({flag: true})}}>Add</Button>
-                            {' '}<Button color='info' onClick={() => {this.checkSelected(), this.setState({action: 'edit'})}}>Edit</Button>
+                            <Button color='success' onClick={() => {
+                                this.setState({action: 'add'});
+                                this.setState({modal: true});
+                                this.setState({flag: true});
+                            }}>Add</Button>
+                            {' '}<Button color='info' onClick={() => {
+                                this.checkSelected();
+                                this.setState({action: 'edit'});
+                            }}>Edit</Button>
                         </Col>
                     </Row>
                     <p></p>
@@ -128,7 +135,8 @@ export default class VehicleGrid extends React.Component {
                                             event.target.value = event.target.value.slice(1);
                                             return;
                                         }
-                                        event.target.value = parseInt(event.target.value);
+                                        event.target.value = parseInt(event.target.value, 10);
+                                    break;
                                     default:
                                 }
                                 var temp = JSON.parse(JSON.stringify(scope.state.record));
@@ -140,7 +148,7 @@ export default class VehicleGrid extends React.Component {
                         (scope) => {
                             if(scope.state.record.year.toString().length === 4){
                                 var temp = JSON.parse(JSON.stringify(scope.state.record));
-                                temp.year = parseInt(temp.year);
+                                temp.year = parseInt(temp.year, 10);
                                 if(scope.props.action === 'add'){
                                     axios.post(scope.props.url, temp)
                                     .then(response => {

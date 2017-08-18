@@ -2,7 +2,7 @@ import React from 'react';
 import CustomerGrid from '../components/CustomerGrid';
 import CustVehiclesGrid from '../components/CustVehiclesGrid';
 import VehicleGrid from '../components/VehicleGrid';
-import {DropdownButton, MenuItem, FormGroup, FormControl, ControlLabel} from 'react-bootstrap';
+import {DropdownButton, MenuItem, FormGroup, FormControl} from 'react-bootstrap';
 import OrderOptions from '../components/OrderOptions';
 import ItemList from '../components/ItemList';
 import Invoice from '../components/Invoice';
@@ -69,7 +69,6 @@ export default class Order extends React.Component {
             this.setState({comments: ''});
             this.setState({odometer: '0'});
         }, 100);
-        
     }
 
     addUpTotal() {
@@ -189,7 +188,7 @@ export default class Order extends React.Component {
         var temp = JSON.parse(JSON.stringify(this.state.items));
         for (var i = 0; i < temp.length; i++) {
             if (temp[i].itemnum === itemnum) {
-                temp[i].amount = (parseFloat(temp[i].price) * parseInt(qty)).toFixed(2);
+                temp[i].amount = (parseFloat(temp[i].price) * parseInt(qty, 10)).toFixed(2);
                 break;
             }
         }
@@ -203,7 +202,7 @@ export default class Order extends React.Component {
                 event.target.value = event.target.value.slice(1);
                 return;
         }
-        event.target.value = parseInt(event.target.value);
+        event.target.value = parseInt(event.target.value, 10);
         this.setState({odometer: event.target.value});
     }
 
@@ -292,7 +291,8 @@ export default class Order extends React.Component {
                             items={this.state.items}
                             removeItem={this.removeItem}
                             changePrice={this.changePrice}
-                            finishOrder={this.finishOrder}/>
+                            finishOrder={this.finishOrder}
+                            buttonTitle={'Invoice'}/>
                     </Row>
                     <Row>
                         <Col sm='8'>

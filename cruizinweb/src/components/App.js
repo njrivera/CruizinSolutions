@@ -1,6 +1,6 @@
 import React from 'react';
 import '../styles/App.css';
-import Layout from '../pages/Layout';
+import Home from '../pages/Home';
 import Info from '../pages/Info';
 import Quote from '../pages/Quote';
 import Past from '../pages/Past';
@@ -22,7 +22,7 @@ class App extends React.Component {
         </div>
         <div>
           <Switch>
-            <Route exact path='/' component={Layout}/>
+            <Route exact path='/' component={Home}/>
             <Route path='/info/:option' component={Info}/>
             <Route exact path='/quote' component={Quote}/>
             <Route exact path='/past' component={Past}/>

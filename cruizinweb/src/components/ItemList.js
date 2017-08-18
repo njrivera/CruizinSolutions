@@ -1,8 +1,6 @@
 import React from 'react';
 import {BootstrapTable, TableHeaderColumn} from 'react-bootstrap-table';
-import GridModal from './GridModal';
 import {Container, Row, Col, Button} from 'reactstrap';
-import axios from 'axios';
 
 export default class ItemList extends React.Component {
     constructor(props) {
@@ -55,7 +53,7 @@ export default class ItemList extends React.Component {
                                 clickToSelect: true, 
                                 bgColor: 'black',
                                 onSelect: this.onSelectItems
-                            }} 
+                            }}
                             containerStyle={{
                                 background: '#2F2F2F'
                             }}
@@ -71,7 +69,7 @@ export default class ItemList extends React.Component {
                     <Row>
                         <Col>
                             <Button onClick={() => this.props.removeItem(this.state.selected)}>Remove Item</Button>
-                            {' '}<Button onClick={() => this.props.finishOrder()}>Invoice</Button>
+                            {' '}<Button onClick={() => this.props.finishOrder()}>{this.props.buttonTitle}</Button>
                         </Col>
                     </Row>
                 </Container>

@@ -92,8 +92,15 @@ export default class CustomerGrid extends React.Component {
                     <p></p>
                     <Row>
                         <Col>
-                            <Button color='success' onClick={() => {this.setState({action: 'add'}), this.setState({modal: true}), this.setState({flag: true})}}>Add</Button>
-                            {' '}<Button color='info' onClick={() => {this.checkSelected(), this.setState({action: 'edit'})}}>Edit</Button>
+                            <Button color='success' onClick={() => {
+                                this.setState({action: 'add'}); 
+                                this.setState({modal: true}); 
+                                this.setState({flag: true});
+                            }}>Add</Button>
+                            {' '}<Button color='info' onClick={() => {
+                                this.checkSelected(); 
+                                this.setState({action: 'edit'});
+                            }}>Edit</Button>
                         </Col>
                     </Row>
                     <p></p>

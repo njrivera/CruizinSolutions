@@ -81,7 +81,7 @@ export default class ItemGrid extends React.Component {
                                 bgColor: 'black',
                                 hideSelectColumn: true,
                                 onSelect: this.onSelectRecords
-                            }} 
+                            }}
                             containerStyle={{
                                 background: '#2F2F2F'
                             }}>
@@ -93,9 +93,19 @@ export default class ItemGrid extends React.Component {
                     <p></p>
                     <Row>
                         <Col>
-                            <Button color='success' onClick={() => {this.setState({action: 'add'}), this.setState({modal: true}), this.setState({flag: true})}}>Add</Button>
-                            {' '}<Button color='info' onClick={() => {this.checkSelected(), this.setState({action: 'edit'})}}>Edit</Button>
-                            {' '}<Button color='danger' onClick={() => {this.checkSelected(), this.setState({action: 'delete'})}}>Delete</Button>
+                            <Button color='success' onClick={() => {
+                                this.setState({action: 'add'});
+                                this.setState({modal: true});
+                                this.setState({flag: true});
+                            }}>Add</Button>
+                            {' '}<Button color='info' onClick={() => {
+                                this.checkSelected();
+                                this.setState({action: 'edit'});
+                            }}>Edit</Button>
+                            {' '}<Button color='danger' onClick={() => {
+                                this.checkSelected();
+                                this.setState({action: 'delete'});
+                            }}>Delete</Button>
                         </Col>
                     </Row>
                     <p></p>
