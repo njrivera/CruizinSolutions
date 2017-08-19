@@ -2,90 +2,143 @@ package dbcontext
 
 import (
 	"database/sql"
+	"errors"
+	"log"
 
 	"github.com/CruizinSolutions/cruizinserver/database"
 	"github.com/CruizinSolutions/cruizinserver/models"
 	"github.com/CruizinSolutions/cruizinserver/queries"
-	"github.com/CruizinSolutions/cruizinserver/util"
 )
 
-func GetServices() []models.Service {
+func GetServices() ([]models.Service, error) {
 	db, err := sql.Open("sqlite3", database.DBPath)
-	util.CheckErr(err)
+	if err != nil {
+		log.Println(err)
+		return nil, errors.New("Unable to get services")
+	}
+	defer db.Close()
 	rows, err := db.Query(queries.GetServices)
-	util.CheckErr(err)
+	if err != nil {
+		log.Println(err)
+		return nil, errors.New("Unable to get services")
+	}
 
 	var itemnum int
 	var description string
 	var price string
-	var services []models.Service
+	services := make([]models.Service, 0)
 	for rows.Next() {
-		rows.Scan(&itemnum, &description, &price)
+		err = rows.Scan(&itemnum, &description, &price)
+		if err != nil {
+			log.Println(err)
+			return nil, errors.New("Unable to get services")
+		}
 		services = append(services, models.Service{
 			ItemNum:     itemnum,
 			Description: description,
 			Price:       price})
 	}
-	db.Close()
 
-	return services
+	return services, nil
 }
 
-func CreateService(service models.Service) {
+func CreateService(service models.Service) error {
 	db, err := sql.Open("sqlite3", database.DBPath)
-	util.CheckErr(err)
+	if err != nil {
+		log.Println(err)
+		return errors.New("Unable to add service")
+	}
+	defer db.Close()
 	statement, err := db.Prepare(queries.CreateService)
-	util.CheckErr(err)
-	statement.Exec(
+	if err != nil {
+		log.Println(err)
+		return errors.New("Unable to add service")
+	}
+	_, err = statement.Exec(
 		service.ItemNum,
 		service.Description,
 		service.Price)
-	db.Close()
+	if err != nil {
+		log.Println(err)
+		return errors.New("Unable to add service")
+	}
 
-	return
+	return nil
 }
 
-func GetService(key int) models.Service {
+func GetService(key int) (models.Service, error) {
+	service := models.Service{}
 	db, err := sql.Open("sqlite3", database.DBPath)
-	util.CheckErr(err)
+	if err != nil {
+		log.Println(err)
+		return service, errors.New("Unable to get service")
+	}
+	defer db.Close()
 	row, err := db.Query(queries.GetService, key)
-	util.CheckErr(err)
+	if err != nil {
+		log.Println(err)
+		return service, errors.New("Unable to get service")
+	}
 
 	var itemnum int
 	var description string
 	var price string
-	row.Scan(&itemnum, &description, &price)
-	db.Close()
-	service := models.Service{
+	err = row.Scan(&itemnum, &description, &price)
+	if err != nil {
+		log.Println(err)
+		return service, errors.New("Unable to get service")
+	}
+	service = models.Service{
 		ItemNum:     itemnum,
 		Description: description,
 		Price:       price}
 
-	return service
+	return service, nil
 }
 
-func DeleteService(itemnum int) {
+func DeleteService(itemnum int) error {
 	db, err := sql.Open("sqlite3", database.DBPath)
-	util.CheckErr(err)
+	if err != nil {
+		log.Println(err)
+		return errors.New("Unable to delete service")
+	}
+	defer db.Close()
 	statement, err := db.Prepare(queries.DeleteService)
-	util.CheckErr(err)
+	if err != nil {
+		log.Println(err)
+		return errors.New("Unable to delete service")
+	}
 
-	statement.Exec(itemnum)
+	_, err = statement.Exec(itemnum)
+	if err != nil {
+		log.Println(err)
+		return errors.New("Unable to delete service")
+	}
 
-	return
+	return nil
 }
 
-func UpdateService(service models.Service) {
+func UpdateService(service models.Service) error {
 	db, err := sql.Open("sqlite3", database.DBPath)
-	util.CheckErr(err)
+	if err != nil {
+		log.Println(err)
+		return errors.New("Unable to update service")
+	}
+	defer db.Close()
 	statement, err := db.Prepare(queries.UpdateService)
-	util.CheckErr(err)
+	if err != nil {
+		log.Println(err)
+		return errors.New("Unable to update service")
+	}
 
-	statement.Exec(
+	_, err = statement.Exec(
 		service.Description,
 		service.Price,
 		service.ItemNum)
-	db.Close()
+	if err != nil {
+		log.Println(err)
+		return errors.New("Unable to update service")
+	}
 
-	return
+	return nil
 }

@@ -20,7 +20,8 @@ export default class GridModal extends React.Component {
             scope.props.deleteRecord();
         })
         .catch(error => {
-            console.log(error);
+            scope.props.setModal();
+            scope.props.setError(error.response.data);
         });
     }
 

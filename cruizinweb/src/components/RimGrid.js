@@ -2,6 +2,7 @@ import React from 'react';
 import {BootstrapTable, TableHeaderColumn} from 'react-bootstrap-table';
 import GridModal from './GridModal';
 import {Container, Row, Col, Button} from 'reactstrap';
+import {Modal, ModalBody, ModalFooter} from 'react-bootstrap';
 import axios from 'axios';
 
 export default class RimGrid extends React.Component {
@@ -12,7 +13,9 @@ export default class RimGrid extends React.Component {
             selected: null,
             modal: false,
             flag: true,
-            action: null
+            action: null,
+            error: false,
+            errorMessage: ''
         };
         this.loadRecords();
         this.loadRecords = this.loadRecords.bind(this);
@@ -21,6 +24,7 @@ export default class RimGrid extends React.Component {
         this.onSelectRecord = this.onSelectRecord.bind(this);
         this.setFlag = this.setFlag.bind(this);
         this.editSelected = this.editSelected.bind(this);
+        this.setError = this.setError.bind(this);
     }
 
     onSelectRecord(row, isSelected) {
@@ -54,13 +58,20 @@ export default class RimGrid extends React.Component {
         }
     }
 
+    setError(err) {
+        this.setState({
+            error: true,
+            errorMessage: err
+        });
+    }
+
     loadRecords() {
         axios.get('/api/rims')
         .then(response => {
             this.setState({records: response.data});
         })
         .catch(error => {
-            console.log(error);
+            this.setError(error.response.data);
         });
     }
 
@@ -104,7 +115,7 @@ export default class RimGrid extends React.Component {
                                 this.setState({modal: true});
                                 this.setState({flag: true});
                             }}>Add</Button>
-                            {' '}<Button color='info' onClick={() => {
+                            {' '}<Button color='warning' onClick={() => {
                                 this.checkSelected();
                                 this.setState({action: 'edit'});
                             }}>Edit</Button>
@@ -116,7 +127,7 @@ export default class RimGrid extends React.Component {
                     </Row>
                     <p></p>
                     <div className={!this.props.extra ? 'hidden' : ''}>
-                        <Button onClick={() => this.props.extraFunction(this.state.selected)}>{this.props.extraTitle}</Button>
+                        <Button color='info' onClick={() => this.props.extraFunction(this.state.selected)}>{this.props.extraTitle}</Button>
                     </div>
                 </Container>
                 <GridModal 
@@ -150,6 +161,7 @@ export default class RimGrid extends React.Component {
                     setFlag={this.setFlag}
                     flag={this.state.flag}
                     editSelected={this.editSelected}
+                    setError={this.setError}
                     validateInput={
                             (scope, event) => {
                                 if(event.target.id === 'price') {
@@ -197,7 +209,8 @@ export default class RimGrid extends React.Component {
                                     scope.props.loadRecords();
                                 })
                                 .catch(error => {
-                                    console.log(error);
+                                    scope.props.setModal();
+                                    this.setError(error.response.data);
                                 });
                             }
                             else{
@@ -208,11 +221,20 @@ export default class RimGrid extends React.Component {
                                     scope.props.loadRecords();
                                 })
                                 .catch(error => {
-                                    console.log(error);
+                                    scope.props.setModal();
+                                    this.setError(error.response.data);
                                 });
                             }
                         }
                     }/>
+                    <Modal show={this.state.error} onHide={() => this.setState({error: false, errorMessage: ''})}>
+                        <ModalBody>
+                            <h1>{this.state.errorMessage}</h1>
+                        </ModalBody>
+                        <ModalFooter>
+                            <Button onClick={() => this.setState({error: false, errorMessage: ''})}>OK</Button>
+                        </ModalFooter>
+                    </Modal>
             </div>
         );
     }

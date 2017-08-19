@@ -2,97 +2,150 @@ package dbcontext
 
 import (
 	"database/sql"
+	"errors"
+	"log"
 
 	"github.com/CruizinSolutions/cruizinserver/database"
 	"github.com/CruizinSolutions/cruizinserver/models"
 	"github.com/CruizinSolutions/cruizinserver/queries"
-	"github.com/CruizinSolutions/cruizinserver/util"
 )
 
-func GetParts() []models.Part {
+func GetParts() ([]models.Part, error) {
 	db, err := sql.Open("sqlite3", database.DBPath)
-	util.CheckErr(err)
+	if err != nil {
+		log.Println(err)
+		return nil, errors.New("Unable to get parts")
+	}
+	defer db.Close()
 	rows, err := db.Query(queries.GetParts)
-	util.CheckErr(err)
+	if err != nil {
+		log.Println(err)
+		return nil, errors.New("Unable to get parts")
+	}
 
 	var itemnum int
 	var description string
 	var condition string
 	var price string
-	var parts []models.Part
+	parts := make([]models.Part, 0)
 	for rows.Next() {
-		rows.Scan(&itemnum, &description, &condition, &price)
+		err = rows.Scan(&itemnum, &description, &condition, &price)
+		if err != nil {
+			log.Println(err)
+			return nil, errors.New("Unable to get parts")
+		}
 		parts = append(parts, models.Part{
 			ItemNum:     itemnum,
 			Description: description,
 			Condition:   condition,
 			Price:       price})
 	}
-	db.Close()
 
-	return parts
+	return parts, nil
 }
 
-func CreatePart(part models.Part) {
+func CreatePart(part models.Part) error {
 	db, err := sql.Open("sqlite3", database.DBPath)
-	util.CheckErr(err)
+	if err != nil {
+		log.Println(err)
+		return errors.New("Unable to add part")
+	}
+	defer db.Close()
 	statement, err := db.Prepare(queries.CreatePart)
-	util.CheckErr(err)
+	if err != nil {
+		log.Println(err)
+		return errors.New("Unable to add part")
+	}
 
-	statement.Exec(
+	_, err = statement.Exec(
 		part.ItemNum,
 		part.Description,
 		part.Condition,
 		part.Price)
-	db.Close()
+	if err != nil {
+		log.Println(err)
+		return errors.New("Unable to add part")
+	}
 
-	return
+	return nil
 }
 
-func GetPart(key int) models.Part {
+func GetPart(key int) (models.Part, error) {
+	part := models.Part{}
 	db, err := sql.Open("sqlite3", database.DBPath)
-	util.CheckErr(err)
+	if err != nil {
+		log.Println(err)
+		return part, errors.New("Unable to get part")
+	}
+	defer db.Close()
 	row, err := db.Query(queries.GetPart, key)
-	util.CheckErr(err)
+	if err != nil {
+		log.Println(err)
+		return part, errors.New("Unable to get part")
+	}
 
 	var itemnum int
 	var description string
 	var condition string
 	var price string
-	row.Scan(&itemnum, &description, &condition, &price)
-	db.Close()
-	part := models.Part{
+	err = row.Scan(&itemnum, &description, &condition, &price)
+	if err != nil {
+		log.Println(err)
+		return part, errors.New("Unable to get part")
+	}
+	part = models.Part{
 		ItemNum:     itemnum,
 		Description: description,
 		Condition:   condition,
 		Price:       price}
 
-	return part
+	return part, nil
 }
 
-func DeletePart(itemnum int) {
+func DeletePart(itemnum int) error {
 	db, err := sql.Open("sqlite3", database.DBPath)
-	util.CheckErr(err)
+	if err != nil {
+		log.Println(err)
+		return errors.New("Unable to delete part")
+	}
+	defer db.Close()
 	statement, err := db.Prepare(queries.DeletePart)
-	util.CheckErr(err)
+	if err != nil {
+		log.Println(err)
+		return errors.New("Unable to delete part")
+	}
 
-	statement.Exec(itemnum)
+	_, err = statement.Exec(itemnum)
+	if err != nil {
+		log.Println(err)
+		return errors.New("Unable to delete part")
+	}
 
-	return
+	return nil
 }
 
-func UpdatePart(part models.Part) {
+func UpdatePart(part models.Part) error {
 	db, err := sql.Open("sqlite3", database.DBPath)
-	util.CheckErr(err)
+	if err != nil {
+		log.Println(err)
+		return errors.New("Unable to update part")
+	}
+	defer db.Close()
 	statement, err := db.Prepare(queries.UpdatePart)
-	util.CheckErr(err)
+	if err != nil {
+		log.Println(err)
+		return errors.New("Unable to update part")
+	}
 
-	statement.Exec(
+	_, err = statement.Exec(
 		part.Description,
 		part.Condition,
 		part.Price,
 		part.ItemNum)
-	db.Close()
+	if err != nil {
+		log.Println(err)
+		return errors.New("Unable to update part")
+	}
 
-	return
+	return nil
 }

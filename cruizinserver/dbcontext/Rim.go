@@ -2,18 +2,26 @@ package dbcontext
 
 import (
 	"database/sql"
+	"errors"
+	"log"
 
 	"github.com/CruizinSolutions/cruizinserver/database"
 	"github.com/CruizinSolutions/cruizinserver/models"
 	"github.com/CruizinSolutions/cruizinserver/queries"
-	"github.com/CruizinSolutions/cruizinserver/util"
 )
 
-func GetRims() []models.Rim {
+func GetRims() ([]models.Rim, error) {
 	db, err := sql.Open("sqlite3", database.DBPath)
-	util.CheckErr(err)
+	if err != nil {
+		log.Println(err)
+		return nil, errors.New("Unable to get rims")
+	}
+	defer db.Close()
 	rows, err := db.Query(queries.GetRims)
-	util.CheckErr(err)
+	if err != nil {
+		log.Println(err)
+		return nil, errors.New("Unable to get rims")
+	}
 
 	var itemnum int
 	var brand string
@@ -24,9 +32,13 @@ func GetRims() []models.Rim {
 	var condition string
 	var price string
 	var qty int
-	var rims []models.Rim
+	rims := make([]models.Rim, 0)
 	for rows.Next() {
-		rows.Scan(&itemnum, &brand, &model, &size, &boltpattern, &finish, &condition, &price, &qty)
+		err = rows.Scan(&itemnum, &brand, &model, &size, &boltpattern, &finish, &condition, &price, &qty)
+		if err != nil {
+			log.Println(err)
+			return nil, errors.New("Unable to get rims")
+		}
 		rims = append(rims, models.Rim{
 			ItemNum:     itemnum,
 			Brand:       brand,
@@ -38,18 +50,24 @@ func GetRims() []models.Rim {
 			Price:       price,
 			Qty:         qty})
 	}
-	db.Close()
 
-	return rims
+	return rims, nil
 }
 
-func CreateRim(rim models.Rim) {
+func CreateRim(rim models.Rim) error {
 	db, err := sql.Open("sqlite3", database.DBPath)
-	util.CheckErr(err)
+	if err != nil {
+		log.Println(err)
+		return errors.New("Unable to add rim")
+	}
+	defer db.Close()
 	statement, err := db.Prepare(queries.CreateRim)
-	util.CheckErr(err)
+	if err != nil {
+		log.Println(err)
+		return errors.New("Unable to add rim")
+	}
 
-	statement.Exec(
+	_, err = statement.Exec(
 		rim.ItemNum,
 		rim.Brand,
 		rim.Model,
@@ -59,16 +77,27 @@ func CreateRim(rim models.Rim) {
 		rim.Condition,
 		rim.Price,
 		rim.Qty)
-	db.Close()
+	if err != nil {
+		log.Println(err)
+		return errors.New("Unable to add rim")
+	}
 
-	return
+	return nil
 }
 
-func GetRim(key int) models.Rim {
+func GetRim(key int) (models.Rim, error) {
+	rim := models.Rim{}
 	db, err := sql.Open("sqlite3", database.DBPath)
-	util.CheckErr(err)
+	if err != nil {
+		log.Println(err)
+		return rim, errors.New("Unable to get rim")
+	}
+	defer db.Close()
 	row, err := db.Query(queries.GetRim, key)
-	util.CheckErr(err)
+	if err != nil {
+		log.Println(err)
+		return rim, errors.New("Unable to get rim")
+	}
 
 	var itemnum int
 	var brand string
@@ -79,9 +108,12 @@ func GetRim(key int) models.Rim {
 	var condition string
 	var price string
 	var qty int
-	row.Scan(&itemnum, &brand, &model, &size, &boltpattern, &finish, &condition, &price, &qty)
-	db.Close()
-	rim := models.Rim{
+	err = row.Scan(&itemnum, &brand, &model, &size, &boltpattern, &finish, &condition, &price, &qty)
+	if err != nil {
+		log.Println(err)
+		return rim, errors.New("Unable to get rim")
+	}
+	rim = models.Rim{
 		ItemNum:     itemnum,
 		Brand:       brand,
 		Model:       model,
@@ -92,27 +124,45 @@ func GetRim(key int) models.Rim {
 		Price:       price,
 		Qty:         qty}
 
-	return rim
+	return rim, nil
 }
 
-func DeleteRim(itemnum int) {
+func DeleteRim(itemnum int) error {
 	db, err := sql.Open("sqlite3", database.DBPath)
-	util.CheckErr(err)
+	if err != nil {
+		log.Println(err)
+		return errors.New("Unable to delete rim")
+	}
+	defer db.Close()
 	statement, err := db.Prepare(queries.DeleteRim)
-	util.CheckErr(err)
+	if err != nil {
+		log.Println(err)
+		return errors.New("Unable to delete rim")
+	}
 
-	statement.Exec(itemnum)
+	_, err = statement.Exec(itemnum)
+	if err != nil {
+		log.Println(err)
+		return errors.New("Unable to delete rim")
+	}
 
-	return
+	return nil
 }
 
-func UpdateRim(rim models.Rim) {
+func UpdateRim(rim models.Rim) error {
 	db, err := sql.Open("sqlite3", database.DBPath)
-	util.CheckErr(err)
+	if err != nil {
+		log.Println(err)
+		return errors.New("Unable to update rim")
+	}
+	defer db.Close()
 	statement, err := db.Prepare(queries.UpdateRim)
-	util.CheckErr(err)
+	if err != nil {
+		log.Println(err)
+		return errors.New("Unable to update rim")
+	}
 
-	statement.Exec(
+	_, err = statement.Exec(
 		rim.Brand,
 		rim.Model,
 		rim.Size,
@@ -122,20 +172,38 @@ func UpdateRim(rim models.Rim) {
 		rim.Price,
 		rim.Qty,
 		rim.ItemNum)
-	db.Close()
+	if err != nil {
+		log.Println(err)
+		return errors.New("Unable to update rim")
+	}
 
-	return
+	return nil
 }
 
-func UpdateRimQty(itemnum int, qty int) models.Rim {
+func UpdateRimQty(itemnum int, qty int) (models.Rim, error) {
+	rim := models.Rim{}
 	db, err := sql.Open("sqlite3", database.DBPath)
-	util.CheckErr(err)
+	if err != nil {
+		log.Println(err)
+		return rim, errors.New("Unable to update rim qty")
+	}
+	defer db.Close()
 	statement, err := db.Prepare(queries.UpdateRimQty)
-	util.CheckErr(err)
+	if err != nil {
+		log.Println(err)
+		return rim, errors.New("Unable to update rim qty")
+	}
 
-	statement.Exec(qty, itemnum)
-	rim := GetRim(itemnum)
-	db.Close()
+	_, err = statement.Exec(qty, itemnum)
+	if err != nil {
+		log.Println(err)
+		return rim, errors.New("Unable to update rim qty")
+	}
+	rim, err = GetRim(itemnum)
+	if err != nil {
+		log.Println(err)
+		return rim, errors.New("Unable to get rim")
+	}
 
-	return rim
+	return rim, nil
 }

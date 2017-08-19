@@ -148,7 +148,7 @@ export default class Quote extends React.Component {
                                 product={this.state.product}
                                 extraFunction={this.addItem}/>
                         </Row>
-                        <br/>
+                        <br/><br/>
                         <Row>
                             <ItemList
                                 items={this.state.items}
@@ -169,7 +169,7 @@ export default class Quote extends React.Component {
                 return (
                     <Container>
                         <Row>
-                            <Col sm='1'><Button className='text-left hidden-sm' onClick={() => this.setState({grid: 'items'})}>Back</Button></Col>
+                            <Col sm='1'><Button color='info' className='text-left hidden-sm' onClick={() => this.setState({grid: 'items'})}>Back</Button></Col>
                             <Col sm='11'></Col>
                         </Row>
                         <PrintQuote

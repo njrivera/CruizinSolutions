@@ -31,7 +31,7 @@ type OrderWithVehicle struct {
 	Date     string `json:"date"`
 	Cid      int    `json:"cid"`
 	Vid      int    `json:"vid"`
-	Year     int    `json:"year"`
+	Year     string `json:"year"`
 	Make     string `json:"make"`
 	Model    string `json:"model"`
 	Odometer int    `json:"odometer"`

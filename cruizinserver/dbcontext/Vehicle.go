@@ -2,96 +2,149 @@ package dbcontext
 
 import (
 	"database/sql"
+	"errors"
+	"log"
 
 	"github.com/CruizinSolutions/cruizinserver/database"
 	"github.com/CruizinSolutions/cruizinserver/models"
 	"github.com/CruizinSolutions/cruizinserver/queries"
-	"github.com/CruizinSolutions/cruizinserver/util"
 )
 
-func GetVehicles() []models.Vehicle {
+func GetVehicles() ([]models.Vehicle, error) {
 	db, err := sql.Open("sqlite3", database.DBPath)
-	util.CheckErr(err)
+	if err != nil {
+		log.Println(err)
+		return nil, errors.New("Unable to get vehicles")
+	}
+	defer db.Close()
 	rows, err := db.Query(queries.GetVehicles)
-	util.CheckErr(err)
+	if err != nil {
+		log.Println(err)
+		return nil, errors.New("Unable to get vehicles")
+	}
 
 	var vid int
-	var year int
-	var make string
+	var year string
+	var vmake string
 	var model string
-	var vehicles []models.Vehicle
+	vehicles := make([]models.Vehicle, 0)
 	for rows.Next() {
-		rows.Scan(&vid, &year, &make, &model)
+		err = rows.Scan(&vid, &year, &vmake, &model)
+		if err != nil {
+			log.Println(err)
+			return nil, errors.New("Unable to get vehicles")
+		}
 		vehicles = append(vehicles, models.Vehicle{
 			Vid:   vid,
 			Year:  year,
-			Make:  make,
+			Make:  vmake,
 			Model: model})
 	}
-	db.Close()
 
-	return vehicles
+	return vehicles, nil
 }
 
-func CreateVehicle(vehicle models.Vehicle) {
+func CreateVehicle(vehicle models.Vehicle) error {
 	db, err := sql.Open("sqlite3", database.DBPath)
-	util.CheckErr(err)
+	if err != nil {
+		log.Println(err)
+		return errors.New("Unable to add vehicle")
+	}
+	defer db.Close()
 	statement, err := db.Prepare(queries.CreateVehicle)
-	util.CheckErr(err)
+	if err != nil {
+		log.Println(err)
+		return errors.New("Unable to add vehicle")
+	}
 
-	statement.Exec(
+	_, err = statement.Exec(
 		vehicle.Year,
 		vehicle.Make,
 		vehicle.Model)
-	db.Close()
+	if err != nil {
+		log.Println(err)
+		return errors.New("Unable to add vehicle")
+	}
 
-	return
+	return nil
 }
 
-func GetVehicle(key int) models.Vehicle {
+func GetVehicle(key int) (models.Vehicle, error) {
+	vehicle := models.Vehicle{}
 	db, err := sql.Open("sqlite3", database.DBPath)
-	util.CheckErr(err)
+	if err != nil {
+		log.Println(err)
+		return vehicle, errors.New("Unable to get vehicle")
+	}
+	defer db.Close()
 	row, err := db.Query(queries.GetVehicle, key)
-	util.CheckErr(err)
+	if err != nil {
+		log.Println(err)
+		return vehicle, errors.New("Unable to get vehicle")
+	}
 
 	var vid int
-	var year int
+	var year string
 	var make string
 	var model string
-	row.Scan(&vid, &year, &make, &model)
-	db.Close()
-	vehicle := models.Vehicle{
+	err = row.Scan(&vid, &year, &make, &model)
+	if err != nil {
+		log.Println(err)
+		return vehicle, errors.New("Unable to get vehicle")
+	}
+	vehicle = models.Vehicle{
 		Vid:   vid,
 		Year:  year,
 		Make:  make,
 		Model: model}
 
-	return vehicle
+	return vehicle, nil
 }
 
-func DeleteVehicle(vid int) {
+func DeleteVehicle(vid int) error {
 	db, err := sql.Open("sqlite3", database.DBPath)
-	util.CheckErr(err)
+	if err != nil {
+		log.Println(err)
+		return errors.New("Unable to delete vehicle")
+	}
+	defer db.Close()
 	statement, err := db.Prepare(queries.DeleteVehicle)
-	util.CheckErr(err)
+	if err != nil {
+		log.Println(err)
+		return errors.New("Unable to delete vehicle")
+	}
 
-	statement.Exec(vid)
+	_, err = statement.Exec(vid)
+	if err != nil {
+		log.Println(err)
+		return errors.New("Unable to delete vehicle")
+	}
 
-	return
+	return nil
 }
 
-func UpdateVehicle(vehicle models.Vehicle) {
+func UpdateVehicle(vehicle models.Vehicle) error {
 	db, err := sql.Open("sqlite3", database.DBPath)
-	util.CheckErr(err)
+	if err != nil {
+		log.Println(err)
+		return errors.New("Unable to update vehicle")
+	}
+	defer db.Close()
 	statement, err := db.Prepare(queries.UpdateVehicle)
-	util.CheckErr(err)
+	if err != nil {
+		log.Println(err)
+		return errors.New("Unable to update vehicle")
+	}
 
-	statement.Exec(
+	_, err = statement.Exec(
 		vehicle.Year,
 		vehicle.Make,
 		vehicle.Model,
 		vehicle.Vid)
-	db.Close()
+	if err != nil {
+		log.Println(err)
+		return errors.New("Unable to update vehicle")
+	}
 
-	return
+	return nil
 }

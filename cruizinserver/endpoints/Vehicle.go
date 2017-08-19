@@ -2,6 +2,8 @@ package endpoints
 
 import (
 	"encoding/json"
+	"errors"
+	"log"
 	"net/http"
 	"strconv"
 
@@ -22,35 +24,63 @@ func RegisterVehicleEndpoints(m *martini.ClassicMartini) {
 }
 
 func getVehiclesHandler(r *http.Request, w http.ResponseWriter) {
-	vehicles := dbcontext.GetVehicles()
+	vehicles, err := dbcontext.GetVehicles()
+	if err != nil {
+		util.JSONEncode(err, w)
+		return
+	}
 	util.JSONEncode(vehicles, w)
 }
 
 func createVehicleHandler(r *http.Request, w http.ResponseWriter) {
 	vehicle := models.Vehicle{}
 	err := json.NewDecoder(r.Body).Decode(&vehicle)
-	util.CheckErr(err)
-	dbcontext.CreateVehicle(vehicle)
+	if err != nil {
+		log.Println(err)
+		util.JSONEncode(errors.New("Unable to add vehicle"), w)
+		return
+	}
+	err = dbcontext.CreateVehicle(vehicle)
+	if err != nil {
+		util.JSONEncode(err, w)
+		return
+	}
 	util.JSONEncode(vehicle, w)
 }
 
 func getVehicleHandler(r *http.Request, params martini.Params, w http.ResponseWriter) {
 	vid, _ := strconv.Atoi(params["vid"])
-	vehicle := dbcontext.GetVehicle(vid)
+	vehicle, err := dbcontext.GetVehicle(vid)
+	if err != nil {
+		util.JSONEncode(err, w)
+		return
+	}
 	util.JSONEncode(vehicle, w)
 }
 
-func deleteVehicleHandler(r *http.Request, params martini.Params) {
+func deleteVehicleHandler(r *http.Request, params martini.Params, w http.ResponseWriter) {
 	vid, _ := strconv.Atoi(params["vid"])
-	dbcontext.DeleteVehicle(vid)
+	err := dbcontext.DeleteVehicle(vid)
+	if err != nil {
+		util.JSONEncode(err, w)
+		return
+	}
 }
 
 func updateVehicleHandler(r *http.Request, params martini.Params, w http.ResponseWriter) {
 	vid, _ := strconv.Atoi(params["vid"])
 	vehicle := models.Vehicle{}
 	err := json.NewDecoder(r.Body).Decode(&vehicle)
-	util.CheckErr(err)
+	if err != nil {
+		log.Println(err)
+		util.JSONEncode(errors.New("Unable to update vehicle"), w)
+		return
+	}
 	vehicle.Vid = vid
-	dbcontext.UpdateVehicle(vehicle)
+	err = dbcontext.UpdateVehicle(vehicle)
+	if err != nil {
+		util.JSONEncode(err, w)
+		return
+	}
 	util.JSONEncode(vehicle, w)
 }

@@ -2,6 +2,8 @@ package endpoints
 
 import (
 	"encoding/json"
+	"errors"
+	"log"
 	"net/http"
 	"strconv"
 
@@ -22,7 +24,11 @@ func RegisterServiceEndpoints(m *martini.ClassicMartini) {
 }
 
 func getServicesHandler(r *http.Request, w http.ResponseWriter) {
-	services := dbcontext.GetServices()
+	services, err := dbcontext.GetServices()
+	if err != nil {
+		util.JSONEncode(err, w)
+		return
+	}
 	util.JSONEncode(services, w)
 }
 
@@ -30,30 +36,64 @@ func createServiceHandler(r *http.Request, w http.ResponseWriter) {
 	service := models.Service{}
 	item := models.Item{}
 	err := json.NewDecoder(r.Body).Decode(&service)
-	util.CheckErr(err)
+	if err != nil {
+		log.Println(err)
+		util.JSONEncode(errors.New("Unable to add service"), w)
+		return
+	}
 	item.Description = service.Description
-	service.ItemNum = dbcontext.CreateItem(item)
-	dbcontext.CreateService(service)
+	service.ItemNum, err = dbcontext.CreateItem(item)
+	if err != nil {
+		util.JSONEncode(err, w)
+	}
+	err = dbcontext.CreateService(service)
+	if err != nil {
+		util.JSONEncode(err, w)
+		return
+	}
 	util.JSONEncode(service, w)
 }
 
 func getServiceHandler(r *http.Request, params martini.Params, w http.ResponseWriter) {
 	itemnum, _ := strconv.Atoi(params["itemnum"])
-	service := dbcontext.GetService(itemnum)
+	service, err := dbcontext.GetService(itemnum)
+	if err != nil {
+		util.JSONEncode(err, w)
+		return
+	}
 	util.JSONEncode(service, w)
 }
 
-func deleteServiceHandler(r *http.Request, params martini.Params) {
+func deleteServiceHandler(r *http.Request, params martini.Params, w http.ResponseWriter) {
 	itemnum, _ := strconv.Atoi(params["itemnum"])
-	dbcontext.DeleteService(itemnum)
+	err := dbcontext.DeleteService(itemnum)
+	if err != nil {
+		util.JSONEncode(err, w)
+		return
+	}
 }
 
 func updateServiceHandler(r *http.Request, params martini.Params, w http.ResponseWriter) {
 	itemnum, _ := strconv.Atoi(params["itemnum"])
 	service := models.Service{}
+	item := models.Item{}
 	err := json.NewDecoder(r.Body).Decode(&service)
-	util.CheckErr(err)
+	if err != nil {
+		log.Println(err)
+		util.JSONEncode(errors.New("Unable to update service"), w)
+		return
+	}
+	item.Description = service.Description
+	err = dbcontext.UpdateItem(itemnum, item.Description)
+	if err != nil {
+		util.JSONEncode(err, w)
+		return
+	}
 	service.ItemNum = itemnum
-	dbcontext.UpdateService(service)
+	err = dbcontext.UpdateService(service)
+	if err != nil {
+		util.JSONEncode(err, w)
+		return
+	}
 	util.JSONEncode(service, w)
 }

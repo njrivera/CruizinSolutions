@@ -1,6 +1,7 @@
 import React from 'react';
 import {BootstrapTable, TableHeaderColumn} from 'react-bootstrap-table';
 import {Container, Row, Col, Button} from 'reactstrap';
+import {Modal, ModalBody, ModalFooter} from 'react-bootstrap';
 import axios from 'axios';
 
 export default class CustVehicleGrid extends React.Component {
@@ -8,7 +9,9 @@ export default class CustVehicleGrid extends React.Component {
         super(props);
         this.state = {
             vehicles: [],
-            selected: null
+            selected: null,
+            error: false,
+            errorMessage: ''
         };
         this.loadVehicles(this.props.id);
         this.loadVehicles = this.loadVehicles.bind(this);
@@ -36,7 +39,8 @@ export default class CustVehicleGrid extends React.Component {
             this.setState({vehicles: response.data});
         })
         .catch(error => {
-            console.log(error);
+            var err = error.response.data;
+            this.setState({error: true, errorMessage: err});
         });
     }
 
@@ -70,12 +74,20 @@ export default class CustVehicleGrid extends React.Component {
                     <p></p>
                     <Row>
                         <Col>
-                            <Button onClick={() => this.props.onChoose(this.state.selected)}>Choose Vehicle</Button>
+                            <Button color='info' onClick={() => this.props.onChoose(this.state.selected)}>Choose Vehicle</Button>
                             <p></p>
-                            <Button onClick={() => this.props.onAdd()}>Add Vehicle</Button>
+                            <Button color='info' onClick={() => this.props.onAdd()}>Add Vehicle</Button>
                         </Col>
                     </Row>
                 </Container>
+                <Modal show={this.state.error} onHide={() => this.setState({error: false, errorMessage: ''})}>
+                        <ModalBody>
+                            <h1>{this.state.errorMessage}</h1>
+                        </ModalBody>
+                        <ModalFooter>
+                            <Button onClick={() => this.setState({error: false, errorMessage: ''})}>OK</Button>
+                        </ModalFooter>
+                </Modal>
             </div>
         );
     }

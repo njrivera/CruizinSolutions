@@ -8,7 +8,7 @@ import (
 
 func main() {
 	m := martini.Classic()
-	m.Use(martini.Static("/build"))
+	//m.Use(martini.Static("/build"))
 	m.Group("/api", func(r martini.Router) {
 		endpoints.RegisterCustomerEndpoints(m)
 		endpoints.RegisterItemEndpoints(m)

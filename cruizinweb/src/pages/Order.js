@@ -222,7 +222,7 @@ export default class Order extends React.Component {
             return (
                 <Container>
                     <Row>
-                        <Col sm='1'><Button className='text-left' onClick={this.onBack}>Back</Button></Col>
+                        <Col sm='1'><Button color='info' className='text-left' onClick={this.onBack}>Back</Button></Col>
                         <Col sm='11'></Col>
                     </Row>
                     <h1>Choose Customer Vehicle</h1>
@@ -236,7 +236,7 @@ export default class Order extends React.Component {
             return (
                 <Container>
                     <Row>
-                        <Col sm='1'><Button className='text-left' onClick={this.onBack}>Back</Button></Col>
+                        <Col sm='1'><Button color='info' className='text-left' onClick={this.onBack}>Back</Button></Col>
                         <Col sm='11'></Col>
                     </Row>
                     <h1>Add Vehicle</h1>
@@ -250,7 +250,7 @@ export default class Order extends React.Component {
             return (
                 <Container>
                     <Row>
-                        <Col sm='1'><Button className='text-left' onClick={this.onBack}>Back</Button></Col>
+                        <Col sm='1'><Button color='info' className='text-left' onClick={this.onBack}>Back</Button></Col>
                         <Col sm='11'></Col>
                     </Row>
                     <Row>
@@ -318,7 +318,7 @@ export default class Order extends React.Component {
             return (
                 <Container>
                     <Row>
-                        <Col sm='1'><Button className='text-left hidden-sm' onClick={this.onBack}>Back</Button></Col>
+                        <Col sm='1'><Button color='info' className='text-left hidden-sm' onClick={this.onBack}>Back</Button></Col>
                         <Col sm='11'></Col>
                     </Row>
                     <Invoice

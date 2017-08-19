@@ -2,6 +2,8 @@ package endpoints
 
 import (
 	"encoding/json"
+	"errors"
+	"log"
 	"net/http"
 	"strconv"
 
@@ -21,25 +23,41 @@ func RegisterItemEndpoints(m *martini.ClassicMartini) {
 }
 
 func getItemsHandler(r *http.Request, w http.ResponseWriter) {
-	items := dbcontext.GetItems()
+	items, err := dbcontext.GetItems()
+	if err != nil {
+		util.JSONEncode(err, w)
+		return
+	}
 	util.JSONEncode(items, w)
 }
 
 func createItemHandler(r *http.Request, w http.ResponseWriter) {
 	item := models.Item{}
 	err := json.NewDecoder(r.Body).Decode(&item)
-	util.CheckErr(err)
+	if err != nil {
+		log.Println(err)
+		util.JSONEncode(errors.New("Unable to add item"), w)
+		return
+	}
 	dbcontext.CreateItem(item)
 	util.JSONEncode(item, w)
 }
 
 func getItemHandler(r *http.Request, params martini.Params, w http.ResponseWriter) {
 	itemnum, _ := strconv.Atoi(params["itemnum"])
-	item := dbcontext.GetItem(itemnum)
+	item, err := dbcontext.GetItem(itemnum)
+	if err != nil {
+		util.JSONEncode(err, w)
+		return
+	}
 	util.JSONEncode(item, w)
 }
 
-func deleteItemHandler(r *http.Request, params martini.Params) {
+func deleteItemHandler(r *http.Request, params martini.Params, w http.ResponseWriter) {
 	itemnum, _ := strconv.Atoi(params["itemnum"])
-	dbcontext.DeleteItem(itemnum)
+	err := dbcontext.DeleteItem(itemnum)
+	if err != nil {
+		util.JSONEncode(err, w)
+		return
+	}
 }

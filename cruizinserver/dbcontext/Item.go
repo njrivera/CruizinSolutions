@@ -2,87 +2,141 @@ package dbcontext
 
 import (
 	"database/sql"
+	"errors"
+	"log"
 
 	"github.com/CruizinSolutions/cruizinserver/database"
 	"github.com/CruizinSolutions/cruizinserver/models"
 	"github.com/CruizinSolutions/cruizinserver/queries"
-	"github.com/CruizinSolutions/cruizinserver/util"
 )
 
-func GetItems() []models.Item {
+func GetItems() ([]models.Item, error) {
 	db, err := sql.Open("sqlite3", database.DBPath)
-	util.CheckErr(err)
+	if err != nil {
+		log.Println(err)
+		return nil, errors.New("Unable to get items")
+	}
+	defer db.Close()
 	rows, err := db.Query(queries.GetItems)
-	util.CheckErr(err)
+	if err != nil {
+		log.Println(err)
+		return nil, errors.New("Unable to get items")
+	}
 
 	var itemnum int
 	var description string
-	var items []models.Item
+	items := make([]models.Item, 0)
 	for rows.Next() {
 		rows.Scan(&itemnum, &description)
+		if err != nil {
+			log.Println(err)
+			return nil, errors.New("Unable to get items")
+		}
 		items = append(items, models.Item{
 			ItemNum:     itemnum,
 			Description: description})
 	}
-	db.Close()
 
-	return items
+	return items, nil
 }
 
-func CreateItem(item models.Item) int {
+func CreateItem(item models.Item) (int, error) {
 	db, err := sql.Open("sqlite3", database.DBPath)
-	util.CheckErr(err)
+	if err != nil {
+		log.Println(err)
+		return -1, errors.New("Unable to add item")
+	}
+	defer db.Close()
 	statement, err := db.Prepare(queries.CreateItem)
-	util.CheckErr(err)
+	if err != nil {
+		log.Println(err)
+		return -1, errors.New("Unable to add item")
+	}
 
 	row, err := statement.Exec(
 		item.Description)
-	util.CheckErr(err)
+	if err != nil {
+		log.Println(err)
+		return -1, errors.New("Unable to add item")
+	}
 	id, err := row.LastInsertId()
-	util.CheckErr(err)
-	db.Close()
+	if err != nil {
+		log.Println(err)
+		return -1, errors.New("Unable to add item")
+	}
 
-	return int(id)
+	return int(id), nil
 }
 
-func GetItem(key int) models.Item {
+func GetItem(key int) (models.Item, error) {
+	item := models.Item{}
 	db, err := sql.Open("sqlite3", database.DBPath)
-	util.CheckErr(err)
+	if err != nil {
+		log.Println(err)
+		return item, errors.New("Unable to get item")
+	}
+	defer db.Close()
 	row, err := db.Query(queries.GetItem, key)
-	util.CheckErr(err)
+	if err != nil {
+		log.Println(err)
+		return item, errors.New("Unable to get item")
+	}
 
 	var itemnum int
 	var description string
-	row.Scan(&itemnum, &description)
-	db.Close()
-	item := models.Item{
+	err = row.Scan(&itemnum, &description)
+	if err != nil {
+		log.Println(err)
+		return item, errors.New("Unable to get item")
+	}
+	item = models.Item{
 		ItemNum:     itemnum,
 		Description: description}
 
-	return item
+	return item, nil
 }
 
-func DeleteItem(itemnum int) {
+func DeleteItem(itemnum int) error {
 	db, err := sql.Open("sqlite3", database.DBPath)
-	util.CheckErr(err)
+	if err != nil {
+		log.Println(err)
+		return errors.New("Unable to delete item")
+	}
+	defer db.Close()
 	statement, err := db.Prepare(queries.DeleteItem)
-	util.CheckErr(err)
+	if err != nil {
+		log.Println(err)
+		return errors.New("Unable to delete item")
+	}
+	_, err = statement.Exec(itemnum)
+	if err != nil {
+		log.Println(err)
+		return errors.New("Unable to delete item")
+	}
 
-	statement.Exec(itemnum)
-
-	return
+	return nil
 }
 
-func UpdateItem(itemnum int, description string) {
+func UpdateItem(itemnum int, description string) error {
 	db, err := sql.Open("sqlite3", database.DBPath)
-	util.CheckErr(err)
+	if err != nil {
+		log.Println(err)
+		return errors.New("Unable to update item")
+	}
+	defer db.Close()
 	statement, err := db.Prepare(queries.UpdateItem)
-	util.CheckErr(err)
+	if err != nil {
+		log.Println(err)
+		return errors.New("Unable to update item")
+	}
 
-	statement.Exec(
+	_, err = statement.Exec(
 		description,
 		itemnum)
-	db.Close()
+	if err != nil {
+		log.Println(err)
+		return errors.New("Unable to update item")
+	}
 
-	return
+	return nil
 }

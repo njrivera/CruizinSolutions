@@ -2,6 +2,8 @@ package endpoints
 
 import (
 	"encoding/json"
+	"errors"
+	"log"
 	"net/http"
 	"strconv"
 
@@ -23,7 +25,11 @@ func RegisterRimEndpoints(m *martini.ClassicMartini) {
 }
 
 func getRimsHandler(r *http.Request, w http.ResponseWriter) {
-	rims := dbcontext.GetRims()
+	rims, err := dbcontext.GetRims()
+	if err != nil {
+		util.JSONEncode(err, w)
+		return
+	}
 	util.JSONEncode(rims, w)
 }
 
@@ -31,42 +37,86 @@ func createRimHandler(r *http.Request, w http.ResponseWriter) {
 	rim := models.Rim{}
 	item := models.Item{}
 	err := json.NewDecoder(r.Body).Decode(&rim)
-	util.CheckErr(err)
+	if err != nil {
+		log.Println(err)
+		util.JSONEncode(errors.New("Unable to add rim"), w)
+		return
+	}
 	item.Description = rim.Brand + " " +
 		rim.Model + " " +
 		rim.Size + " " +
 		rim.BoltPattern + " (" +
 		rim.Finish + " " +
 		rim.Condition + ")"
-	rim.ItemNum = dbcontext.CreateItem(item)
-	dbcontext.CreateRim(rim)
+	rim.ItemNum, err = dbcontext.CreateItem(item)
+	if err != nil {
+		util.JSONEncode(err, w)
+		return
+	}
+	err = dbcontext.CreateRim(rim)
+	if err != nil {
+		util.JSONEncode(err, w)
+		return
+	}
 	util.JSONEncode(rim, w)
 }
 
 func getRimHandler(r *http.Request, params martini.Params, w http.ResponseWriter) {
 	itemnum, _ := strconv.Atoi(params["itemnum"])
-	rim := dbcontext.GetRim(itemnum)
+	rim, err := dbcontext.GetRim(itemnum)
+	if err != nil {
+		util.JSONEncode(err, w)
+		return
+	}
 	util.JSONEncode(rim, w)
 }
 
-func deleteRimHandler(r *http.Request, params martini.Params) {
+func deleteRimHandler(r *http.Request, params martini.Params, w http.ResponseWriter) {
 	itemnum, _ := strconv.Atoi(params["itemnum"])
-	dbcontext.DeleteRim(itemnum)
+	err := dbcontext.DeleteRim(itemnum)
+	if err != nil {
+		util.JSONEncode(err, w)
+		return
+	}
 }
 
 func updateRimHandler(r *http.Request, params martini.Params, w http.ResponseWriter) {
 	itemnum, _ := strconv.Atoi(params["itemnum"])
 	rim := models.Rim{}
+	item := models.Item{}
 	err := json.NewDecoder(r.Body).Decode(&rim)
-	util.CheckErr(err)
+	if err != nil {
+		log.Println(err)
+		util.JSONEncode(errors.New("Unable to update rim"), w)
+		return
+	}
+	item.Description = rim.Brand + " " +
+		rim.Model + " " +
+		rim.Size + " " +
+		rim.BoltPattern + " (" +
+		rim.Finish + " " +
+		rim.Condition + ")"
+	err = dbcontext.UpdateItem(itemnum, item.Description)
+	if err != nil {
+		util.JSONEncode(err, w)
+		return
+	}
 	rim.ItemNum = itemnum
-	dbcontext.UpdateRim(rim)
+	err = dbcontext.UpdateRim(rim)
+	if err != nil {
+		util.JSONEncode(err, w)
+		return
+	}
 	util.JSONEncode(rim, w)
 }
 
 func updateRimQtyHandler(r *http.Request, params martini.Params, w http.ResponseWriter) {
 	itemnum, _ := strconv.Atoi(params["itemnum"])
 	qty, _ := strconv.Atoi(params["qty"])
-	rim := dbcontext.UpdateRimQty(itemnum, qty)
+	rim, err := dbcontext.UpdateRimQty(itemnum, qty)
+	if err != nil {
+		util.JSONEncode(err, w)
+		return
+	}
 	util.JSONEncode(rim, w)
 }

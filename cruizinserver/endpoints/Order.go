@@ -2,6 +2,8 @@ package endpoints
 
 import (
 	"encoding/json"
+	"errors"
+	"log"
 	"net/http"
 	"strconv"
 
@@ -24,29 +26,57 @@ func RegisterOrderEndpoints(m *martini.ClassicMartini) {
 func createOrderHandler(r *http.Request, w http.ResponseWriter) {
 	orderwithitems := models.OrderWithItems{}
 	err := json.NewDecoder(r.Body).Decode(&orderwithitems)
-	util.CheckErr(err)
-	orderwithitems.Order.OrderNum = dbcontext.CreateOrder(orderwithitems.Order, orderwithitems.Items)
+	if err != nil {
+		log.Println(err)
+		util.JSONEncode(errors.New("Unable to create order"), w)
+		return
+	}
+	orderwithitems.Order.OrderNum, err = dbcontext.CreateOrder(orderwithitems.Order, orderwithitems.Items)
+	if err != nil {
+		util.JSONEncode(err, w)
+		return
+	}
 	for _, item := range orderwithitems.Items {
 		dbcontext.UpdateTireQty(item.ItemNum, item.Qty*-1)
+		if err != nil {
+			util.JSONEncode(err, w)
+			return
+		}
 		dbcontext.UpdateRimQty(item.ItemNum, item.Qty*-1)
+		if err != nil {
+			util.JSONEncode(err, w)
+			return
+		}
 	}
 	util.JSONEncode(orderwithitems, w)
 }
 
 func getOrdersHandler(r *http.Request, params martini.Params, w http.ResponseWriter) {
 	cid, _ := strconv.Atoi(params["cid"])
-	orders := dbcontext.GetOrders(cid)
+	orders, err := dbcontext.GetOrders(cid)
+	if err != nil {
+		util.JSONEncode(err, w)
+		return
+	}
 	util.JSONEncode(orders, w)
 }
 
 func getItemOrdersHandler(r *http.Request, params martini.Params, w http.ResponseWriter) {
 	ordernum, _ := strconv.Atoi(params["ordernum"])
-	itemorders := dbcontext.GetItemOrders(ordernum)
+	itemorders, err := dbcontext.GetItemOrders(ordernum)
+	if err != nil {
+		util.JSONEncode(err, w)
+		return
+	}
 	util.JSONEncode(itemorders, w)
 }
 
 func getCustVehiclesHandler(r *http.Request, params martini.Params, w http.ResponseWriter) {
 	cid, _ := strconv.Atoi(params["cid"])
-	vehicles := dbcontext.GetCustVehicles(cid)
+	vehicles, err := dbcontext.GetCustVehicles(cid)
+	if err != nil {
+		util.JSONEncode(err, w)
+		return
+	}
 	util.JSONEncode(vehicles, w)
 }

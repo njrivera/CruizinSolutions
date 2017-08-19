@@ -68,8 +68,8 @@ export default class ItemList extends React.Component {
                     <p></p>
                     <Row>
                         <Col>
-                            <Button onClick={() => this.props.removeItem(this.state.selected)}>Remove Item</Button>
-                            {' '}<Button onClick={() => this.props.finishOrder()}>{this.props.buttonTitle}</Button>
+                            <Button color='info' onClick={() => this.props.removeItem(this.state.selected)}>Remove Item</Button>
+                            {' '}<Button color='info' onClick={() => this.props.finishOrder()}>{this.props.buttonTitle}</Button>
                         </Col>
                     </Row>
                 </Container>

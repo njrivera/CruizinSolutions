@@ -2,18 +2,26 @@ package dbcontext
 
 import (
 	"database/sql"
+	"errors"
+	"log"
 
 	"github.com/CruizinSolutions/cruizinserver/database"
 	"github.com/CruizinSolutions/cruizinserver/models"
 	"github.com/CruizinSolutions/cruizinserver/queries"
-	"github.com/CruizinSolutions/cruizinserver/util"
 )
 
-func GetTires() []models.Tire {
+func GetTires() ([]models.Tire, error) {
 	db, err := sql.Open("sqlite3", database.DBPath)
-	util.CheckErr(err)
+	if err != nil {
+		log.Println(err)
+		return nil, errors.New("Unable to get tires")
+	}
+	defer db.Close()
 	rows, err := db.Query(queries.GetTires)
-	util.CheckErr(err)
+	if err != nil {
+		log.Println(err)
+		return nil, errors.New("Unable to get tires")
+	}
 
 	var itemnum int
 	var brand string
@@ -23,9 +31,13 @@ func GetTires() []models.Tire {
 	var condition string
 	var price string
 	var qty int
-	var tires []models.Tire
+	tires := make([]models.Tire, 0)
 	for rows.Next() {
-		rows.Scan(&itemnum, &brand, &model, &size, &servicedesc, &condition, &price, &qty)
+		err = rows.Scan(&itemnum, &brand, &model, &size, &servicedesc, &condition, &price, &qty)
+		if err != nil {
+			log.Println(err)
+			return nil, errors.New("Unable to get tires")
+		}
 		tires = append(tires, models.Tire{
 			ItemNum:     itemnum,
 			Brand:       brand,
@@ -36,18 +48,24 @@ func GetTires() []models.Tire {
 			Price:       price,
 			Qty:         qty})
 	}
-	db.Close()
 
-	return tires
+	return tires, nil
 }
 
-func CreateTire(tire models.Tire) {
+func CreateTire(tire models.Tire) error {
 	db, err := sql.Open("sqlite3", database.DBPath)
-	util.CheckErr(err)
+	if err != nil {
+		log.Println(err)
+		return errors.New("Unable to add tire")
+	}
+	defer db.Close()
 	statement, err := db.Prepare(queries.CreateTire)
-	util.CheckErr(err)
+	if err != nil {
+		log.Println(err)
+		return errors.New("Unable to add tire")
+	}
 
-	statement.Exec(
+	_, err = statement.Exec(
 		tire.ItemNum,
 		tire.Brand,
 		tire.Model,
@@ -56,16 +74,27 @@ func CreateTire(tire models.Tire) {
 		tire.Condition,
 		tire.Price,
 		tire.Qty)
-	db.Close()
+	if err != nil {
+		log.Println(err)
+		return errors.New("Unable to add tire")
+	}
 
-	return
+	return nil
 }
 
-func GetTire(key int) models.Tire {
+func GetTire(key int) (models.Tire, error) {
+	tire := models.Tire{}
 	db, err := sql.Open("sqlite3", database.DBPath)
-	util.CheckErr(err)
+	if err != nil {
+		log.Println(err)
+		return tire, errors.New("Unable to get tire")
+	}
+	defer db.Close()
 	row, err := db.Query(queries.GetTire, key)
-	util.CheckErr(err)
+	if err != nil {
+		log.Println(err)
+		return tire, errors.New("Unable to get tire")
+	}
 
 	var itemnum int
 	var brand string
@@ -75,9 +104,12 @@ func GetTire(key int) models.Tire {
 	var condition string
 	var price string
 	var qty int
-	row.Scan(&itemnum, &brand, &model, &size, &servicedesc, &condition, &price, &qty)
-	db.Close()
-	tire := models.Tire{
+	err = row.Scan(&itemnum, &brand, &model, &size, &servicedesc, &condition, &price, &qty)
+	if err != nil {
+		log.Println(err)
+		return tire, errors.New("Unable to get tire")
+	}
+	tire = models.Tire{
 		ItemNum:     itemnum,
 		Brand:       brand,
 		Model:       model,
@@ -87,27 +119,45 @@ func GetTire(key int) models.Tire {
 		Price:       price,
 		Qty:         qty}
 
-	return tire
+	return tire, nil
 }
 
-func DeleteTire(itemnum int) {
+func DeleteTire(itemnum int) error {
 	db, err := sql.Open("sqlite3", database.DBPath)
-	util.CheckErr(err)
+	if err != nil {
+		log.Println(err)
+		return errors.New("Unable to delete tire")
+	}
+	defer db.Close()
 	statement, err := db.Prepare(queries.DeleteTire)
-	util.CheckErr(err)
+	if err != nil {
+		log.Println(err)
+		return errors.New("Unable to delete tire")
+	}
 
-	statement.Exec(itemnum)
+	_, err = statement.Exec(itemnum)
+	if err != nil {
+		log.Println(err)
+		return errors.New("Unable to delete tire")
+	}
 
-	return
+	return nil
 }
 
-func UpdateTire(tire models.Tire) {
+func UpdateTire(tire models.Tire) error {
 	db, err := sql.Open("sqlite3", database.DBPath)
-	util.CheckErr(err)
+	if err != nil {
+		log.Println(err)
+		return errors.New("Unable to update tire")
+	}
+	defer db.Close()
 	statement, err := db.Prepare(queries.UpdateTire)
-	util.CheckErr(err)
+	if err != nil {
+		log.Println(err)
+		return errors.New("Unable to update tire")
+	}
 
-	statement.Exec(
+	_, err = statement.Exec(
 		tire.Brand,
 		tire.Model,
 		tire.Size,
@@ -116,20 +166,38 @@ func UpdateTire(tire models.Tire) {
 		tire.Price,
 		tire.Qty,
 		tire.ItemNum)
-	db.Close()
+	if err != nil {
+		log.Println(err)
+		return errors.New("Unable to update tire")
+	}
 
-	return
+	return nil
 }
 
-func UpdateTireQty(itemnum int, qty int) models.Tire {
+func UpdateTireQty(itemnum int, qty int) (models.Tire, error) {
+	tire := models.Tire{}
 	db, err := sql.Open("sqlite3", database.DBPath)
-	util.CheckErr(err)
+	if err != nil {
+		log.Println(err)
+		return tire, errors.New("Unable to update tire qty")
+	}
+	defer db.Close()
 	statement, err := db.Prepare(queries.UpdateTireQty)
-	util.CheckErr(err)
+	if err != nil {
+		log.Println(err)
+		return tire, errors.New("Unable to update tire qty")
+	}
 
-	statement.Exec(qty, itemnum)
-	tire := GetTire(itemnum)
-	db.Close()
+	_, err = statement.Exec(qty, itemnum)
+	if err != nil {
+		log.Println(err)
+		return tire, errors.New("Unable to update tire qty")
+	}
+	tire, err = GetTire(itemnum)
+	if err != nil {
+		log.Println(err)
+		return tire, errors.New("Unable to get tire")
+	}
 
-	return tire
+	return tire, nil
 }

@@ -1,6 +1,7 @@
 import React from 'react';
 import {Button, Col, Row, Container} from 'reactstrap';
 import {BootstrapTable, TableHeaderColumn} from 'react-bootstrap-table';
+import {Modal, ModalBody, ModalFooter} from 'react-bootstrap';
 import caret from '../styles/fa-caret-right.png';
 import axios from 'axios';
 
@@ -9,7 +10,9 @@ export default class Invoice extends React.Component {
         super(props);
         this.state = {
             comments: '',
-            orderNum: ''
+            orderNum: '',
+            error: false,
+            errorMessage: ''
         };
         this.onConfirm = this.onConfirm.bind(this);
     }
@@ -44,7 +47,10 @@ export default class Invoice extends React.Component {
             window.print();
         })
         .catch(error => {
-            console.log(error);
+            this.setState({
+                error: true,
+                errorMessage: error.response.data
+            })
         });
     }
 
@@ -116,7 +122,7 @@ export default class Invoice extends React.Component {
                         Signature:   _______________________________________________
                     </Row>
                     <br/>
-                    <Button className='hidden-sm' onClick={this.props.onPrint ? () => this.props.onPrint() : () => this.onConfirm(window)}>{this.props.printTitle}</Button>
+                    <Button color='info' className='hidden-sm' onClick={this.props.onPrint ? () => this.props.onPrint() : () => this.onConfirm(window)}>{this.props.printTitle}</Button>
                     <br/><br/><br/>
                     <Row className='text-left'>
                         <Col sm='6'>
@@ -147,10 +153,18 @@ export default class Invoice extends React.Component {
                         </Col>
                         <Col sm='6'>
                             <p>BALANCING: FREE BALANCING AT TIME OF PURCHASE ONLY UNLESS OTHER ARRANGEMENTS MADE</p>
-                            <p>SALE PRICE: NO WARRANTY ON ANY SPECIAL MARK DOWN PRODUCTS - ALL SPECIAL MARK DOWN PRODUCTS ARE SOLD AS NON-AVAILABILITY AND ARE NOT COVERED UNDER WARRANTY - SEE STORE FOR DETIALS</p>
+                            <p>SALE PRICE: NO WARRANTY ON ANY SPECIAL MARK DOWN PRODUCTS - ALL SPECIAL MARK DOWN PRODUCTS ARE SOLD AS NON-AVAILABILITY AND ARE NOT COVERED UNDER WARRANTY - SEE STORE FOR DETAILS</p>
                         </Col>
                     </Row>
                 </Container>
+                <Modal show={this.state.error} onHide={() => this.setState({error: false, errorMessage: ''})}>
+                    <ModalBody>
+                        <h1>{this.state.errorMessage}</h1>
+                    </ModalBody>
+                    <ModalFooter>
+                        <Button onClick={() => this.setState({error: false, errorMessage: ''})}>OK</Button>
+                    </ModalFooter>
+                </Modal>
             </div>
         );
     }

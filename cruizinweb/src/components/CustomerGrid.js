@@ -2,6 +2,7 @@ import React from 'react';
 import {BootstrapTable, TableHeaderColumn} from 'react-bootstrap-table';
 import GridModal from './GridModal';
 import {Container, Row, Col, Button} from 'reactstrap';
+import {Modal, ModalBody, ModalFooter} from 'react-bootstrap';
 import axios from 'axios';
 
 export default class CustomerGrid extends React.Component {
@@ -12,7 +13,8 @@ export default class CustomerGrid extends React.Component {
             selected: null,
             modal: false,
             flag: true,
-            action: null
+            action: null,
+            errorMessage: false
         };
         this.loadCustomers();
         this.loadCustomers = this.loadCustomers.bind(this);
@@ -55,7 +57,8 @@ export default class CustomerGrid extends React.Component {
             this.setState({customers: response.data});
         })
         .catch(error => {
-            console.log(error);
+            var err = error.response.data;
+            this.setState({error: true, errorMessage: err});
         });
     }
 
@@ -83,10 +86,10 @@ export default class CustomerGrid extends React.Component {
                             <TableHeaderColumn dataField="cid" width='auto' isKey hidden>ID</TableHeaderColumn>
                             <TableHeaderColumn dataField="name" width='auto' columnTitle dataSort filter={{type: 'TextFilter'}}>Name</TableHeaderColumn>
                             <TableHeaderColumn dataField="address" width='auto' columnTitle dataSort filter={{type: 'TextFilter'}}>Address</TableHeaderColumn>
-                            <TableHeaderColumn dataField="city" width='auto' dataSort filter={{type: 'TextFilter'}}>City</TableHeaderColumn>
-                            <TableHeaderColumn dataField="state" width='auto' dataSort filter={{type: 'TextFilter'}}>State</TableHeaderColumn>
-                            <TableHeaderColumn dataField="zipcode" width='auto' dataSort filter={{type: 'TextFilter'}}>Zipcode</TableHeaderColumn>
-                            <TableHeaderColumn dataField="phone" width='auto' dataSort filter={{type: 'TextFilter'}}>Phone</TableHeaderColumn>
+                            <TableHeaderColumn dataField="city" width='auto' columnTitle dataSort filter={{type: 'TextFilter'}}>City</TableHeaderColumn>
+                            <TableHeaderColumn dataField="state" width='auto' columnTitle dataSort filter={{type: 'TextFilter'}}>State</TableHeaderColumn>
+                            <TableHeaderColumn dataField="zipcode" width='auto' columnTitle dataSort filter={{type: 'TextFilter'}}>Zipcode</TableHeaderColumn>
+                            <TableHeaderColumn dataField="phone" width='auto' columnTitle dataSort filter={{type: 'TextFilter'}}>Phone</TableHeaderColumn>
                         </BootstrapTable>
                     </Row>
                     <p></p>
@@ -97,7 +100,7 @@ export default class CustomerGrid extends React.Component {
                                 this.setState({modal: true}); 
                                 this.setState({flag: true});
                             }}>Add</Button>
-                            {' '}<Button color='info' onClick={() => {
+                            {' '}<Button color='warning' onClick={() => {
                                 this.checkSelected(); 
                                 this.setState({action: 'edit'});
                             }}>Edit</Button>
@@ -105,9 +108,12 @@ export default class CustomerGrid extends React.Component {
                     </Row>
                     <p></p>
                     <div className={!this.props.extra ? 'hidden' : ''}>
-                        <Button onClick={() => this.props.extraFunction(this.state.selected)}>{this.props.extraTitle}</Button>
+                        <Button color='info' onClick={() => this.props.extraFunction(this.state.selected)}>{this.props.extraTitle}</Button>
                     </div>
                 </Container>
+
+                
+
                 <GridModal 
                     url='/api/customers'
                     record={this.state.action === 'add' ? {
@@ -151,7 +157,9 @@ export default class CustomerGrid extends React.Component {
                                     scope.props.loadRecords();
                                 })
                                 .catch(error => {
-                                    console.log(error);
+                                    scope.props.setModal();
+                                    var err = error.response.data;
+                                    this.setState({error: true, errorMessage: err});
                                 });
                             }
                             else{
@@ -162,11 +170,21 @@ export default class CustomerGrid extends React.Component {
                                     scope.props.loadRecords();
                                 })
                                 .catch(error => {
-                                    console.log(error);
+                                    scope.props.setModal();
+                                    var err = error.response.data;
+                                    this.setState({error: true, errorMessage: err});
                                 });
                             }
                         }
                     }/>
+                    <Modal show={this.state.error} onHide={() => this.setState({error: false, errorMessage: ''})}>
+                        <ModalBody>
+                            <h1>{this.state.errorMessage}</h1>
+                        </ModalBody>
+                        <ModalFooter>
+                            <Button onClick={() => this.setState({error: false, errorMessage: ''})}>OK</Button>
+                        </ModalFooter>
+                    </Modal>
             </div>
         );
     }

@@ -2,18 +2,26 @@ package dbcontext
 
 import (
 	"database/sql"
+	"errors"
+	"log"
 
 	"github.com/CruizinSolutions/cruizinserver/database"
 	"github.com/CruizinSolutions/cruizinserver/models"
 	"github.com/CruizinSolutions/cruizinserver/queries"
-	"github.com/CruizinSolutions/cruizinserver/util"
 )
 
-func GetCustomers() []models.Customer {
+func GetCustomers() ([]models.Customer, error) {
 	db, err := sql.Open("sqlite3", database.DBPath)
-	util.CheckErr(err)
+	if err != nil {
+		log.Println(err)
+		return nil, errors.New("Unable to get customers")
+	}
+	defer db.Close()
 	rows, err := db.Query(queries.GetCustomers)
-	util.CheckErr(err)
+	if err != nil {
+		log.Println(err)
+		return nil, errors.New("Unable to get customers")
+	}
 
 	var cid int
 	var name string
@@ -22,9 +30,13 @@ func GetCustomers() []models.Customer {
 	var state string
 	var zip string
 	var phone string
-	var customers []models.Customer
+	customers := make([]models.Customer, 0)
 	for rows.Next() {
-		rows.Scan(&cid, &name, &address, &city, &state, &zip, &phone)
+		err = rows.Scan(&cid, &name, &address, &city, &state, &zip, &phone)
+		if err != nil {
+			log.Println(err)
+			return nil, errors.New("Unable to get customers")
+		}
 		customers = append(customers, models.Customer{
 			Cid:     cid,
 			Name:    name,
@@ -34,34 +46,51 @@ func GetCustomers() []models.Customer {
 			Zipcode: zip,
 			Phone:   phone})
 	}
-	db.Close()
 
-	return customers
+	return customers, nil
 }
 
-func CreateCustomer(customer models.Customer) {
+func CreateCustomer(customer models.Customer) error {
 	db, err := sql.Open("sqlite3", database.DBPath)
-	util.CheckErr(err)
+	if err != nil {
+		log.Println(err)
+		return errors.New("Unable to add customer")
+	}
+	defer db.Close()
 	statement, err := db.Prepare(queries.CreateCustomer)
-	util.CheckErr(err)
+	if err != nil {
+		log.Println(err)
+		return errors.New("Unable to add customer")
+	}
 
-	statement.Exec(
+	_, err = statement.Exec(
 		customer.Name,
 		customer.Address,
 		customer.City,
 		customer.State,
 		customer.Zipcode,
 		customer.Phone)
-	db.Close()
+	if err != nil {
+		log.Println(err)
+		return errors.New("Unable to add customer")
+	}
 
-	return
+	return nil
 }
 
-func GetCustomer(key int) models.Customer {
+func GetCustomer(key int) (models.Customer, error) {
+	customer := models.Customer{}
 	db, err := sql.Open("sqlite3", database.DBPath)
-	util.CheckErr(err)
+	if err != nil {
+		log.Println(err)
+		return customer, errors.New("Unable to get customer")
+	}
+	defer db.Close()
 	row, err := db.Query(queries.GetCustomer, key)
-	util.CheckErr(err)
+	if err != nil {
+		log.Println(err)
+		return customer, errors.New("Unable to get customer")
+	}
 
 	var cid int
 	var name string
@@ -70,9 +99,12 @@ func GetCustomer(key int) models.Customer {
 	var state string
 	var zip string
 	var phone string
-	row.Scan(&cid, &name, &address, &city, &state, &zip, &phone)
-	db.Close()
-	customer := models.Customer{
+	err = row.Scan(&cid, &name, &address, &city, &state, &zip, &phone)
+	if err != nil {
+		log.Println(err)
+		return customer, errors.New("Unable to get customer")
+	}
+	customer = models.Customer{
 		Name:    name,
 		Address: address,
 		City:    city,
@@ -80,27 +112,45 @@ func GetCustomer(key int) models.Customer {
 		Zipcode: zip,
 		Phone:   phone}
 
-	return customer
+	return customer, nil
 }
 
-func DeleteCustomer(cid int) {
+func DeleteCustomer(cid int) error {
 	db, err := sql.Open("sqlite3", database.DBPath)
-	util.CheckErr(err)
+	if err != nil {
+		log.Println(err)
+		return errors.New("Unable to delete customer")
+	}
+	defer db.Close()
 	statement, err := db.Prepare(queries.DeleteCustomer)
-	util.CheckErr(err)
+	if err != nil {
+		log.Println(err)
+		return errors.New("Unable to delete customer")
+	}
 
-	statement.Exec(cid)
+	_, err = statement.Exec(cid)
+	if err != nil {
+		log.Println(err)
+		return errors.New("Unable to delete customer")
+	}
 
-	return
+	return nil
 }
 
-func UpdateCustomer(customer models.Customer) {
+func UpdateCustomer(customer models.Customer) error {
 	db, err := sql.Open("sqlite3", database.DBPath)
-	util.CheckErr(err)
+	if err != nil {
+		log.Println(err)
+		return errors.New("Unable to update customer")
+	}
+	defer db.Close()
 	statement, err := db.Prepare(queries.UpdateCustomer)
-	util.CheckErr(err)
+	if err != nil {
+		log.Println(err)
+		return errors.New("Unable to update customer")
+	}
 
-	statement.Exec(
+	_, err = statement.Exec(
 		customer.Name,
 		customer.Address,
 		customer.City,
@@ -108,7 +158,10 @@ func UpdateCustomer(customer models.Customer) {
 		customer.Zipcode,
 		customer.Phone,
 		customer.Cid)
-	db.Close()
+	if err != nil {
+		log.Println(err)
+		return errors.New("Unable to update customer")
+	}
 
-	return
+	return nil
 }

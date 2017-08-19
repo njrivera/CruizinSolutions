@@ -56,7 +56,7 @@ export default class PrintQuote extends React.Component {
                         <p>Total: {this.props.total}</p>
                     </Row>
                     <br/><br/>
-                    <Button className='hidden-sm' onClick={this.props.onPrint ? () => this.props.onPrint() : () => this.onConfirm(window)}>{this.props.printTitle}</Button>
+                    <Button color='info' className='hidden-sm' onClick={this.props.onPrint ? () => this.props.onPrint() : () => this.onConfirm(window)}>{this.props.printTitle}</Button>
                     <br/><br/><br/>
                     <Row className='text-left'>
                         <Col sm='6'>
@@ -87,7 +87,7 @@ export default class PrintQuote extends React.Component {
                         </Col>
                         <Col sm='6'>
                             <p>BALANCING: FREE BALANCING AT TIME OF PURCHASE ONLY UNLESS OTHER ARRANGEMENTS MADE</p>
-                            <p>SALE PRICE: NO WARRANTY ON ANY SPECIAL MARK DOWN PRODUCTS - ALL SPECIAL MARK DOWN PRODUCTS ARE SOLD AS NON-AVAILABILITY AND ARE NOT COVERED UNDER WARRANTY - SEE STORE FOR DETIALS</p>
+                            <p>SALE PRICE: NO WARRANTY ON ANY SPECIAL MARK DOWN PRODUCTS - ALL SPECIAL MARK DOWN PRODUCTS ARE SOLD AS NON-AVAILABILITY AND ARE NOT COVERED UNDER WARRANTY - SEE STORE FOR DETAILS</p>
                         </Col>
                     </Row>
                 </Container>

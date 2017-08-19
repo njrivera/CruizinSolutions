@@ -2,6 +2,8 @@ package endpoints
 
 import (
 	"encoding/json"
+	"errors"
+	"log"
 	"net/http"
 	"strconv"
 
@@ -22,7 +24,11 @@ func RegisterPartEndpoints(m *martini.ClassicMartini) {
 }
 
 func getPartsHandler(r *http.Request, w http.ResponseWriter) {
-	parts := dbcontext.GetParts()
+	parts, err := dbcontext.GetParts()
+	if err != nil {
+		util.JSONEncode(err, w)
+		return
+	}
 	util.JSONEncode(parts, w)
 }
 
@@ -30,23 +36,43 @@ func createPartHandler(r *http.Request, w http.ResponseWriter) {
 	part := models.Part{}
 	item := models.Item{}
 	err := json.NewDecoder(r.Body).Decode(&part)
-	util.CheckErr(err)
+	if err != nil {
+		log.Println(err)
+		util.JSONEncode(errors.New("Unable to add part"), w)
+		return
+	}
 	item.Description = part.Description + " (" +
 		part.Condition + ")"
-	part.ItemNum = dbcontext.CreateItem(item)
-	dbcontext.CreatePart(part)
+	part.ItemNum, err = dbcontext.CreateItem(item)
+	if err != nil {
+		util.JSONEncode(err, w)
+		return
+	}
+	err = dbcontext.CreatePart(part)
+	if err != nil {
+		util.JSONEncode(err, w)
+		return
+	}
 	util.JSONEncode(part, w)
 }
 
 func getPartHandler(r *http.Request, params martini.Params, w http.ResponseWriter) {
 	itemnum, _ := strconv.Atoi(params["itemnum"])
-	part := dbcontext.GetPart(itemnum)
+	part, err := dbcontext.GetPart(itemnum)
+	if err != nil {
+		util.JSONEncode(err, w)
+		return
+	}
 	util.JSONEncode(part, w)
 }
 
-func deletePartHandler(r *http.Request, params martini.Params) {
+func deletePartHandler(r *http.Request, params martini.Params, w http.ResponseWriter) {
 	itemnum, _ := strconv.Atoi(params["itemnum"])
-	dbcontext.DeletePart(itemnum)
+	err := dbcontext.DeletePart(itemnum)
+	if err != nil {
+		util.JSONEncode(err, w)
+		return
+	}
 }
 
 func updatePartHandler(r *http.Request, params martini.Params, w http.ResponseWriter) {
@@ -54,11 +80,23 @@ func updatePartHandler(r *http.Request, params martini.Params, w http.ResponseWr
 	part := models.Part{}
 	item := models.Item{}
 	err := json.NewDecoder(r.Body).Decode(&part)
-	util.CheckErr(err)
+	if err != nil {
+		log.Println(err)
+		util.JSONEncode(errors.New("Unable to update part"), w)
+		return
+	}
 	item.Description = part.Description + " (" +
 		part.Condition + ")"
+	err = dbcontext.UpdateItem(itemnum, item.Description)
+	if err != nil {
+		util.JSONEncode(err, w)
+		return
+	}
 	part.ItemNum = itemnum
-	dbcontext.UpdateItem(itemnum, item.Description)
-	dbcontext.UpdatePart(part)
+	err = dbcontext.UpdatePart(part)
+	if err != nil {
+		util.JSONEncode(err, w)
+		return
+	}
 	util.JSONEncode(part, w)
 }

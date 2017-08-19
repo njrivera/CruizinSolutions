@@ -6,7 +6,12 @@ import (
 )
 
 func JSONEncode(i interface{}, w http.ResponseWriter) {
-	js, _ := json.MarshalIndent(i, "", "  ")
-	w.Header().Set("Content-Type", "application/json")
-	w.Write(js)
+	if err, ok := i.(error); ok {
+		w.WriteHeader(http.StatusInternalServerError)
+		w.Write([]byte(err.Error()))
+	} else {
+		w.Header().Set("Content-Type", "application/json")
+		js, _ := json.MarshalIndent(i, "", "  ")
+		w.Write(js)
+	}
 }

@@ -2,6 +2,7 @@ import React from 'react';
 import {BootstrapTable, TableHeaderColumn} from 'react-bootstrap-table';
 import GridModal from './GridModal';
 import {Container, Row, Col, Button} from 'reactstrap';
+import {Modal, ModalBody, ModalFooter} from 'react-bootstrap';
 import axios from 'axios';
 
 export default class VehicleGrid extends React.Component {
@@ -12,7 +13,9 @@ export default class VehicleGrid extends React.Component {
             selected: null,
             modal: false,
             flag: true,
-            action: null
+            action: null,
+            error: false,
+            errorMessage: ''
         };
         this.loadRecords();
         this.loadRecords = this.loadRecords.bind(this);
@@ -55,7 +58,8 @@ export default class VehicleGrid extends React.Component {
             this.setState({records: response.data});
         })
         .catch(error => {
-            console.log(error);
+            var err = error.response.data;
+            this.setState({error: true, errorMessage: err});
         });
     }
 
@@ -94,7 +98,7 @@ export default class VehicleGrid extends React.Component {
                                 this.setState({modal: true});
                                 this.setState({flag: true});
                             }}>Add</Button>
-                            {' '}<Button color='info' onClick={() => {
+                            {' '}<Button color='warning' onClick={() => {
                                 this.checkSelected();
                                 this.setState({action: 'edit'});
                             }}>Edit</Button>
@@ -102,7 +106,7 @@ export default class VehicleGrid extends React.Component {
                     </Row>
                     <p></p>
                     <div className={!this.props.extra ? 'hidden' : ''}>
-                        <Button onClick={() => this.props.extraFunction(this.state.selected)}>{this.props.extraTitle}</Button>
+                        <Button color='info' onClick={() => this.props.extraFunction(this.state.selected)}>{this.props.extraTitle}</Button>
                     </div>
                 </Container>
                 <GridModal 
@@ -127,18 +131,6 @@ export default class VehicleGrid extends React.Component {
                     editSelected={this.editSelected}
                     validateInput={
                             (scope, event) => {
-                                switch(event.target.id) {
-                                    case 'year':
-                                        if(event.target.value.length === 0)
-                                            break;
-                                        if(event.target.value.length > 4 || !Number(event.target.value)) {
-                                            event.target.value = event.target.value.slice(1);
-                                            return;
-                                        }
-                                        event.target.value = parseInt(event.target.value, 10);
-                                    break;
-                                    default:
-                                }
                                 var temp = JSON.parse(JSON.stringify(scope.state.record));
                                 temp[event.target.id] = event.target.value;
                                 scope.setState({record: temp});
@@ -146,33 +138,42 @@ export default class VehicleGrid extends React.Component {
                     }
                     onSave={
                         (scope) => {
-                            if(scope.state.record.year.toString().length === 4){
-                                var temp = JSON.parse(JSON.stringify(scope.state.record));
-                                temp.year = parseInt(temp.year, 10);
-                                if(scope.props.action === 'add'){
-                                    axios.post(scope.props.url, temp)
-                                    .then(response => {
-                                        scope.props.setModal();
-                                        scope.props.loadRecords();
-                                    })
-                                    .catch(error => {
-                                        console.log(error);
-                                    });
-                                }
-                                else{
-                                    axios.put(scope.props.url + '/' + scope.props.id, temp)
-                                    .then(response => {
-                                        scope.props.editSelected(response.data);
-                                        scope.props.setModal();
-                                        scope.props.loadRecords();
-                                    })
-                                    .catch(error => {
-                                        console.log(error);
-                                    });
-                                }
+                            var temp = JSON.parse(JSON.stringify(scope.state.record));
+                            if(scope.props.action === 'add'){
+                                axios.post(scope.props.url, temp)
+                                .then(response => {
+                                    scope.props.setModal();
+                                    scope.props.loadRecords();
+                                })
+                                .catch(error => {
+                                    scope.props.setModal();
+                                    var err = error.response.data;
+                                    this.setState({error: true, errorMessage: err});
+                                });
+                            }
+                            else{
+                                axios.put(scope.props.url + '/' + scope.props.id, temp)
+                                .then(response => {
+                                    scope.props.editSelected(response.data);
+                                    scope.props.setModal();
+                                    scope.props.loadRecords();
+                                })
+                                .catch(error => {
+                                    scope.props.setModal();
+                                    var err = error.response.data;
+                                    this.setState({error: true, errorMessage: err});
+                                });
                             }
                         }
                     }/>
+                    <Modal show={this.state.error} onHide={() => this.setState({error: false, errorMessage: ''})}>
+                        <ModalBody>
+                            <h1>{this.state.errorMessage}</h1>
+                        </ModalBody>
+                        <ModalFooter>
+                            <Button onClick={() => this.setState({error: false, errorMessage: ''})}>OK</Button>
+                        </ModalFooter>
+                    </Modal>
             </div>
         );
     }
