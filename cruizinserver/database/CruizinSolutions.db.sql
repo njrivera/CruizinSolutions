@@ -1,7 +1,7 @@
 BEGIN TRANSACTION;
 CREATE TABLE IF NOT EXISTS `vehicles` (
 	`vid`	INTEGER NOT NULL PRIMARY KEY AUTOINCREMENT,
-	`year`	INTEGER,
+	`year`	TEXT,
 	`make`	TEXT,
 	`model`	TEXT
 );
@@ -14,15 +14,15 @@ CREATE TABLE IF NOT EXISTS `tires` (
 	`condition`	TEXT,
 	`price`	TEXT,
 	`qty`	INTEGER,
-	PRIMARY KEY(`itemnum`),
-	FOREIGN KEY(`itemnum`) REFERENCES `items`(`itemnum`)
+	FOREIGN KEY(`itemnum`) REFERENCES `items`(`itemnum`),
+	PRIMARY KEY(`itemnum`)
 );
 CREATE TABLE IF NOT EXISTS `services` (
 	`itemnum`	INTEGER,
 	`description`	TEXT,
 	`price`	TEXT,
-	PRIMARY KEY(`itemnum`),
-	FOREIGN KEY(`itemnum`) REFERENCES `items`(`itemnum`)
+	FOREIGN KEY(`itemnum`) REFERENCES `items`(`itemnum`),
+	PRIMARY KEY(`itemnum`)
 );
 CREATE TABLE IF NOT EXISTS `rims` (
 	`itemnum`	INTEGER,
@@ -34,16 +34,16 @@ CREATE TABLE IF NOT EXISTS `rims` (
 	`condition`	TEXT,
 	`price`	TEXT,
 	`qty`	INTEGER,
-	PRIMARY KEY(`itemnum`),
-	FOREIGN KEY(`itemnum`) REFERENCES `items`(`itemnum`)
+	FOREIGN KEY(`itemnum`) REFERENCES `items`(`itemnum`),
+	PRIMARY KEY(`itemnum`)
 );
 CREATE TABLE IF NOT EXISTS `parts` (
 	`itemnum`	INTEGER,
 	`description`	TEXT,
 	`condition`	TEXT,
 	`price`	TEXT,
-	PRIMARY KEY(`itemnum`),
-	FOREIGN KEY(`itemnum`) REFERENCES `items`(`itemnum`)
+	FOREIGN KEY(`itemnum`) REFERENCES `items`(`itemnum`),
+	PRIMARY KEY(`itemnum`)
 );
 CREATE TABLE IF NOT EXISTS `orders` (
 	`ordernum`	INTEGER PRIMARY KEY AUTOINCREMENT,
@@ -55,8 +55,8 @@ CREATE TABLE IF NOT EXISTS `orders` (
 	`subtotal`	TEXT,
 	`tax`	TEXT,
 	`total`	TEXT,
-	FOREIGN KEY(`cid`) REFERENCES `customers`(`cid`),
-	FOREIGN KEY(`vid`) REFERENCES `vehicles`(`vid`)
+	FOREIGN KEY(`vid`) REFERENCES `vehicles`(`vid`),
+	FOREIGN KEY(`cid`) REFERENCES `customers`(`cid`)
 );
 CREATE TABLE IF NOT EXISTS `items` (
 	`itemnum`	INTEGER PRIMARY KEY AUTOINCREMENT,
