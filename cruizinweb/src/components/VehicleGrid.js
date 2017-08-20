@@ -47,8 +47,10 @@ export default class VehicleGrid extends React.Component {
 
     checkSelected() {
         if (this.state.selected) {
-            this.setState({modal: true});
-            this.setState({flag: true});
+            this.setState({
+                modal: true,
+                flag: true
+            });
         }
     }
 
@@ -94,9 +96,11 @@ export default class VehicleGrid extends React.Component {
                     <Row>
                         <Col>
                             <Button color='success' onClick={() => {
-                                this.setState({action: 'add'});
-                                this.setState({modal: true});
-                                this.setState({flag: true});
+                                this.setState({
+                                    action: 'add',
+                                    modal: true,
+                                    flag: true
+                                });
                             }}>Add</Button>
                             {' '}<Button color='warning' onClick={() => {
                                 this.checkSelected();

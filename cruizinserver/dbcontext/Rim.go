@@ -22,7 +22,7 @@ func GetRims() ([]models.Rim, error) {
 		log.Println(err)
 		return nil, errors.New("Unable to get rims")
 	}
-
+	defer rows.Close()
 	var itemnum int
 	var brand string
 	var model string
@@ -66,7 +66,7 @@ func CreateRim(rim models.Rim) error {
 		log.Println(err)
 		return errors.New("Unable to add rim")
 	}
-
+	defer statement.Close()
 	_, err = statement.Exec(
 		rim.ItemNum,
 		rim.Brand,
@@ -98,7 +98,7 @@ func GetRim(key int) (models.Rim, error) {
 		log.Println(err)
 		return rim, errors.New("Unable to get rim")
 	}
-
+	defer row.Close()
 	var itemnum int
 	var brand string
 	var model string
@@ -108,21 +108,23 @@ func GetRim(key int) (models.Rim, error) {
 	var condition string
 	var price string
 	var qty int
-	err = row.Scan(&itemnum, &brand, &model, &size, &boltpattern, &finish, &condition, &price, &qty)
-	if err != nil {
-		log.Println(err)
-		return rim, errors.New("Unable to get rim")
+	if row.Next() {
+		err = row.Scan(&itemnum, &brand, &model, &size, &boltpattern, &finish, &condition, &price, &qty)
+		if err != nil {
+			log.Println(err)
+			return rim, errors.New("Unable to get rim")
+		}
+		rim = models.Rim{
+			ItemNum:     itemnum,
+			Brand:       brand,
+			Model:       model,
+			Size:        size,
+			BoltPattern: boltpattern,
+			Finish:      finish,
+			Condition:   condition,
+			Price:       price,
+			Qty:         qty}
 	}
-	rim = models.Rim{
-		ItemNum:     itemnum,
-		Brand:       brand,
-		Model:       model,
-		Size:        size,
-		BoltPattern: boltpattern,
-		Finish:      finish,
-		Condition:   condition,
-		Price:       price,
-		Qty:         qty}
 
 	return rim, nil
 }
@@ -139,7 +141,7 @@ func DeleteRim(itemnum int) error {
 		log.Println(err)
 		return errors.New("Unable to delete rim")
 	}
-
+	defer statement.Close()
 	_, err = statement.Exec(itemnum)
 	if err != nil {
 		log.Println(err)
@@ -161,7 +163,7 @@ func UpdateRim(rim models.Rim) error {
 		log.Println(err)
 		return errors.New("Unable to update rim")
 	}
-
+	defer statement.Close()
 	_, err = statement.Exec(
 		rim.Brand,
 		rim.Model,
@@ -193,7 +195,7 @@ func UpdateRimQty(itemnum int, qty int) (models.Rim, error) {
 		log.Println(err)
 		return rim, errors.New("Unable to update rim qty")
 	}
-
+	defer statement.Close()
 	_, err = statement.Exec(qty, itemnum)
 	if err != nil {
 		log.Println(err)

@@ -22,7 +22,7 @@ func GetServices() ([]models.Service, error) {
 		log.Println(err)
 		return nil, errors.New("Unable to get services")
 	}
-
+	defer rows.Close()
 	var itemnum int
 	var description string
 	var price string
@@ -54,6 +54,7 @@ func CreateService(service models.Service) error {
 		log.Println(err)
 		return errors.New("Unable to add service")
 	}
+	defer statement.Close()
 	_, err = statement.Exec(
 		service.ItemNum,
 		service.Description,
@@ -79,19 +80,21 @@ func GetService(key int) (models.Service, error) {
 		log.Println(err)
 		return service, errors.New("Unable to get service")
 	}
-
+	defer row.Close()
 	var itemnum int
 	var description string
 	var price string
-	err = row.Scan(&itemnum, &description, &price)
-	if err != nil {
-		log.Println(err)
-		return service, errors.New("Unable to get service")
+	if row.Next() {
+		err = row.Scan(&itemnum, &description, &price)
+		if err != nil {
+			log.Println(err)
+			return service, errors.New("Unable to get service")
+		}
+		service = models.Service{
+			ItemNum:     itemnum,
+			Description: description,
+			Price:       price}
 	}
-	service = models.Service{
-		ItemNum:     itemnum,
-		Description: description,
-		Price:       price}
 
 	return service, nil
 }
@@ -108,7 +111,7 @@ func DeleteService(itemnum int) error {
 		log.Println(err)
 		return errors.New("Unable to delete service")
 	}
-
+	defer statement.Close()
 	_, err = statement.Exec(itemnum)
 	if err != nil {
 		log.Println(err)
@@ -130,7 +133,7 @@ func UpdateService(service models.Service) error {
 		log.Println(err)
 		return errors.New("Unable to update service")
 	}
-
+	defer statement.Close()
 	_, err = statement.Exec(
 		service.Description,
 		service.Price,

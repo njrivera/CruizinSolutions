@@ -68,7 +68,8 @@ export default class Past extends React.Component {
                     gridOrders: temp,
                     orders: response.data,
                     customer: customer,
-                    grid: 'orders'});
+                    grid: 'orders'
+                });
             })
             .catch(error => {
                 console.log(error);
@@ -125,7 +126,7 @@ export default class Past extends React.Component {
                 return (
                     <Container>
                         <Row>
-                            <Col sm='1'><Button color='info' className='text-left' onClick={this.onBack}>Back</Button></Col>
+                            <Col sm='1'><Button color='info' className='text-left hidden-sm' onClick={this.onBack}>Back</Button></Col>
                             <Col sm='11'></Col>
                         </Row>
                         <h1>Choose Invoice</h1>
@@ -161,7 +162,7 @@ export default class Past extends React.Component {
                 return (
                     <Container>
                         <Row>
-                            <Col sm='1'><Button color='info' className='text-left' onClick={this.onBack}>Back</Button></Col>
+                            <Col sm='1'><Button color='info' className='text-left hidden-sm' onClick={this.onBack}>Back</Button></Col>
                             <Col sm='11'></Col>
                         </Row>
                         <Invoice

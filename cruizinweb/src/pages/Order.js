@@ -56,18 +56,20 @@ export default class Order extends React.Component {
 
     onFinish() {
         setTimeout(() => {
-            this.setState({grid: 'customer'});
-            this.setState({customer: null});
-            this.setState({vehicle: null});
-            this.setState({product: 'tires'});
-            this.setState({items: []});
-            this.setState({subtotal: ''});
-            this.setState({tax: ''});
-            this.setState({total: ''});
-            this.setState({date: new Date()});
-            this.setState({invoiceNum: null});
-            this.setState({comments: ''});
-            this.setState({odometer: '0'});
+            this.setState({
+                grid: 'customer',
+                customer: null,
+                vehicle: null,
+                product: 'tires',
+                items: [],
+                subtotal: '',
+                tax: '',
+                total: '',
+                date: new Date(),
+                invoiceNum: null,
+                comments: '',
+                odometer: '0'
+            });
         }, 100);
     }
 
@@ -80,15 +82,19 @@ export default class Order extends React.Component {
                 tax += this.state.taxRate * parseFloat(this.state.items[i].amount);
             }
         }
-        this.setState({subtotal: subtotal.toFixed(2)});
-        this.setState({tax: tax.toFixed(2)});
-        this.setState({total: (subtotal + tax).toFixed(2)});
+        this.setState({
+            subtotal: subtotal.toFixed(2),
+            tax: tax.toFixed(2),
+            total: (subtotal + tax).toFixed(2)
+        });
     }
 
     chooseCustomer(customer) {
         if(customer) {
-            this.setState({customer: customer});
-            this.setState({grid: 'custVehicles'});
+            this.setState({
+                customer: customer,
+                grid: 'custVehicles'
+            });
         }
     }
 
@@ -98,8 +104,10 @@ export default class Order extends React.Component {
 
     chooseVehicle(vehicle) {
         if(vehicle) {
-            this.setState({vehicle: vehicle});
-            this.setState({grid: 'items'});
+            this.setState({
+                vehicle: vehicle,
+                grid: 'items'
+            });
         }
     }
 
@@ -254,7 +262,7 @@ export default class Order extends React.Component {
                         <Col sm='11'></Col>
                     </Row>
                     <Row>
-                        <DropdownButton title='Choose Product' id='products' onSelect={(event) => {this.setState({product: event})}}>
+                        <DropdownButton bsStyle='info' title='Choose Product' id='products' onSelect={(event) => {this.setState({product: event})}}>
                             <MenuItem eventKey='tires'>Tires</MenuItem>
                             <MenuItem eventKey='rims'>Rims</MenuItem>
                             <MenuItem eventKey='parts'>Parts</MenuItem>

@@ -22,7 +22,7 @@ func GetItems() ([]models.Item, error) {
 		log.Println(err)
 		return nil, errors.New("Unable to get items")
 	}
-
+	defer rows.Close()
 	var itemnum int
 	var description string
 	items := make([]models.Item, 0)
@@ -52,7 +52,7 @@ func CreateItem(item models.Item) (int, error) {
 		log.Println(err)
 		return -1, errors.New("Unable to add item")
 	}
-
+	defer statement.Close()
 	row, err := statement.Exec(
 		item.Description)
 	if err != nil {
@@ -81,17 +81,19 @@ func GetItem(key int) (models.Item, error) {
 		log.Println(err)
 		return item, errors.New("Unable to get item")
 	}
-
+	defer row.Close()
 	var itemnum int
 	var description string
-	err = row.Scan(&itemnum, &description)
-	if err != nil {
-		log.Println(err)
-		return item, errors.New("Unable to get item")
+	if row.Next() {
+		err = row.Scan(&itemnum, &description)
+		if err != nil {
+			log.Println(err)
+			return item, errors.New("Unable to get item")
+		}
+		item = models.Item{
+			ItemNum:     itemnum,
+			Description: description}
 	}
-	item = models.Item{
-		ItemNum:     itemnum,
-		Description: description}
 
 	return item, nil
 }
@@ -108,6 +110,7 @@ func DeleteItem(itemnum int) error {
 		log.Println(err)
 		return errors.New("Unable to delete item")
 	}
+	defer statement.Close()
 	_, err = statement.Exec(itemnum)
 	if err != nil {
 		log.Println(err)
@@ -129,7 +132,7 @@ func UpdateItem(itemnum int, description string) error {
 		log.Println(err)
 		return errors.New("Unable to update item")
 	}
-
+	defer statement.Close()
 	_, err = statement.Exec(
 		description,
 		itemnum)

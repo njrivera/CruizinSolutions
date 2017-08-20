@@ -22,7 +22,7 @@ func GetCustomers() ([]models.Customer, error) {
 		log.Println(err)
 		return nil, errors.New("Unable to get customers")
 	}
-
+	defer rows.Close()
 	var cid int
 	var name string
 	var address string
@@ -62,7 +62,7 @@ func CreateCustomer(customer models.Customer) error {
 		log.Println(err)
 		return errors.New("Unable to add customer")
 	}
-
+	defer statement.Close()
 	_, err = statement.Exec(
 		customer.Name,
 		customer.Address,
@@ -91,7 +91,7 @@ func GetCustomer(key int) (models.Customer, error) {
 		log.Println(err)
 		return customer, errors.New("Unable to get customer")
 	}
-
+	defer row.Close()
 	var cid int
 	var name string
 	var address string
@@ -99,18 +99,20 @@ func GetCustomer(key int) (models.Customer, error) {
 	var state string
 	var zip string
 	var phone string
-	err = row.Scan(&cid, &name, &address, &city, &state, &zip, &phone)
-	if err != nil {
-		log.Println(err)
-		return customer, errors.New("Unable to get customer")
+	if row.Next() {
+		err = row.Scan(&cid, &name, &address, &city, &state, &zip, &phone)
+		if err != nil {
+			log.Println(err)
+			return customer, errors.New("Unable to get customer")
+		}
+		customer = models.Customer{
+			Name:    name,
+			Address: address,
+			City:    city,
+			State:   state,
+			Zipcode: zip,
+			Phone:   phone}
 	}
-	customer = models.Customer{
-		Name:    name,
-		Address: address,
-		City:    city,
-		State:   state,
-		Zipcode: zip,
-		Phone:   phone}
 
 	return customer, nil
 }
@@ -127,7 +129,7 @@ func DeleteCustomer(cid int) error {
 		log.Println(err)
 		return errors.New("Unable to delete customer")
 	}
-
+	defer statement.Close()
 	_, err = statement.Exec(cid)
 	if err != nil {
 		log.Println(err)
@@ -149,7 +151,7 @@ func UpdateCustomer(customer models.Customer) error {
 		log.Println(err)
 		return errors.New("Unable to update customer")
 	}
-
+	defer statement.Close()
 	_, err = statement.Exec(
 		customer.Name,
 		customer.Address,

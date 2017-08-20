@@ -22,7 +22,7 @@ func CreateOrder(order models.Order, items []models.ItemOrder) (int, error) {
 		log.Println(err)
 		return -1, errors.New("Unable to create order")
 	}
-
+	defer statement.Close()
 	row, err := statement.Exec(
 		order.Date,
 		order.Cid,
@@ -47,6 +47,7 @@ func CreateOrder(order models.Order, items []models.ItemOrder) (int, error) {
 		log.Println(err)
 		return -1, errors.New("Unable to create item orders")
 	}
+	defer statement.Close()
 	for _, item := range items {
 		_, err = statement.Exec(
 			ordernum,
@@ -75,7 +76,7 @@ func GetOrders(key int) ([]models.OrderWithVehicle, error) {
 		log.Println(err)
 		return nil, errors.New("Unable to get orders")
 	}
-
+	defer rows.Close()
 	var ordernum int
 	var date string
 	var vid int
@@ -122,7 +123,7 @@ func GetItemOrders(key int) ([]models.ItemOrderWithDesc, error) {
 		log.Println(err)
 		return nil, errors.New("Unable to get item orders")
 	}
-
+	defer rows.Close()
 	var itemnum int
 	var description string
 	var price string
@@ -158,7 +159,7 @@ func GetCustVehicles(key int) ([]models.Vehicle, error) {
 		log.Println(err)
 		return nil, errors.New("Unable to get customer's vehicles")
 	}
-
+	defer rows.Close()
 	var vid int
 	var year string
 	var vmake string

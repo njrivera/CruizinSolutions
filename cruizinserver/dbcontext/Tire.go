@@ -22,7 +22,7 @@ func GetTires() ([]models.Tire, error) {
 		log.Println(err)
 		return nil, errors.New("Unable to get tires")
 	}
-
+	defer rows.Close()
 	var itemnum int
 	var brand string
 	var model string
@@ -64,7 +64,7 @@ func CreateTire(tire models.Tire) error {
 		log.Println(err)
 		return errors.New("Unable to add tire")
 	}
-
+	defer statement.Close()
 	_, err = statement.Exec(
 		tire.ItemNum,
 		tire.Brand,
@@ -95,7 +95,7 @@ func GetTire(key int) (models.Tire, error) {
 		log.Println(err)
 		return tire, errors.New("Unable to get tire")
 	}
-
+	defer row.Close()
 	var itemnum int
 	var brand string
 	var model string
@@ -104,20 +104,22 @@ func GetTire(key int) (models.Tire, error) {
 	var condition string
 	var price string
 	var qty int
-	err = row.Scan(&itemnum, &brand, &model, &size, &servicedesc, &condition, &price, &qty)
-	if err != nil {
-		log.Println(err)
-		return tire, errors.New("Unable to get tire")
+	if row.Next() {
+		err = row.Scan(&itemnum, &brand, &model, &size, &servicedesc, &condition, &price, &qty)
+		if err != nil {
+			log.Println(err)
+			return tire, errors.New("Unable to get tire")
+		}
+		tire = models.Tire{
+			ItemNum:     itemnum,
+			Brand:       brand,
+			Model:       model,
+			Size:        size,
+			ServiceDesc: servicedesc,
+			Condition:   condition,
+			Price:       price,
+			Qty:         qty}
 	}
-	tire = models.Tire{
-		ItemNum:     itemnum,
-		Brand:       brand,
-		Model:       model,
-		Size:        size,
-		ServiceDesc: servicedesc,
-		Condition:   condition,
-		Price:       price,
-		Qty:         qty}
 
 	return tire, nil
 }
@@ -134,7 +136,7 @@ func DeleteTire(itemnum int) error {
 		log.Println(err)
 		return errors.New("Unable to delete tire")
 	}
-
+	defer statement.Close()
 	_, err = statement.Exec(itemnum)
 	if err != nil {
 		log.Println(err)
@@ -156,7 +158,7 @@ func UpdateTire(tire models.Tire) error {
 		log.Println(err)
 		return errors.New("Unable to update tire")
 	}
-
+	defer statement.Close()
 	_, err = statement.Exec(
 		tire.Brand,
 		tire.Model,
@@ -187,7 +189,7 @@ func UpdateTireQty(itemnum int, qty int) (models.Tire, error) {
 		log.Println(err)
 		return tire, errors.New("Unable to update tire qty")
 	}
-
+	defer statement.Close()
 	_, err = statement.Exec(qty, itemnum)
 	if err != nil {
 		log.Println(err)

@@ -28,8 +28,9 @@ export default class CustVehicleGrid extends React.Component {
 
     checkSelected() {
         if (this.state.selected) {
-            this.setState({modal: true});
-            this.setState({flag: true});
+            this.setState({modal: true,
+                flag: true
+            });
         }
     }
 
@@ -40,7 +41,9 @@ export default class CustVehicleGrid extends React.Component {
         })
         .catch(error => {
             var err = error.response.data;
-            this.setState({error: true, errorMessage: err});
+            this.setState({error: true,
+                errorMessage: err
+            });
         });
     }
 
@@ -74,19 +77,19 @@ export default class CustVehicleGrid extends React.Component {
                     <p></p>
                     <Row>
                         <Col>
-                            <Button color='info' onClick={() => this.props.onChoose(this.state.selected)}>Choose Vehicle</Button>
-                            <p></p>
                             <Button color='info' onClick={() => this.props.onAdd()}>Add Vehicle</Button>
+                            <p></p>
+                            <Button color='info' onClick={() => this.props.onChoose(this.state.selected)}>Choose Vehicle</Button>
                         </Col>
                     </Row>
                 </Container>
                 <Modal show={this.state.error} onHide={() => this.setState({error: false, errorMessage: ''})}>
-                        <ModalBody>
-                            <h1>{this.state.errorMessage}</h1>
-                        </ModalBody>
-                        <ModalFooter>
-                            <Button onClick={() => this.setState({error: false, errorMessage: ''})}>OK</Button>
-                        </ModalFooter>
+                    <ModalBody>
+                        <h1>{this.state.errorMessage}</h1>
+                    </ModalBody>
+                    <ModalFooter>
+                        <Button onClick={() => this.setState({error: false, errorMessage: ''})}>OK</Button>
+                    </ModalFooter>
                 </Modal>
             </div>
         );

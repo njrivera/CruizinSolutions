@@ -34,9 +34,11 @@ export default class Quote extends React.Component {
                 tax += this.state.taxRate * parseFloat(this.state.items[i].amount);
             }
         }
-        this.setState({subtotal: subtotal.toFixed(2)});
-        this.setState({tax: tax.toFixed(2)});
-        this.setState({total: (subtotal + tax).toFixed(2)});
+        this.setState({
+            subtotal: subtotal.toFixed(2),
+            tax: tax.toFixed(2),
+            total: (subtotal + tax).toFixed(2)
+        });
     }
 
     removeItem(record) {
@@ -137,7 +139,7 @@ export default class Quote extends React.Component {
                 return (
                     <Container>
                         <Row>
-                            <DropdownButton title='Choose Product' id='products' onSelect={(event) => {this.setState({product: event})}}>
+                            <DropdownButton bsStyle='info' title='Choose Product' id='products' onSelect={(event) => {this.setState({product: event})}}>
                                 <MenuItem eventKey='tires'>Tires</MenuItem>
                                 <MenuItem eventKey='rims'>Rims</MenuItem>
                                 <MenuItem eventKey='parts'>Parts</MenuItem>

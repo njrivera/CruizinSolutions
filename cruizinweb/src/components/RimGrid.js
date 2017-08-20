@@ -111,9 +111,11 @@ export default class RimGrid extends React.Component {
                     <Row>
                         <Col>
                             <Button color='success' onClick={() => {
-                                this.setState({action: 'add'});
-                                this.setState({modal: true});
-                                this.setState({flag: true});
+                                this.setState({
+                                    action: 'add',
+                                    modal: true,
+                                    flag: true
+                                });
                             }}>Add</Button>
                             {' '}<Button color='warning' onClick={() => {
                                 this.checkSelected();

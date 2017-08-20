@@ -22,7 +22,7 @@ func GetParts() ([]models.Part, error) {
 		log.Println(err)
 		return nil, errors.New("Unable to get parts")
 	}
-
+	defer rows.Close()
 	var itemnum int
 	var description string
 	var condition string
@@ -56,7 +56,7 @@ func CreatePart(part models.Part) error {
 		log.Println(err)
 		return errors.New("Unable to add part")
 	}
-
+	defer statement.Close()
 	_, err = statement.Exec(
 		part.ItemNum,
 		part.Description,
@@ -83,21 +83,23 @@ func GetPart(key int) (models.Part, error) {
 		log.Println(err)
 		return part, errors.New("Unable to get part")
 	}
-
+	defer row.Close()
 	var itemnum int
 	var description string
 	var condition string
 	var price string
-	err = row.Scan(&itemnum, &description, &condition, &price)
-	if err != nil {
-		log.Println(err)
-		return part, errors.New("Unable to get part")
+	if row.Next() {
+		err = row.Scan(&itemnum, &description, &condition, &price)
+		if err != nil {
+			log.Println(err)
+			return part, errors.New("Unable to get part")
+		}
+		part = models.Part{
+			ItemNum:     itemnum,
+			Description: description,
+			Condition:   condition,
+			Price:       price}
 	}
-	part = models.Part{
-		ItemNum:     itemnum,
-		Description: description,
-		Condition:   condition,
-		Price:       price}
 
 	return part, nil
 }
@@ -114,7 +116,7 @@ func DeletePart(itemnum int) error {
 		log.Println(err)
 		return errors.New("Unable to delete part")
 	}
-
+	defer statement.Close()
 	_, err = statement.Exec(itemnum)
 	if err != nil {
 		log.Println(err)
@@ -136,7 +138,7 @@ func UpdatePart(part models.Part) error {
 		log.Println(err)
 		return errors.New("Unable to update part")
 	}
-
+	defer statement.Close()
 	_, err = statement.Exec(
 		part.Description,
 		part.Condition,

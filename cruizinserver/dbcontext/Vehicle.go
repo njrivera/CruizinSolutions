@@ -22,7 +22,7 @@ func GetVehicles() ([]models.Vehicle, error) {
 		log.Println(err)
 		return nil, errors.New("Unable to get vehicles")
 	}
-
+	defer rows.Close()
 	var vid int
 	var year string
 	var vmake string
@@ -56,7 +56,7 @@ func CreateVehicle(vehicle models.Vehicle) error {
 		log.Println(err)
 		return errors.New("Unable to add vehicle")
 	}
-
+	defer statement.Close()
 	_, err = statement.Exec(
 		vehicle.Year,
 		vehicle.Make,
@@ -82,21 +82,23 @@ func GetVehicle(key int) (models.Vehicle, error) {
 		log.Println(err)
 		return vehicle, errors.New("Unable to get vehicle")
 	}
-
+	defer row.Close()
 	var vid int
 	var year string
 	var make string
 	var model string
-	err = row.Scan(&vid, &year, &make, &model)
-	if err != nil {
-		log.Println(err)
-		return vehicle, errors.New("Unable to get vehicle")
+	if row.Next() {
+		err = row.Scan(&vid, &year, &make, &model)
+		if err != nil {
+			log.Println(err)
+			return vehicle, errors.New("Unable to get vehicle")
+		}
+		vehicle = models.Vehicle{
+			Vid:   vid,
+			Year:  year,
+			Make:  make,
+			Model: model}
 	}
-	vehicle = models.Vehicle{
-		Vid:   vid,
-		Year:  year,
-		Make:  make,
-		Model: model}
 
 	return vehicle, nil
 }
@@ -113,7 +115,7 @@ func DeleteVehicle(vid int) error {
 		log.Println(err)
 		return errors.New("Unable to delete vehicle")
 	}
-
+	defer statement.Close()
 	_, err = statement.Exec(vid)
 	if err != nil {
 		log.Println(err)
@@ -135,7 +137,7 @@ func UpdateVehicle(vehicle models.Vehicle) error {
 		log.Println(err)
 		return errors.New("Unable to update vehicle")
 	}
-
+	defer statement.Close()
 	_, err = statement.Exec(
 		vehicle.Year,
 		vehicle.Make,
