@@ -64,12 +64,13 @@ CREATE TABLE IF NOT EXISTS `orders` (
 	`tax`	TEXT,
 	`total`	TEXT,
 	`payment`	TEXT,
-	FOREIGN KEY(`vid`) REFERENCES `vehicles`(`vid`),
-	FOREIGN KEY(`cid`) REFERENCES `customers`(`cid`)
+	FOREIGN KEY(`cid`) REFERENCES `customers`(`cid`),
+	FOREIGN KEY(`vid`) REFERENCES `vehicles`(`vid`)
 );
 CREATE TABLE IF NOT EXISTS `items` (
 	`itemnum`	INTEGER PRIMARY KEY AUTOINCREMENT,
-	`description`	TEXT
+	`description`	TEXT,
+	`type`	TEXT
 );
 CREATE TABLE IF NOT EXISTS `itemorders` (
 	`id`	INTEGER PRIMARY KEY AUTOINCREMENT,

@@ -63,8 +63,6 @@ func GetNewTireTax(month string, year string) (models.NewTireTaxReport, error) {
 func roundCents(num float64) string {
 	front := int(num)
 	back := int(num*1000) - front*1000
-	log.Println(front)
-	log.Println(back)
 	if int(back)%10 > 4 {
 		back += 10
 	}
