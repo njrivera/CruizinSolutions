@@ -5,6 +5,11 @@ CREATE TABLE IF NOT EXISTS `vehicles` (
 	`make`	TEXT,
 	`model`	TEXT
 );
+CREATE TABLE IF NOT EXISTS `users` (
+	`username`	TEXT,
+	`password`	TEXT,
+	PRIMARY KEY(`username`)
+);
 CREATE TABLE IF NOT EXISTS `tires` (
 	`itemnum`	INTEGER,
 	`brand`	TEXT,
@@ -64,8 +69,8 @@ CREATE TABLE IF NOT EXISTS `orders` (
 	`tax`	TEXT,
 	`total`	TEXT,
 	`payment`	TEXT,
-	FOREIGN KEY(`cid`) REFERENCES `customers`(`cid`),
-	FOREIGN KEY(`vid`) REFERENCES `vehicles`(`vid`)
+	FOREIGN KEY(`vid`) REFERENCES `vehicles`(`vid`),
+	FOREIGN KEY(`cid`) REFERENCES `customers`(`cid`)
 );
 CREATE TABLE IF NOT EXISTS `items` (
 	`itemnum`	INTEGER PRIMARY KEY AUTOINCREMENT,
