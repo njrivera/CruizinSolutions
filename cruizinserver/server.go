@@ -1,14 +1,23 @@
 package main
 
 import (
+	"github.com/CruizinSolutions/cruizinserver/dbcontext"
 	"github.com/CruizinSolutions/cruizinserver/endpoints"
 	"github.com/go-martini/martini"
+	"github.com/martini-contrib/auth"
 	_ "github.com/mattn/go-sqlite3"
 )
 
 func main() {
 	m := martini.Classic()
 	m.Use(martini.Static("/build"))
+	m.Use(auth.BasicFunc(func(username, password string) bool {
+		valid, err := dbcontext.Authenticate(username, password)
+		if err != nil {
+			return false
+		}
+		return valid
+	}))
 	m.Group("/api", func(r martini.Router) {
 		endpoints.RegisterCustomerEndpoints(m)
 		endpoints.RegisterItemEndpoints(m)
