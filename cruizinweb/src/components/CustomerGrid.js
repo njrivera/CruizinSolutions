@@ -14,7 +14,8 @@ export default class CustomerGrid extends React.Component {
             modal: false,
             flag: true,
             action: null,
-            errorMessage: false
+            error: false,
+            errorMessage: ''
         };
         this.loadCustomers();
         this.loadCustomers = this.loadCustomers.bind(this);
@@ -95,6 +96,7 @@ export default class CustomerGrid extends React.Component {
                             <TableHeaderColumn dataField="state" width='auto' columnTitle dataSort filter={{type: 'TextFilter'}}>State</TableHeaderColumn>
                             <TableHeaderColumn dataField="zipcode" width='auto' columnTitle dataSort filter={{type: 'TextFilter'}}>Zipcode</TableHeaderColumn>
                             <TableHeaderColumn dataField="phone" width='auto' columnTitle dataSort filter={{type: 'TextFilter'}}>Phone</TableHeaderColumn>
+                            <TableHeaderColumn dataField="email" width='auto' columnTitle dataSort filter={{type: 'TextFilter'}}>Email</TableHeaderColumn>
                         </BootstrapTable>
                     </Row>
                     <p></p>
@@ -129,14 +131,16 @@ export default class CustomerGrid extends React.Component {
                             city: '',
                             state: '',
                             zipcode: '',
-                            phone: ''
+                            phone: '',
+                            email: ''
                         } : this.state.selected ? {
                                 name: this.state.selected.name,
                                 address: this.state.selected.address,
                                 city: this.state.selected.city,
                                 state: this.state.selected.state,
                                 zipcode: this.state.selected.zipcode,
-                                phone: this.state.selected.phone
+                                phone: this.state.selected.phone,
+                                email: this.state.selected.email
                             } : {}
                     }
                     id={this.state.selected ? JSON.parse(JSON.stringify(this.state.selected)).cid : null}
@@ -147,6 +151,15 @@ export default class CustomerGrid extends React.Component {
                     setFlag={this.setFlag}
                     flag={this.state.flag}
                     editSelected={this.editSelected}
+                    editable={{
+                        name: true,
+                        address: true,
+                        city: true,
+                        state: true,
+                        zipcode: true,
+                        phone: true,
+                        email: true
+                    }}
                     validateInput={
                             (scope, event) => {
                                 var temp = JSON.parse(JSON.stringify(scope.state.record));

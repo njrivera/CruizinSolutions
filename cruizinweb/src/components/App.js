@@ -6,6 +6,7 @@ import Quote from '../pages/Quote';
 import Past from '../pages/Past';
 import Inventory from '../pages/Inventory';
 import Order from '../pages/Order';
+import Report from '../pages/Report';
 import NavBar from './NavBar';
 import "../../node_modules/react-bootstrap-table/dist/react-bootstrap-table.min.css";
 import {Switch, Route} from 'react-router-dom';
@@ -28,6 +29,7 @@ class App extends React.Component {
             <Route exact path='/past' component={Past}/>
             <Route exact path='/inventory/:option' component={Inventory}/>
             <Route exact path='/order' component={Order}/>
+            <Route exact path='/report' component={Report}/>
           </Switch>
         </div>
       </div>

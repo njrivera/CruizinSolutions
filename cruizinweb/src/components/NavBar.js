@@ -25,10 +25,12 @@ export default class NavBar extends React.Component {
                             <LinkContainer to='/inventory/rims'><MenuItem>Rims</MenuItem></LinkContainer>
                             <LinkContainer to='/inventory/parts'><MenuItem>Parts</MenuItem></LinkContainer>
                             <LinkContainer to='/inventory/services'><MenuItem>Services</MenuItem></LinkContainer>
+                            <LinkContainer to='/inventory/packages'><MenuItem>Packages</MenuItem></LinkContainer>
                         </NavDropdown>
                         <LinkContainer to='/past'><NavItem>History</NavItem></LinkContainer>
                         <LinkContainer to='/quote'><NavItem>Quote</NavItem></LinkContainer>
                         <LinkContainer to='/order'><NavItem>Work Order</NavItem></LinkContainer>
+                        <LinkContainer to='/report'><NavItem>Report</NavItem></LinkContainer>
                     </Nav>
                 </Navbar.Collapse>
             </Navbar>

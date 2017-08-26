@@ -16,8 +16,10 @@ func main() {
 		endpoints.RegisterPartEndpoints(m)
 		endpoints.RegisterRimEndpoints(m)
 		endpoints.RegisterServiceEndpoints(m)
+		endpoints.RegisterPackageEndpoints(m)
 		endpoints.RegisterTireEndpoints(m)
 		endpoints.RegisterVehicleEndpoints(m)
+		endpoints.RegisterReportEndpoints(m)
 	})
 	m.Run()
 }

@@ -36,7 +36,8 @@ export default class Invoice extends React.Component {
                 comments: this.props.comments,
                 subtotal: this.props.subtotal,
                 tax: this.props.tax,
-                total: this.props.total
+                total: this.props.total,
+                payment: this.props.payment
             },
             items: orderItems
         };
@@ -81,6 +82,7 @@ export default class Invoice extends React.Component {
                             <Row>{this.props.customer.address}</Row>
                             <Row>{this.props.customer.city}, {this.props.customer.state} {this.props.customer.zipcode}</Row>
                             <Row>{this.props.customer.phone}</Row>
+                            <Row>{this.props.customer.email}</Row>
                         </Col>
                         <Col sm='6' className='text-right'>
                             <Row>Date of Order: {this.props.date}</Row>
@@ -104,22 +106,24 @@ export default class Invoice extends React.Component {
                     </BootstrapTable>
                     <br/><br/>
                     <Row>
-                        <Col sm='9' className='text-left'>
+                        <Col sm='8' className='text-left'>
                             <Row><h4>Comments:</h4></Row>
                             <Row>
                                 <Col sm='1'></Col>
                                 <Col sm='11'><p>{this.props.comments}</p></Col>
                             </Row>
                         </Col>
-                        <Col sm='3' className='text-right'>
+                        <Col sm='4' className='text-right'>
                             <p>Subtotal: {this.props.subtotal}</p>
                             <p>Tax: {this.props.tax}</p>
                             <p>Total: {this.props.total}</p>
+                            <p>Payment Method: {this.props.payment}</p>
                         </Col>
                     </Row>
                     <br/><br/>
-                    <Row className='text-left'>
-                        Signature:   _______________________________________________
+                    <Row>
+                        <Col sm='6' className='text-left'>Signature:   _______________________________________________</Col>
+                        <Col sm='6'><h4 className='cursive'>Thank You and God Bless You!</h4></Col>
                     </Row>
                     <br/>
                     <Button color='info' className='hidden-sm' onClick={this.props.onPrint ? () => this.props.onPrint() : () => this.onConfirm(window)}>{this.props.printTitle}</Button>
@@ -128,7 +132,7 @@ export default class Invoice extends React.Component {
                         <Col sm='6'>
                             <p>- Always inflate, rotate and balance your tires at intervals of 7,000 miles. Improper care can affect the warranty on new tires.</p>
                             <p>- No warranty on low profile tires: 25, 30, 35, 40 series</p>
-                            <p>- Customer must retighten lug nuts after 25 miles</p>
+                            <p>- Customer must re-tighten lug nuts after 25 miles</p>
                             <p>- All wheel sales are final when mounted.</p>
                             <p>- No refund on deposit</p>
                             <p>- No refund on special orders</p>
@@ -136,7 +140,7 @@ export default class Invoice extends React.Component {
                         <Col sm='6'>
                             <p>- No warranty on used tires</p>
                             <p>- 25% Re-Stock fee on all returned goods</p>
-                            <p>- No warrnaty on spacers, adapters or any vehicle alterations</p>
+                            <p>- No warranty on spacers, adapters or any vehicle alterations</p>
                             <p>- We are not responsible for any alterations.</p>
                             <p>- No cash refund on returned goods - only store credit given</p>
                             <p>- No refund on Lay-Away left for more than 90 days</p>
@@ -148,11 +152,9 @@ export default class Invoice extends React.Component {
                     <Row className='text-left'>
                         <Col sm='6'>
                             <p>MOUNTING: FREE MOUNTING AT TIME OF PURCHASE ONLY</p>
-                            <p>FLAT REPAIR: FREE FLAT REPAIR AVAILABLE ONY WITH PROOF OF PURCHASE ON NEW TIRES: DOES NOT INCLUDE SHOULDER OR SIDEWALL REPAIR, OR ANY TYPE OF DAMAGE EXCEEDING A PLUG REPAIR</p>
-                            <p>LIFE-TIME ROTATION: FREE ROTATION IS AVAILABLE WITH PROOF OF PURCHASE RECEIPTS</p>    
+                            <p>BALANCING: FREE BALANCING AT TIME OF PURCHASE ONLY UNLESS OTHER ARRANGEMENTS MADE</p>
                         </Col>
                         <Col sm='6'>
-                            <p>BALANCING: FREE BALANCING AT TIME OF PURCHASE ONLY UNLESS OTHER ARRANGEMENTS MADE</p>
                             <p>SALE PRICE: NO WARRANTY ON ANY SPECIAL MARK DOWN PRODUCTS - ALL SPECIAL MARK DOWN PRODUCTS ARE SOLD AS NON-AVAILABILITY AND ARE NOT COVERED UNDER WARRANTY - SEE STORE FOR DETAILS</p>
                         </Col>
                     </Row>

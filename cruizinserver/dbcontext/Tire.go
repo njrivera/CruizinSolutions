@@ -28,12 +28,13 @@ func GetTires() ([]models.Tire, error) {
 	var model string
 	var size string
 	var servicedesc string
+	var warranty string
 	var condition string
 	var price string
 	var qty int
 	tires := make([]models.Tire, 0)
 	for rows.Next() {
-		err = rows.Scan(&itemnum, &brand, &model, &size, &servicedesc, &condition, &price, &qty)
+		err = rows.Scan(&itemnum, &brand, &model, &size, &servicedesc, &warranty, &condition, &price, &qty)
 		if err != nil {
 			log.Println(err)
 			return nil, errors.New("Unable to get tires")
@@ -44,6 +45,7 @@ func GetTires() ([]models.Tire, error) {
 			Model:       model,
 			Size:        size,
 			ServiceDesc: servicedesc,
+			Warranty:    warranty,
 			Condition:   condition,
 			Price:       price,
 			Qty:         qty})
@@ -71,6 +73,7 @@ func CreateTire(tire models.Tire) error {
 		tire.Model,
 		tire.Size,
 		tire.ServiceDesc,
+		tire.Warranty,
 		tire.Condition,
 		tire.Price,
 		tire.Qty)
@@ -101,11 +104,12 @@ func GetTire(key int) (models.Tire, error) {
 	var model string
 	var size string
 	var servicedesc string
+	var warranty string
 	var condition string
 	var price string
 	var qty int
 	if row.Next() {
-		err = row.Scan(&itemnum, &brand, &model, &size, &servicedesc, &condition, &price, &qty)
+		err = row.Scan(&itemnum, &brand, &model, &size, &servicedesc, &warranty, &condition, &price, &qty)
 		if err != nil {
 			log.Println(err)
 			return tire, errors.New("Unable to get tire")
@@ -116,6 +120,7 @@ func GetTire(key int) (models.Tire, error) {
 			Model:       model,
 			Size:        size,
 			ServiceDesc: servicedesc,
+			Warranty:    warranty,
 			Condition:   condition,
 			Price:       price,
 			Qty:         qty}
@@ -164,6 +169,7 @@ func UpdateTire(tire models.Tire) error {
 		tire.Model,
 		tire.Size,
 		tire.ServiceDesc,
+		tire.Warranty,
 		tire.Condition,
 		tire.Price,
 		tire.Qty,

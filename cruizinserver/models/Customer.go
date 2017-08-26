@@ -8,4 +8,5 @@ type Customer struct {
 	State   string `json:"state"`
 	Zipcode string `json:"zipcode"`
 	Phone   string `json:"phone"`
+	Email   string `json:"email"`
 }

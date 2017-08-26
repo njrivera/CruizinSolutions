@@ -30,9 +30,10 @@ func GetCustomers() ([]models.Customer, error) {
 	var state string
 	var zip string
 	var phone string
+	var email string
 	customers := make([]models.Customer, 0)
 	for rows.Next() {
-		err = rows.Scan(&cid, &name, &address, &city, &state, &zip, &phone)
+		err = rows.Scan(&cid, &name, &address, &city, &state, &zip, &phone, &email)
 		if err != nil {
 			log.Println(err)
 			return nil, errors.New("Unable to get customers")
@@ -44,7 +45,8 @@ func GetCustomers() ([]models.Customer, error) {
 			City:    city,
 			State:   state,
 			Zipcode: zip,
-			Phone:   phone})
+			Phone:   phone,
+			Email:   email})
 	}
 
 	return customers, nil
@@ -69,7 +71,8 @@ func CreateCustomer(customer models.Customer) error {
 		customer.City,
 		customer.State,
 		customer.Zipcode,
-		customer.Phone)
+		customer.Phone,
+		customer.Email)
 	if err != nil {
 		log.Println(err)
 		return errors.New("Unable to add customer")
@@ -99,8 +102,9 @@ func GetCustomer(key int) (models.Customer, error) {
 	var state string
 	var zip string
 	var phone string
+	var email string
 	if row.Next() {
-		err = row.Scan(&cid, &name, &address, &city, &state, &zip, &phone)
+		err = row.Scan(&cid, &name, &address, &city, &state, &zip, &phone, &email)
 		if err != nil {
 			log.Println(err)
 			return customer, errors.New("Unable to get customer")
@@ -111,7 +115,8 @@ func GetCustomer(key int) (models.Customer, error) {
 			City:    city,
 			State:   state,
 			Zipcode: zip,
-			Phone:   phone}
+			Phone:   phone,
+			Email:   email}
 	}
 
 	return customer, nil
@@ -159,6 +164,7 @@ func UpdateCustomer(customer models.Customer) error {
 		customer.State,
 		customer.Zipcode,
 		customer.Phone,
+		customer.Email,
 		customer.Cid)
 	if err != nil {
 		log.Println(err)

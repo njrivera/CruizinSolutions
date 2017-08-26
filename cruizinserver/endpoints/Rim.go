@@ -48,6 +48,7 @@ func createRimHandler(r *http.Request, w http.ResponseWriter) {
 		rim.BoltPattern + " (" +
 		rim.Finish + " " +
 		rim.Condition + ")"
+	item.Type = rim.Condition + " RIM"
 	rim.ItemNum, err = dbcontext.CreateItem(item)
 	if err != nil {
 		util.JSONEncode(err, w)
@@ -90,13 +91,15 @@ func updateRimHandler(r *http.Request, params martini.Params, w http.ResponseWri
 		util.JSONEncode(errors.New("Unable to update rim"), w)
 		return
 	}
+	item.ItemNum = itemnum
 	item.Description = rim.Brand + " " +
 		rim.Model + " " +
 		rim.Size + " " +
 		rim.BoltPattern + " (" +
 		rim.Finish + " " +
 		rim.Condition + ")"
-	err = dbcontext.UpdateItem(itemnum, item.Description)
+	item.Type = rim.Condition + " RIM"
+	err = dbcontext.UpdateItem(item)
 	if err != nil {
 		util.JSONEncode(err, w)
 		return

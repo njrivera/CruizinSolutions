@@ -3,6 +3,7 @@ import TireGrid from '../components/TireGrid'
 import RimGrid from '../components/RimGrid'
 import PartGrid from '../components/PartGrid'
 import ServiceGrid from '../components/ServiceGrid'
+import PackageGrid from '../components/PackageGrid'
 
 export default class Inventory extends React.Component {
 
@@ -23,6 +24,10 @@ export default class Inventory extends React.Component {
             case 'services':
                 return (
                     <ServiceGrid/>
+                );
+            case 'packages':
+                return (
+                    <PackageGrid/>
                 );
             default:
                 return (

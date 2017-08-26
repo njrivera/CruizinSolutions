@@ -42,6 +42,7 @@ func createServiceHandler(r *http.Request, w http.ResponseWriter) {
 		return
 	}
 	item.Description = service.Description
+	item.Type = "SERVICE"
 	service.ItemNum, err = dbcontext.CreateItem(item)
 	if err != nil {
 		util.JSONEncode(err, w)
@@ -83,8 +84,10 @@ func updateServiceHandler(r *http.Request, params martini.Params, w http.Respons
 		util.JSONEncode(errors.New("Unable to update service"), w)
 		return
 	}
+	item.ItemNum = itemnum
 	item.Description = service.Description
-	err = dbcontext.UpdateItem(itemnum, item.Description)
+	item.Type = "SERVICE"
+	err = dbcontext.UpdateItem(item)
 	if err != nil {
 		util.JSONEncode(err, w)
 		return

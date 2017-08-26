@@ -62,7 +62,7 @@ export default class PrintQuote extends React.Component {
                         <Col sm='6'>
                             <p>- Always inflate, rotate and balance your tires at intervals of 7,000 miles. Improper care can affect the warranty on new tires.</p>
                             <p>- No warranty on low profile tires: 25, 30, 35, 40 series</p>
-                            <p>- Customer must retighten lug nuts after 25 miles</p>
+                            <p>- Customer must re-tighten lug nuts after 25 miles</p>
                             <p>- All wheel sales are final when mounted.</p>
                             <p>- No refund on deposit</p>
                             <p>- No refund on special orders</p>
@@ -70,7 +70,7 @@ export default class PrintQuote extends React.Component {
                         <Col sm='6'>
                             <p>- No warranty on used tires</p>
                             <p>- 25% Re-Stock fee on all returned goods</p>
-                            <p>- No warrnaty on spacers, adapters or any vehicle alterations</p>
+                            <p>- No warranty on spacers, adapters or any vehicle alterations</p>
                             <p>- We are not responsible for any alterations.</p>
                             <p>- No cash refund on returned goods - only store credit given</p>
                             <p>- No refund on Lay-Away left for more than 90 days</p>
@@ -82,11 +82,9 @@ export default class PrintQuote extends React.Component {
                     <Row className='text-left'>
                         <Col sm='6'>
                             <p>MOUNTING: FREE MOUNTING AT TIME OF PURCHASE ONLY</p>
-                            <p>FLAT REPAIR: FREE FLAT REPAIR AVAILABLE ONY WITH PROOF OF PURCHASE ON NEW TIRES: DOES NOT INCLUDE SHOULDER OR SIDEWALL REPAIR, OR ANY TYPE OF DAMAGE EXCEEDING A PLUG REPAIR</p>
-                            <p>LIFE-TIME ROTATION: FREE ROTATION IS AVAILABLE WITH PROOF OF PURCHASE RECEIPTS</p>    
+                            <p>BALANCING: FREE BALANCING AT TIME OF PURCHASE ONLY UNLESS OTHER ARRANGEMENTS MADE</p>
                         </Col>
                         <Col sm='6'>
-                            <p>BALANCING: FREE BALANCING AT TIME OF PURCHASE ONLY UNLESS OTHER ARRANGEMENTS MADE</p>
                             <p>SALE PRICE: NO WARRANTY ON ANY SPECIAL MARK DOWN PRODUCTS - ALL SPECIAL MARK DOWN PRODUCTS ARE SOLD AS NON-AVAILABILITY AND ARE NOT COVERED UNDER WARRANTY - SEE STORE FOR DETAILS</p>
                         </Col>
                     </Row>

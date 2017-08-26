@@ -102,7 +102,8 @@ export default class TireGrid extends React.Component {
                             <TableHeaderColumn dataField="brand" width='auto' columnTitle dataSort filter={{type: 'TextFilter'}}>Brand</TableHeaderColumn>
                             <TableHeaderColumn dataField="model" width='auto' columnTitle dataSort filter={{type: 'TextFilter'}}>Model</TableHeaderColumn>
                             <TableHeaderColumn dataField="size" width='auto' columnTitle dataSort filter={{type: 'TextFilter'}}>Size</TableHeaderColumn>
-                            <TableHeaderColumn dataField="servicedesc" width='auto' dataSort filter={{type: 'TextFilter'}}>Service Description</TableHeaderColumn>
+                            <TableHeaderColumn dataField="servicedesc" width='auto' columnTitle dataSort filter={{type: 'TextFilter'}}>Service Description</TableHeaderColumn>
+                            <TableHeaderColumn dataField="warranty" width='auto' columnTitle dataSort filter={{type: 'TextFilter'}}>Warranty</TableHeaderColumn>
                             <TableHeaderColumn dataField="condition" width='auto' dataSort filter={{type: 'TextFilter'}}>Condition</TableHeaderColumn>
                             <TableHeaderColumn dataField="price" width='auto' dataSort filter={{type: 'TextFilter'}}>Price</TableHeaderColumn>
                             <TableHeaderColumn dataField="qty" width='auto' dataSort filter={{type: 'TextFilter'}}>Qty</TableHeaderColumn>
@@ -140,6 +141,7 @@ export default class TireGrid extends React.Component {
                             model: '',
                             size: '',
                             servicedesc: '',
+                            warranty: '',
                             condition: '',
                             price: '',
                             qty: ''
@@ -148,6 +150,7 @@ export default class TireGrid extends React.Component {
                                 model: this.state.selected.model,
                                 size: this.state.selected.size,
                                 servicedesc: this.state.selected.servicedesc,
+                                warranty: this.state.selected.warranty,
                                 condition: this.state.selected.condition,
                                 price: this.state.selected.price,
                                 qty: this.state.selected.qty
@@ -163,6 +166,10 @@ export default class TireGrid extends React.Component {
                     flag={this.state.flag}
                     editSelected={this.editSelected}
                     setError={this.setError}
+                    editable={{
+                        price: true,
+                        qty: true
+                    }}
                     validateInput={
                             (scope, event) => {
                                 if(event.target.id === 'price') {
@@ -202,7 +209,8 @@ export default class TireGrid extends React.Component {
                             if(temp.qty === '') temp.qty = 0;
                             if(temp.price === '') temp.price = '0.00';
                             temp.qty = parseInt(temp.qty, 10);
-                            temp.condition = document.getElementById('condition').value;
+                            if(this.state.action === 'add')
+                                temp.condition = document.getElementById('condition').value;
                             if(scope.props.action === 'add'){
                                 axios.post(scope.props.url, temp)
                                 .then(response => {

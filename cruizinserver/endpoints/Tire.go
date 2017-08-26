@@ -47,6 +47,7 @@ func createTireHandler(r *http.Request, w http.ResponseWriter) {
 		tire.Size + " " +
 		tire.ServiceDesc + " (" +
 		tire.Condition + ")"
+	item.Type = tire.Condition + " TIRE"
 	tire.ItemNum, err = dbcontext.CreateItem(item)
 	if err != nil {
 		util.JSONEncode(err, w)
@@ -88,12 +89,14 @@ func updateTireHandler(r *http.Request, params martini.Params, w http.ResponseWr
 		util.JSONEncode(errors.New("Unable to update tire"), w)
 		return
 	}
+	item.ItemNum = itemnum
 	item.Description = tire.Brand + " " +
 		tire.Model + " " +
 		tire.Size + " " +
 		tire.ServiceDesc + " (" +
 		tire.Condition + ")"
-	err = dbcontext.UpdateItem(itemnum, item.Description)
+	item.Type = tire.Condition + " TIRE"
+	err = dbcontext.UpdateItem(item)
 	if err != nil {
 		util.JSONEncode(err, w)
 		return

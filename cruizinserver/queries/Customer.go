@@ -2,8 +2,8 @@ package queries
 
 const (
 	GetCustomers   = "SELECT * FROM customers"
-	CreateCustomer = "INSERT INTO customers (name, address, city, state, zipcode, phone) VALUES (?, ?, ?, ?, ?, ?)"
+	CreateCustomer = "INSERT INTO customers (name, address, city, state, zipcode, phone, email) VALUES (?, ?, ?, ?, ?, ?, ?)"
 	GetCustomer    = "SELECT * FROM customers WHERE cid = ?"
 	DeleteCustomer = "DELETE FROM customers WHERE cid = ?"
-	UpdateCustomer = "UPDATE customers SET name = ?, address = ?, city = ?, state = ?, zipcode = ?, phone = ? WHERE cid = ?"
+	UpdateCustomer = "UPDATE customers SET name = ?, address = ?, city = ?, state = ?, zipcode = ?, phone = ?, email = ? WHERE cid = ?"
 )

@@ -133,6 +133,11 @@ export default class VehicleGrid extends React.Component {
                     setFlag={this.setFlag}
                     flag={this.state.flag}
                     editSelected={this.editSelected}
+                    editable={{
+                        year: true,
+                        make: true,
+                        model: true
+                    }}
                     validateInput={
                             (scope, event) => {
                                 var temp = JSON.parse(JSON.stringify(scope.state.record));

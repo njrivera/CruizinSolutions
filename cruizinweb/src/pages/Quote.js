@@ -106,6 +106,16 @@ export default class Quote extends React.Component {
                         qty: 1,
                         amount: record.price,
                         price: record.price,
+                        tax: false
+                    });
+                    break;
+                    case 'packages':
+                    temp.push({
+                        itemnum: record.itemnum,
+                        description: record.description,
+                        qty: 1,
+                        amount: record.price,
+                        price: record.price,
                         tax: true
                     });
                     break;
@@ -144,6 +154,7 @@ export default class Quote extends React.Component {
                                 <MenuItem eventKey='rims'>Rims</MenuItem>
                                 <MenuItem eventKey='parts'>Parts</MenuItem>
                                 <MenuItem eventKey='services'>Services</MenuItem>
+                                <MenuItem eventKey='packages'>Packages</MenuItem>
                             </DropdownButton>
                             <p></p>
                             <OrderOptions

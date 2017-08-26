@@ -43,6 +43,7 @@ func createPartHandler(r *http.Request, w http.ResponseWriter) {
 	}
 	item.Description = part.Description + " (" +
 		part.Condition + ")"
+	item.Type = part.Condition + " PART"
 	part.ItemNum, err = dbcontext.CreateItem(item)
 	if err != nil {
 		util.JSONEncode(err, w)
@@ -85,9 +86,11 @@ func updatePartHandler(r *http.Request, params martini.Params, w http.ResponseWr
 		util.JSONEncode(errors.New("Unable to update part"), w)
 		return
 	}
+	item.ItemNum = itemnum
 	item.Description = part.Description + " (" +
 		part.Condition + ")"
-	err = dbcontext.UpdateItem(itemnum, item.Description)
+	item.Type = part.Condition + " PART"
+	err = dbcontext.UpdateItem(item)
 	if err != nil {
 		util.JSONEncode(err, w)
 		return

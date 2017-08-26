@@ -25,16 +25,18 @@ func GetItems() ([]models.Item, error) {
 	defer rows.Close()
 	var itemnum int
 	var description string
+	var itype string
 	items := make([]models.Item, 0)
 	for rows.Next() {
-		rows.Scan(&itemnum, &description)
+		rows.Scan(&itemnum, &description, &itype)
 		if err != nil {
 			log.Println(err)
 			return nil, errors.New("Unable to get items")
 		}
 		items = append(items, models.Item{
 			ItemNum:     itemnum,
-			Description: description})
+			Description: description,
+			Type:        itype})
 	}
 
 	return items, nil
@@ -54,7 +56,8 @@ func CreateItem(item models.Item) (int, error) {
 	}
 	defer statement.Close()
 	row, err := statement.Exec(
-		item.Description)
+		item.Description,
+		item.Type)
 	if err != nil {
 		log.Println(err)
 		return -1, errors.New("Unable to add item")
@@ -84,15 +87,17 @@ func GetItem(key int) (models.Item, error) {
 	defer row.Close()
 	var itemnum int
 	var description string
+	var itype string
 	if row.Next() {
-		err = row.Scan(&itemnum, &description)
+		err = row.Scan(&itemnum, &description, &itype)
 		if err != nil {
 			log.Println(err)
 			return item, errors.New("Unable to get item")
 		}
 		item = models.Item{
 			ItemNum:     itemnum,
-			Description: description}
+			Description: description,
+			Type:        itype}
 	}
 
 	return item, nil
@@ -120,7 +125,7 @@ func DeleteItem(itemnum int) error {
 	return nil
 }
 
-func UpdateItem(itemnum int, description string) error {
+func UpdateItem(item models.Item) error {
 	db, err := sql.Open("sqlite3", database.DBPath)
 	if err != nil {
 		log.Println(err)
@@ -134,8 +139,9 @@ func UpdateItem(itemnum int, description string) error {
 	}
 	defer statement.Close()
 	_, err = statement.Exec(
-		description,
-		itemnum)
+		item.Description,
+		item.Type,
+		item.ItemNum)
 	if err != nil {
 		log.Println(err)
 		return errors.New("Unable to update item")

@@ -10,6 +10,7 @@ type Order struct {
 	Subtotal string `json:"subtotal"`
 	Tax      string `json:"tax"`
 	Total    string `json:"total"`
+	Payment  string `json:"payment"`
 }
 
 type ItemOrder struct {
@@ -39,6 +40,7 @@ type OrderWithVehicle struct {
 	Subtotal string `json:"subtotal"`
 	Tax      string `json:"tax"`
 	Total    string `json:"total"`
+	Payment  string `json:"payment"`
 }
 
 type ItemOrderWithDesc struct {

@@ -25,7 +25,8 @@ export default class Order extends React.Component {
             date: new Date(),
             invoiceNum: null,
             comments: '',
-            odometer: '0'
+            odometer: '0',
+            payment: 'DEBIT'
         };
         this.chooseCustomer = this.chooseCustomer.bind(this);
         this.addVehicle = this.addVehicle.bind(this);
@@ -182,6 +183,16 @@ export default class Order extends React.Component {
                         qty: 1,
                         amount: record.price,
                         price: record.price,
+                        tax: false
+                    });
+                    break;
+                    case 'packages':
+                    temp.push({
+                        itemnum: record.itemnum,
+                        description: record.description,
+                        qty: 1,
+                        amount: record.price,
+                        price: record.price,
                         tax: true
                     });
                     break;
@@ -267,6 +278,7 @@ export default class Order extends React.Component {
                             <MenuItem eventKey='rims'>Rims</MenuItem>
                             <MenuItem eventKey='parts'>Parts</MenuItem>
                             <MenuItem eventKey='services'>Services</MenuItem>
+                            <MenuItem eventKey='packages'>Packages</MenuItem>
                         </DropdownButton>
                         <p></p>
                         <OrderOptions
@@ -279,6 +291,7 @@ export default class Order extends React.Component {
                             <p className="text-left">{this.state.customer.name}</p>
                             <p className="text-left">{this.state.customer.address}</p>
                             <p className="text-left">{this.state.customer.city}, {this.state.customer.state} {this.state.customer.zipcode}</p>
+                            <p className="text-left">{this.state.customer.email}</p>
                         </Col>
                         <Col sm='6'>
                             <p className="text-right">{this.state.vehicle.year} {this.state.vehicle.make} {this.state.vehicle.model}</p>
@@ -303,7 +316,7 @@ export default class Order extends React.Component {
                             buttonTitle={'Invoice'}/>
                     </Row>
                     <Row>
-                        <Col sm='8'>
+                        <Col sm='7'>
                             <Row className='text-left'>
                                 <form>
                                     <FormGroup controlId='commentForm'>
@@ -313,8 +326,22 @@ export default class Order extends React.Component {
                                 </form>
                             </Row>
                         </Col>
-                        <p></p>
-                        <Col sm='4'>
+                        <Col sm='1'></Col>
+                        <Col sm='2'>
+                            <h4>Payment Method</h4>
+                            <FormControl
+                                className="text-right"
+                                componentClass='select' 
+                                placeholder='DEBIT' 
+                                onChange={(event) => this.setState({payment: event.target.options[event.target.selectedIndex].label})}>
+                                    <option value="DEBIT">DEBIT</option>
+                                    <option value="CREDIT">CREDIT</option>
+                                    <option value="CASH">CASH</option>
+                                    <option value="CHECK">CHECK</option>
+                                    <option value="STORECREDIT">STORE CREDIT</option>
+                            </FormControl>
+                        </Col>
+                        <Col sm='2'>
                             <p className="text-right">Subtotal: {this.state.subtotal}</p>
                             <p className="text-right">Tax: {this.state.tax}</p>
                             <p className="text-right">Total: {this.state.total}</p>
@@ -341,7 +368,8 @@ export default class Order extends React.Component {
                         total={this.state.total}
                         odometer={this.state.odometer}
                         comments={this.state.comments}
-                        printTitle={'Confirm & Print'}/>
+                        printTitle={'Confirm & Print'}
+                        payment={this.state.payment}/>
                 </Container>
             );
             default: return (<div></div>);

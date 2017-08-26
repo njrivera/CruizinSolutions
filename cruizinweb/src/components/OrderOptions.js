@@ -3,6 +3,7 @@ import TireGrid from './TireGrid';
 import RimGrid from './RimGrid';
 import PartGrid from './PartGrid';
 import ServiceGrid from './ServiceGrid';
+import PackageGrid from './PackageGrid';
 
 export default class OrderOptions extends React.Component {
     render() {
@@ -38,6 +39,15 @@ export default class OrderOptions extends React.Component {
             return (
                 <div>
                     <ServiceGrid 
+                        extra={true}
+                        extraTitle={'Add Item'}
+                        extraFunction={this.props.extraFunction}/>
+                </div>
+            );
+            case 'packages':
+            return (
+                <div>
+                    <PackageGrid 
                         extra={true}
                         extraTitle={'Add Item'}
                         extraFunction={this.props.extraFunction}/>

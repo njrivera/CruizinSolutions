@@ -146,6 +146,9 @@ export default class ServiceGrid extends React.Component {
                     setFlag={this.setFlag}
                     flag={this.state.flag}
                     editSelected={this.editSelected}
+                    editable={{
+                        price: true
+                    }}
                     setError={this.setError}
                     validateInput={
                             (scope, event) => {

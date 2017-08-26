@@ -62,6 +62,7 @@ export default class Past extends React.Component {
                         subtotal: order.subtotal,
                         tax: order.tax,
                         total: order.total,
+                        payment: order.payment
                     })
                 }
                 this.setState({
@@ -177,7 +178,8 @@ export default class Past extends React.Component {
                             odometer={this.state.selected.odometer}
                             comments={this.state.selected.comments}
                             onPrint={() => window.print()}
-                            printTitle={'Print'}/>
+                            printTitle={'Print'}
+                            payment={this.state.selected.payment}/>
                     </Container>
                 );
             default: return (<div></div>);

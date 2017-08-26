@@ -31,6 +31,19 @@ export default class Home extends React.Component {
                             <Col sm='1'><h3 className='text-right'>---</h3></Col>
                             <Col sm='11'>
                                 <h3 className='text-left'>DELETING an item WILL NOT affect past invoices.</h3>
+                                <br/><br/>
+                            </Col>
+                            <Col sm='6'>     
+                                <h3>TAXABLE</h3>
+                                <br/>
+                                <h4>Anything NEW</h4>
+                                <h4>Packages</h4>
+                            </Col>
+                            <Col sm='6'>
+                                <h3>NON-TAXABLE</h3>
+                                <br/>
+                                <h4>Anything USED</h4>
+                                <h4>Services</h4>
                             </Col>
                         </Row>
                     </Col>

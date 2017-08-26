@@ -150,6 +150,9 @@ export default class PartGrid extends React.Component {
                     setFlag={this.setFlag}
                     flag={this.state.flag}
                     editSelected={this.editSelected}
+                    editable={{
+                        price: true
+                    }}
                     setError={this.setError}
                     validateInput={
                             (scope, event) => {
@@ -189,7 +192,8 @@ export default class PartGrid extends React.Component {
                             var temp = JSON.parse(JSON.stringify(scope.state.record));
                             if(temp.qty === '') temp.qty = 0;
                             if(temp.price === '') temp.price = '0.00';
-                            temp.condition = document.getElementById('condition').value;
+                            if(this.state.action === 'add')
+                                temp.condition = document.getElementById('condition').value;
                             if(scope.props.action === 'add'){
                                 axios.post(scope.props.url, temp)
                                 .then(response => {

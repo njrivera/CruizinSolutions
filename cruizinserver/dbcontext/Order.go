@@ -31,7 +31,8 @@ func CreateOrder(order models.Order, items []models.ItemOrder) (int, error) {
 		order.Comments,
 		order.Subtotal,
 		order.Tax,
-		order.Total)
+		order.Total,
+		order.Payment)
 	if err != nil {
 		log.Println(err)
 		return -1, errors.New("Unable to create order")
@@ -88,9 +89,10 @@ func GetOrders(key int) ([]models.OrderWithVehicle, error) {
 	var subtotal string
 	var tax string
 	var total string
+	var payment string
 	orders := make([]models.OrderWithVehicle, 0)
 	for rows.Next() {
-		err = rows.Scan(&ordernum, &date, &vid, &year, &vmake, &model, &odometer, &comments, &subtotal, &tax, &total)
+		err = rows.Scan(&ordernum, &date, &vid, &year, &vmake, &model, &odometer, &comments, &subtotal, &tax, &total, &payment)
 		if err != nil {
 			log.Println(err)
 			return nil, errors.New("Unable to get orders")
@@ -106,7 +108,8 @@ func GetOrders(key int) ([]models.OrderWithVehicle, error) {
 			Comments: comments,
 			Subtotal: subtotal,
 			Tax:      tax,
-			Total:    total})
+			Total:    total,
+			Payment:  payment})
 	}
 	return orders, nil
 }
