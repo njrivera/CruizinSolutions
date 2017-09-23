@@ -14,24 +14,17 @@ export default class Home extends React.Component {
                         <Row>
                             <Col sm='1'><h3 className='text-right'>---</h3></Col>
                             <Col sm='11'>
-                                <h3 className='text-left'>EDITING an item (tire, rim, part, or service) WILL affect past invoices.</h3>
-                                <h4 className='text-left'>- This excludes changes to quantity or price</h4>
-                                <br/>
-                                <h4 className='text-left'>Editing should be used for:</h4>
-                                <Row className='text-left'>
-                                    <Col sm='1'></Col>
-                                    <Col sm='11'>
-                                        <h4>- Mistakes or spelling errors</h4>
-                                        <h4>- Change of quantity</h4>
-                                        <h4>- Change of price</h4>                             
-                                    </Col>
-                                </Row>
-                                <br/>
+                                <h3 className='text-left'>DELETING an item (tire, rim, part, service, or package) WILL NOT affect past invoices.</h3>
+                                <br/><br/>
                             </Col>
                             <Col sm='1'><h3 className='text-right'>---</h3></Col>
                             <Col sm='11'>
-                                <h3 className='text-left'>DELETING an item WILL NOT affect past invoices.</h3>
+                                <h3 className='text-left'>EDITING a customer or vehicle WILL affect past invoices.</h3>
                                 <br/><br/>
+                            </Col>
+                            <Col sm='1'><h3 className='text-right'>---</h3></Col>
+                            <Col sm='11'>
+                                <h3 className='text-left'>TAX:</h3>
                             </Col>
                             <Col sm='6'>     
                                 <h3>TAXABLE</h3>

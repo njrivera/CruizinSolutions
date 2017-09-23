@@ -10,7 +10,6 @@ import (
 
 func main() {
 	m := martini.Classic()
-	m.Use(martini.Static("/build"))
 	m.Use(auth.BasicFunc(func(username, password string) bool {
 		valid, err := dbcontext.Authenticate(username, password)
 		if err != nil {
