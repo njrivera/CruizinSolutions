@@ -206,7 +206,6 @@ export default class RimGrid extends React.Component {
                             var temp = JSON.parse(JSON.stringify(scope.state.record));
                             if(temp.qty === '') temp.qty = 0;
                             if(temp.price === '') temp.price = '0.00';
-                            temp.qty = parseInt(temp.qty, 10);
                             if(this.state.action === 'add')
                                 temp.condition = document.getElementById('condition').value;
                             if(scope.props.action === 'add'){

@@ -22,8 +22,7 @@ export default class Report extends React.Component {
         axios.get('/api/reports/newtiretax/' + this.state.month + '/' + this.state.year)
         .then(response => {
             var report = response.data;
-            if(report.Tax === '')
-                report.Tax = '0.00';
+            report.Tax = '0.00';
             this.setState({
                 totalTires: report.Qty.toString(),
                 totalTax: report.Tax
