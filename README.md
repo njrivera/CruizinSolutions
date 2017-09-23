@@ -8,7 +8,6 @@ To start as development:
   - npm start
   
 To start as production:
-  - uncomment the authentication code in server.go
   - cd into cruizinserver/
   - go build
   - there will be a new exe file named cruizinserver.exe
