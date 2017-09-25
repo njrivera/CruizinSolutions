@@ -17,4 +17,4 @@ To start as production:
   - there will be a new folder named build
   - ```cp -r build ../cruizinserver/public```
   - ```export MARTINI_ENV=production```
-  - run exe
+  - run exe file
