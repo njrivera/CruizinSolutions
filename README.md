@@ -1,6 +1,20 @@
 # CruizinSolutions
 Rim/tire shop inventory and invoice manager
 
-To start the app, run the 'run_server.bat' file from the deployment/CruizinSolutions directory - this starts the server and google chrome to the localhost:3000 address.
-
-To change the port in which the app runs, set the PORT environment variable to whichever port you want.
+To start as development:
+  - clone project into your github.com folder
+  - ```go run cruizinserver/server.go```
+  - ```cd into cruizinweb/```
+  - ```npm start```
+  
+To start as production:
+  - uncomment authentication code in server.go
+  - ```cd into cruizinserver/```
+  - ```go build```
+  - there will be a new exe file named cruizinserver.exe
+  - cd back into cruizinweb
+  - ```npm run build```
+  - there will be a new folder named build
+  - ```cp -r build ../cruizinserver/public```
+  - ```export MARTINI_ENV=production```
+  - run exe file
