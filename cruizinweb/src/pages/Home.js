@@ -29,14 +29,14 @@ export default class Home extends React.Component {
                             <Col sm='6'>     
                                 <h3>TAXABLE</h3>
                                 <br/>
-                                <h4>Anything NEW</h4>
-                                <h4>Packages</h4>
+                                <h4>- Anything NEW</h4>
+                                <h4>- Packages</h4>
                             </Col>
                             <Col sm='6'>
                                 <h3>NON-TAXABLE</h3>
                                 <br/>
-                                <h4>Anything USED</h4>
-                                <h4>Services</h4>
+                                <h4>- Anything USED</h4>
+                                <h4>- Services</h4>
                             </Col>
                         </Row>
                     </Col>
