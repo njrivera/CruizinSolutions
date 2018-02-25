@@ -2,7 +2,7 @@ import React from 'react';
 import {BootstrapTable, TableHeaderColumn} from 'react-bootstrap-table';
 import GridModal from './GridModal';
 import {Container, Row, Col, Button} from 'reactstrap';
-import {Modal, ModalBody, ModalFooter} from 'react-bootstrap';
+import {Modal, ModalBody, ModalFooter, FormControl} from 'react-bootstrap';
 import axios from 'axios';
 
 export default class TireGrid extends React.Component {
@@ -11,6 +11,7 @@ export default class TireGrid extends React.Component {
         this.state = {
             records: [],
             selected: null,
+            size: 'ALL',
             modal: false,
             flag: true,
             action: null,
@@ -25,6 +26,7 @@ export default class TireGrid extends React.Component {
         this.setFlag = this.setFlag.bind(this);
         this.editSelected = this.editSelected.bind(this);
         this.setError = this.setError.bind(this);
+        this.filterBySize = this.filterBySize.bind(this);
     }
 
     onSelectRecord(row, isSelected) {
@@ -77,13 +79,39 @@ export default class TireGrid extends React.Component {
         });
     }
 
+    filterBySize(tire) {
+        if (tire.size.slice(-2) === this.state.size || this.state.size === 'ALL')
+            return true;
+        return false;
+    }
+
     render() {
+        let sizes = [<option value={'ALL'} key={'ALL'}>ALL SIZES</option>];
+        for(let i = 12; i < 26; i++) {
+            sizes.push(<option value={i + ''} key={i + ''}>{i}</option>)
+        }
         return (
             <div>
                 <Container>
                     <Row>
+                        <Col sm='5'></Col>
+                        <Col sm='2'>
+                        <h4>Rim Size</h4>
+                        <FormControl
+                            id='size-dropdown'
+                            className="text-right"
+                            componentClass='select' 
+                            placeholder='ALL SIZES' 
+                            onChange={(event) => {this.setState({size: event.target.value})}}>
+                                {sizes}
+                        </FormControl>
+                        </Col>
+                        <Col sm='5'></Col>
+                    </Row>
+                    <p></p>
+                    <Row>
                         <BootstrapTable 
-                            data={this.state.records} 
+                            data={this.state.records.filter(this.filterBySize)}
                             maxHeight='500px'
                             scrollTop={'Bottom'} 
                             hover
