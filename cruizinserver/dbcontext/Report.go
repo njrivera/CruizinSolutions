@@ -9,13 +9,12 @@ import (
 
 	"github.com/CruizinSolutions/cruizinserver/models"
 
-	"github.com/CruizinSolutions/cruizinserver/database"
 	"github.com/CruizinSolutions/cruizinserver/queries"
 )
 
 func GetNewTireTax(month string, year string) (models.NewTireTaxReport, error) {
 	report := models.NewTireTaxReport{}
-	db, err := sql.Open("sqlite3", database.DBPath)
+	db, err := sql.Open("sqlite3", GetDBPath())
 	if err != nil {
 		log.Println(err)
 		return report, errors.New("Unable to get report")

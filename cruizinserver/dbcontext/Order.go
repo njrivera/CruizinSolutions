@@ -5,13 +5,12 @@ import (
 	"errors"
 	"log"
 
-	"github.com/CruizinSolutions/cruizinserver/database"
 	"github.com/CruizinSolutions/cruizinserver/models"
 	"github.com/CruizinSolutions/cruizinserver/queries"
 )
 
 func CreateOrder(order models.Order, items []models.ItemOrder) (int, error) {
-	db, err := sql.Open("sqlite3", database.DBPath)
+	db, err := sql.Open("sqlite3", GetDBPath())
 	if err != nil {
 		log.Println(err)
 		return -1, errors.New("Unable to create order")
@@ -66,7 +65,7 @@ func CreateOrder(order models.Order, items []models.ItemOrder) (int, error) {
 }
 
 func GetOrders(key int) ([]models.OrderWithVehicle, error) {
-	db, err := sql.Open("sqlite3", database.DBPath)
+	db, err := sql.Open("sqlite3", GetDBPath())
 	if err != nil {
 		log.Println(err)
 		return nil, errors.New("Unable to get orders")
@@ -115,7 +114,7 @@ func GetOrders(key int) ([]models.OrderWithVehicle, error) {
 }
 
 func GetItemOrders(key int) ([]models.ItemOrderWithDesc, error) {
-	db, err := sql.Open("sqlite3", database.DBPath)
+	db, err := sql.Open("sqlite3", GetDBPath())
 	if err != nil {
 		log.Println(err)
 		return nil, errors.New("Unable to get item orders")
@@ -151,7 +150,7 @@ func GetItemOrders(key int) ([]models.ItemOrderWithDesc, error) {
 }
 
 func GetCustVehicles(key int) ([]models.Vehicle, error) {
-	db, err := sql.Open("sqlite3", database.DBPath)
+	db, err := sql.Open("sqlite3", GetDBPath())
 	if err != nil {
 		log.Println(err)
 		return nil, errors.New("Unable to get customer's vehicles")

@@ -5,13 +5,12 @@ import (
 	"errors"
 	"log"
 
-	"github.com/CruizinSolutions/cruizinserver/database"
 	"github.com/CruizinSolutions/cruizinserver/models"
 	"github.com/CruizinSolutions/cruizinserver/queries"
 )
 
 func GetParts() ([]models.Part, error) {
-	db, err := sql.Open("sqlite3", database.DBPath)
+	db, err := sql.Open("sqlite3", GetDBPath())
 	if err != nil {
 		log.Println(err)
 		return nil, errors.New("Unable to get parts")
@@ -45,7 +44,7 @@ func GetParts() ([]models.Part, error) {
 }
 
 func CreatePart(part models.Part) error {
-	db, err := sql.Open("sqlite3", database.DBPath)
+	db, err := sql.Open("sqlite3", GetDBPath())
 	if err != nil {
 		log.Println(err)
 		return errors.New("Unable to add part")
@@ -72,7 +71,7 @@ func CreatePart(part models.Part) error {
 
 func GetPart(key int) (models.Part, error) {
 	part := models.Part{}
-	db, err := sql.Open("sqlite3", database.DBPath)
+	db, err := sql.Open("sqlite3", GetDBPath())
 	if err != nil {
 		log.Println(err)
 		return part, errors.New("Unable to get part")
@@ -105,7 +104,7 @@ func GetPart(key int) (models.Part, error) {
 }
 
 func DeletePart(itemnum int) error {
-	db, err := sql.Open("sqlite3", database.DBPath)
+	db, err := sql.Open("sqlite3", GetDBPath())
 	if err != nil {
 		log.Println(err)
 		return errors.New("Unable to delete part")
@@ -127,7 +126,7 @@ func DeletePart(itemnum int) error {
 }
 
 func UpdatePart(part models.Part) error {
-	db, err := sql.Open("sqlite3", database.DBPath)
+	db, err := sql.Open("sqlite3", GetDBPath())
 	if err != nil {
 		log.Println(err)
 		return errors.New("Unable to update part")

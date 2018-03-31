@@ -5,13 +5,12 @@ import (
 	"errors"
 	"log"
 
-	"github.com/CruizinSolutions/cruizinserver/database"
 	"github.com/CruizinSolutions/cruizinserver/models"
 	"github.com/CruizinSolutions/cruizinserver/queries"
 )
 
 func GetPackages() ([]models.Package, error) {
-	db, err := sql.Open("sqlite3", database.DBPath)
+	db, err := sql.Open("sqlite3", GetDBPath())
 	if err != nil {
 		log.Println(err)
 		return nil, errors.New("Unable to get packages")
@@ -43,7 +42,7 @@ func GetPackages() ([]models.Package, error) {
 }
 
 func CreatePackage(pack models.Package) error {
-	db, err := sql.Open("sqlite3", database.DBPath)
+	db, err := sql.Open("sqlite3", GetDBPath())
 	if err != nil {
 		log.Println(err)
 		return errors.New("Unable to add package")
@@ -69,7 +68,7 @@ func CreatePackage(pack models.Package) error {
 
 func GetPackage(key int) (models.Package, error) {
 	pack := models.Package{}
-	db, err := sql.Open("sqlite3", database.DBPath)
+	db, err := sql.Open("sqlite3", GetDBPath())
 	if err != nil {
 		log.Println(err)
 		return pack, errors.New("Unable to get package")
@@ -100,7 +99,7 @@ func GetPackage(key int) (models.Package, error) {
 }
 
 func DeletePackage(itemnum int) error {
-	db, err := sql.Open("sqlite3", database.DBPath)
+	db, err := sql.Open("sqlite3", GetDBPath())
 	if err != nil {
 		log.Println(err)
 		return errors.New("Unable to delete package")
@@ -122,7 +121,7 @@ func DeletePackage(itemnum int) error {
 }
 
 func UpdatePackage(pack models.Package) error {
-	db, err := sql.Open("sqlite3", database.DBPath)
+	db, err := sql.Open("sqlite3", GetDBPath())
 	if err != nil {
 		log.Println(err)
 		return errors.New("Unable to update package")

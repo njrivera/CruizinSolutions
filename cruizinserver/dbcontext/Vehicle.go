@@ -5,13 +5,12 @@ import (
 	"errors"
 	"log"
 
-	"github.com/CruizinSolutions/cruizinserver/database"
 	"github.com/CruizinSolutions/cruizinserver/models"
 	"github.com/CruizinSolutions/cruizinserver/queries"
 )
 
 func GetVehicles() ([]models.Vehicle, error) {
-	db, err := sql.Open("sqlite3", database.DBPath)
+	db, err := sql.Open("sqlite3", GetDBPath())
 	if err != nil {
 		log.Println(err)
 		return nil, errors.New("Unable to get vehicles")
@@ -45,7 +44,7 @@ func GetVehicles() ([]models.Vehicle, error) {
 }
 
 func CreateVehicle(vehicle models.Vehicle) error {
-	db, err := sql.Open("sqlite3", database.DBPath)
+	db, err := sql.Open("sqlite3", GetDBPath())
 	if err != nil {
 		log.Println(err)
 		return errors.New("Unable to add vehicle")
@@ -71,7 +70,7 @@ func CreateVehicle(vehicle models.Vehicle) error {
 
 func GetVehicle(key int) (models.Vehicle, error) {
 	vehicle := models.Vehicle{}
-	db, err := sql.Open("sqlite3", database.DBPath)
+	db, err := sql.Open("sqlite3", GetDBPath())
 	if err != nil {
 		log.Println(err)
 		return vehicle, errors.New("Unable to get vehicle")
@@ -104,7 +103,7 @@ func GetVehicle(key int) (models.Vehicle, error) {
 }
 
 func DeleteVehicle(vid int) error {
-	db, err := sql.Open("sqlite3", database.DBPath)
+	db, err := sql.Open("sqlite3", GetDBPath())
 	if err != nil {
 		log.Println(err)
 		return errors.New("Unable to delete vehicle")
@@ -126,7 +125,7 @@ func DeleteVehicle(vid int) error {
 }
 
 func UpdateVehicle(vehicle models.Vehicle) error {
-	db, err := sql.Open("sqlite3", database.DBPath)
+	db, err := sql.Open("sqlite3", GetDBPath())
 	if err != nil {
 		log.Println(err)
 		return errors.New("Unable to update vehicle")

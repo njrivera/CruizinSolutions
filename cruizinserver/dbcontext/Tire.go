@@ -5,13 +5,12 @@ import (
 	"errors"
 	"log"
 
-	"github.com/CruizinSolutions/cruizinserver/database"
 	"github.com/CruizinSolutions/cruizinserver/models"
 	"github.com/CruizinSolutions/cruizinserver/queries"
 )
 
 func GetTires() ([]models.Tire, error) {
-	db, err := sql.Open("sqlite3", database.DBPath)
+	db, err := sql.Open("sqlite3", GetDBPath())
 	if err != nil {
 		log.Println(err)
 		return nil, errors.New("Unable to get tires")
@@ -55,7 +54,7 @@ func GetTires() ([]models.Tire, error) {
 }
 
 func CreateTire(tire models.Tire) error {
-	db, err := sql.Open("sqlite3", database.DBPath)
+	db, err := sql.Open("sqlite3", GetDBPath())
 	if err != nil {
 		log.Println(err)
 		return errors.New("Unable to add tire")
@@ -87,7 +86,7 @@ func CreateTire(tire models.Tire) error {
 
 func GetTire(key int) (models.Tire, error) {
 	tire := models.Tire{}
-	db, err := sql.Open("sqlite3", database.DBPath)
+	db, err := sql.Open("sqlite3", GetDBPath())
 	if err != nil {
 		log.Println(err)
 		return tire, errors.New("Unable to get tire")
@@ -130,7 +129,7 @@ func GetTire(key int) (models.Tire, error) {
 }
 
 func DeleteTire(itemnum int) error {
-	db, err := sql.Open("sqlite3", database.DBPath)
+	db, err := sql.Open("sqlite3", GetDBPath())
 	if err != nil {
 		log.Println(err)
 		return errors.New("Unable to delete tire")
@@ -152,7 +151,7 @@ func DeleteTire(itemnum int) error {
 }
 
 func UpdateTire(tire models.Tire) error {
-	db, err := sql.Open("sqlite3", database.DBPath)
+	db, err := sql.Open("sqlite3", GetDBPath())
 	if err != nil {
 		log.Println(err)
 		return errors.New("Unable to update tire")
@@ -184,7 +183,7 @@ func UpdateTire(tire models.Tire) error {
 
 func UpdateTireQty(itemnum int, qty int) (models.Tire, error) {
 	tire := models.Tire{}
-	db, err := sql.Open("sqlite3", database.DBPath)
+	db, err := sql.Open("sqlite3", GetDBPath())
 	if err != nil {
 		log.Println(err)
 		return tire, errors.New("Unable to update tire qty")

@@ -5,13 +5,12 @@ import (
 	"errors"
 	"log"
 
-	"github.com/CruizinSolutions/cruizinserver/database"
 	"github.com/CruizinSolutions/cruizinserver/models"
 	"github.com/CruizinSolutions/cruizinserver/queries"
 )
 
 func GetServices() ([]models.Service, error) {
-	db, err := sql.Open("sqlite3", database.DBPath)
+	db, err := sql.Open("sqlite3", GetDBPath())
 	if err != nil {
 		log.Println(err)
 		return nil, errors.New("Unable to get services")
@@ -43,7 +42,7 @@ func GetServices() ([]models.Service, error) {
 }
 
 func CreateService(service models.Service) error {
-	db, err := sql.Open("sqlite3", database.DBPath)
+	db, err := sql.Open("sqlite3", GetDBPath())
 	if err != nil {
 		log.Println(err)
 		return errors.New("Unable to add service")
@@ -69,7 +68,7 @@ func CreateService(service models.Service) error {
 
 func GetService(key int) (models.Service, error) {
 	service := models.Service{}
-	db, err := sql.Open("sqlite3", database.DBPath)
+	db, err := sql.Open("sqlite3", GetDBPath())
 	if err != nil {
 		log.Println(err)
 		return service, errors.New("Unable to get service")
@@ -100,7 +99,7 @@ func GetService(key int) (models.Service, error) {
 }
 
 func DeleteService(itemnum int) error {
-	db, err := sql.Open("sqlite3", database.DBPath)
+	db, err := sql.Open("sqlite3", GetDBPath())
 	if err != nil {
 		log.Println(err)
 		return errors.New("Unable to delete service")
@@ -122,7 +121,7 @@ func DeleteService(itemnum int) error {
 }
 
 func UpdateService(service models.Service) error {
-	db, err := sql.Open("sqlite3", database.DBPath)
+	db, err := sql.Open("sqlite3", GetDBPath())
 	if err != nil {
 		log.Println(err)
 		return errors.New("Unable to update service")

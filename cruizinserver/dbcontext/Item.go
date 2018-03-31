@@ -5,13 +5,12 @@ import (
 	"errors"
 	"log"
 
-	"github.com/CruizinSolutions/cruizinserver/database"
 	"github.com/CruizinSolutions/cruizinserver/models"
 	"github.com/CruizinSolutions/cruizinserver/queries"
 )
 
 func GetItems() ([]models.Item, error) {
-	db, err := sql.Open("sqlite3", database.DBPath)
+	db, err := sql.Open("sqlite3", GetDBPath())
 	if err != nil {
 		log.Println(err)
 		return nil, errors.New("Unable to get items")
@@ -43,7 +42,7 @@ func GetItems() ([]models.Item, error) {
 }
 
 func CreateItem(item models.Item) (int, error) {
-	db, err := sql.Open("sqlite3", database.DBPath)
+	db, err := sql.Open("sqlite3", GetDBPath())
 	if err != nil {
 		log.Println(err)
 		return -1, errors.New("Unable to add item")
@@ -73,7 +72,7 @@ func CreateItem(item models.Item) (int, error) {
 
 func GetItem(key int) (models.Item, error) {
 	item := models.Item{}
-	db, err := sql.Open("sqlite3", database.DBPath)
+	db, err := sql.Open("sqlite3", GetDBPath())
 	if err != nil {
 		log.Println(err)
 		return item, errors.New("Unable to get item")
@@ -104,7 +103,7 @@ func GetItem(key int) (models.Item, error) {
 }
 
 func DeleteItem(itemnum int) error {
-	db, err := sql.Open("sqlite3", database.DBPath)
+	db, err := sql.Open("sqlite3", GetDBPath())
 	if err != nil {
 		log.Println(err)
 		return errors.New("Unable to delete item")
@@ -126,7 +125,7 @@ func DeleteItem(itemnum int) error {
 }
 
 func UpdateItem(item models.Item) error {
-	db, err := sql.Open("sqlite3", database.DBPath)
+	db, err := sql.Open("sqlite3", GetDBPath())
 	if err != nil {
 		log.Println(err)
 		return errors.New("Unable to update item")

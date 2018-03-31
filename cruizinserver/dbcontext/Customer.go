@@ -9,13 +9,12 @@ import (
 	"strconv"
 	"strings"
 
-	"github.com/CruizinSolutions/cruizinserver/database"
 	"github.com/CruizinSolutions/cruizinserver/models"
 	"github.com/CruizinSolutions/cruizinserver/queries"
 )
 
 func GetCustomers() ([]models.Customer, error) {
-	db, err := sql.Open("sqlite3", database.DBPath)
+	db, err := sql.Open("sqlite3", GetDBPath())
 	if err != nil {
 		log.Println(err)
 		return nil, errors.New("Unable to get customers")
@@ -57,7 +56,7 @@ func GetCustomers() ([]models.Customer, error) {
 }
 
 func CreateCustomer(customer models.Customer) error {
-	db, err := sql.Open("sqlite3", database.DBPath)
+	db, err := sql.Open("sqlite3", GetDBPath())
 	if err != nil {
 		log.Println(err)
 		return errors.New("Unable to add customer")
@@ -87,7 +86,7 @@ func CreateCustomer(customer models.Customer) error {
 
 func GetCustomer(key int) (models.Customer, error) {
 	customer := models.Customer{}
-	db, err := sql.Open("sqlite3", database.DBPath)
+	db, err := sql.Open("sqlite3", GetDBPath())
 	if err != nil {
 		log.Println(err)
 		return customer, errors.New("Unable to get customer")
@@ -127,7 +126,7 @@ func GetCustomer(key int) (models.Customer, error) {
 }
 
 func DeleteCustomer(cid int) error {
-	db, err := sql.Open("sqlite3", database.DBPath)
+	db, err := sql.Open("sqlite3", GetDBPath())
 	if err != nil {
 		log.Println(err)
 		return errors.New("Unable to delete customer")
@@ -149,7 +148,7 @@ func DeleteCustomer(cid int) error {
 }
 
 func UpdateCustomer(customer models.Customer) error {
-	db, err := sql.Open("sqlite3", database.DBPath)
+	db, err := sql.Open("sqlite3", GetDBPath())
 	if err != nil {
 		log.Println(err)
 		return errors.New("Unable to update customer")
@@ -179,7 +178,7 @@ func UpdateCustomer(customer models.Customer) error {
 }
 
 func GetSortedByDate() ([]models.Customer, error) {
-	db, err := sql.Open("sqlite3", database.DBPath)
+	db, err := sql.Open("sqlite3", GetDBPath())
 	if err != nil {
 		log.Println(err)
 		return nil, errors.New("Unable to get sorted customers")

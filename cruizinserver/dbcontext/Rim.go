@@ -5,13 +5,12 @@ import (
 	"errors"
 	"log"
 
-	"github.com/CruizinSolutions/cruizinserver/database"
 	"github.com/CruizinSolutions/cruizinserver/models"
 	"github.com/CruizinSolutions/cruizinserver/queries"
 )
 
 func GetRims() ([]models.Rim, error) {
-	db, err := sql.Open("sqlite3", database.DBPath)
+	db, err := sql.Open("sqlite3", GetDBPath())
 	if err != nil {
 		log.Println(err)
 		return nil, errors.New("Unable to get rims")
@@ -55,7 +54,7 @@ func GetRims() ([]models.Rim, error) {
 }
 
 func CreateRim(rim models.Rim) error {
-	db, err := sql.Open("sqlite3", database.DBPath)
+	db, err := sql.Open("sqlite3", GetDBPath())
 	if err != nil {
 		log.Println(err)
 		return errors.New("Unable to add rim")
@@ -87,7 +86,7 @@ func CreateRim(rim models.Rim) error {
 
 func GetRim(key int) (models.Rim, error) {
 	rim := models.Rim{}
-	db, err := sql.Open("sqlite3", database.DBPath)
+	db, err := sql.Open("sqlite3", GetDBPath())
 	if err != nil {
 		log.Println(err)
 		return rim, errors.New("Unable to get rim")
@@ -130,7 +129,7 @@ func GetRim(key int) (models.Rim, error) {
 }
 
 func DeleteRim(itemnum int) error {
-	db, err := sql.Open("sqlite3", database.DBPath)
+	db, err := sql.Open("sqlite3", GetDBPath())
 	if err != nil {
 		log.Println(err)
 		return errors.New("Unable to delete rim")
@@ -152,7 +151,7 @@ func DeleteRim(itemnum int) error {
 }
 
 func UpdateRim(rim models.Rim) error {
-	db, err := sql.Open("sqlite3", database.DBPath)
+	db, err := sql.Open("sqlite3", GetDBPath())
 	if err != nil {
 		log.Println(err)
 		return errors.New("Unable to update rim")
@@ -184,7 +183,7 @@ func UpdateRim(rim models.Rim) error {
 
 func UpdateRimQty(itemnum int, qty int) (models.Rim, error) {
 	rim := models.Rim{}
-	db, err := sql.Open("sqlite3", database.DBPath)
+	db, err := sql.Open("sqlite3", GetDBPath())
 	if err != nil {
 		log.Println(err)
 		return rim, errors.New("Unable to update rim qty")
