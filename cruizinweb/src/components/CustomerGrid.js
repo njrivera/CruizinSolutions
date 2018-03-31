@@ -23,6 +23,7 @@ export default class CustomerGrid extends React.Component {
         this.onSelectCustomer = this.onSelectCustomer.bind(this);
         this.setFlag = this.setFlag.bind(this);
         this.editSelected = this.editSelected.bind(this);
+        this.sortByDate = this.sortByDate.bind(this);
     }
 
     onSelectCustomer(row, isSelected) {
@@ -68,10 +69,30 @@ export default class CustomerGrid extends React.Component {
         });
     }
 
+    sortByDate() {
+        axios.get('/api/customers/sortbydate/0')
+        .then(response => {
+            this.setState({customers: response.data});
+        })
+        .catch(error => {
+            var err = error.response.data;
+            this.setState({
+                error: true,
+                errorMessage: err
+            });
+        });
+    }
+
     render() {
         return (
             <div>
                 <Container>
+                    <Row>
+                    <Button color='success' onClick={() => {
+                        this.sortByDate();
+                    }}>Sort By Last Order</Button>
+                    </Row>
+                    <p></p>
                     <Row>
                         <BootstrapTable 
                             data={this.state.customers} 
@@ -120,9 +141,6 @@ export default class CustomerGrid extends React.Component {
                         <Button color='info' onClick={() => this.props.extraFunction(this.state.selected)}>{this.props.extraTitle}</Button>
                     </div>
                 </Container>
-
-                
-
                 <GridModal 
                     url='/api/customers'
                     record={this.state.action === 'add' ? {

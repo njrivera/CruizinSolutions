@@ -19,6 +19,7 @@ func RegisterCustomerEndpoints(m *martini.ClassicMartini) {
 		r.Get("/:cid", getCustomerHandler)
 		r.Delete("/:cid", deleteCustomerHandler)
 		r.Put("/:cid", updateCustomerHandler)
+		r.Get("/sortbydate/0", getSortedByDateHandler)
 	})
 }
 
@@ -82,4 +83,13 @@ func updateCustomerHandler(r *http.Request, params martini.Params, w http.Respon
 		return
 	}
 	util.JSONEncode(customer, w)
+}
+
+func getSortedByDateHandler(r *http.Request, w http.ResponseWriter) {
+	customers, err := dbcontext.GetSortedByDate()
+	if err != nil {
+		util.JSONEncode(err, w)
+		return
+	}
+	util.JSONEncode(customers, w)
 }

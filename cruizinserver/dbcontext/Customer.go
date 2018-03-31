@@ -3,7 +3,11 @@ package dbcontext
 import (
 	"database/sql"
 	"errors"
+	"fmt"
 	"log"
+	"sort"
+	"strconv"
+	"strings"
 
 	"github.com/CruizinSolutions/cruizinserver/database"
 	"github.com/CruizinSolutions/cruizinserver/models"
@@ -172,4 +176,78 @@ func UpdateCustomer(customer models.Customer) error {
 	}
 
 	return nil
+}
+
+func GetSortedByDate() ([]models.Customer, error) {
+	db, err := sql.Open("sqlite3", database.DBPath)
+	if err != nil {
+		log.Println(err)
+		return nil, errors.New("Unable to get sorted customers")
+	}
+	defer db.Close()
+	rows, err := db.Query(queries.GetSortedByOrderDate)
+	if err != nil {
+		log.Println(err)
+		return nil, errors.New("Unable to get sorted customers")
+	}
+	defer rows.Close()
+
+	customerMap := make(map[int][]models.Customer)
+	idMap := make(map[int]bool)
+	dates := make([]int, 0)
+	customers := make([]models.Customer, 0)
+
+	var cid int
+	var name string
+	var address string
+	var city string
+	var state string
+	var zip string
+	var phone string
+	var email string
+	var date string
+	for rows.Next() {
+		err = rows.Scan(&cid, &name, &address, &city, &state, &zip, &phone, &email, &date)
+		if err != nil {
+			log.Println(err)
+			return nil, errors.New("Unable to get sorted customers")
+		}
+		strArr := strings.Split(date, "/")
+		if len(strArr[0]) == 1 {
+			strArr[0] = fmt.Sprintf("0%s", strArr[0])
+		}
+		if len(strArr[1]) == 1 {
+			strArr[1] = fmt.Sprintf("0%s", strArr[1])
+		}
+		strArr = []string{strArr[2], strArr[0], strArr[1]}
+		formattedDate, _ := strconv.Atoi(strings.Join(strArr, ""))
+
+		customer := models.Customer{
+			Cid:     cid,
+			Name:    name,
+			Address: address,
+			City:    city,
+			State:   state,
+			Zipcode: zip,
+			Phone:   phone,
+			Email:   email}
+
+		if _, ok := customerMap[formattedDate]; ok {
+			customerMap[formattedDate] = append(customerMap[formattedDate], customer)
+		} else {
+			customerMap[formattedDate] = []models.Customer{customer}
+			dates = append(dates, formattedDate)
+		}
+	}
+	sort.Ints(dates)
+	for i := len(dates) - 1; i >= 0; i-- {
+		for _, c := range customerMap[dates[i]] {
+			if _, ok := idMap[c.Cid]; !ok {
+				idMap[c.Cid] = true
+				customers = append(customers, c)
+			}
+		}
+	}
+
+	return customers, nil
 }
