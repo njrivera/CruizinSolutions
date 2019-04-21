@@ -15,7 +15,7 @@ export default class Quote extends React.Component {
             subtotal: '',
             tax: '',
             total: '',
-            taxRate: .07,
+            taxRate: .085,
             date: new Date(),
         };
         this.addUpTotal = this.addUpTotal.bind(this);

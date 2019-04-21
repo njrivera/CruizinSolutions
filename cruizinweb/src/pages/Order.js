@@ -21,7 +21,7 @@ export default class Order extends React.Component {
             subtotal: '',
             tax: '',
             total: '',
-            taxRate: .07,
+            taxRate: .085,
             date: new Date(),
             invoiceNum: null,
             comments: '',
