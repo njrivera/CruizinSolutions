@@ -10,8 +10,26 @@ import Report from '../pages/Report';
 import NavBar from './NavBar';
 import "../../node_modules/react-bootstrap-table/dist/react-bootstrap-table.min.css";
 import {Switch, Route} from 'react-router-dom';
+import axios from 'axios';
 
 class App extends React.Component {
+  constructor(props) {
+    super(props);
+    this.state = {
+      taxRate: 0
+    };
+  }
+
+  componentDidMount() {
+    axios.get('/api/taxRate')
+    .then(response => {
+      this.setState({taxRate: parseFloat(response.data)});
+    })
+    .catch(err => {
+      console.log("couldn't get tax rate :(");
+    });
+  }
+
   render() {
     return (
       <div className="App">
@@ -25,10 +43,10 @@ class App extends React.Component {
           <Switch>
             <Route exact path='/' component={Home}/>
             <Route path='/info/:option' component={Info}/>
-            <Route exact path='/quote' component={Quote}/>
+            <Route exact path='/quote' render={(props) => (<Quote taxRate={this.state.taxRate} {...props} />)}/>
             <Route exact path='/past' component={Past}/>
             <Route exact path='/inventory/:option' component={Inventory}/>
-            <Route exact path='/order' component={Order}/>
+            <Route exact path='/order' component={(props) => (<Order taxRate={this.state.taxRate} {...props} />)}/>
             <Route exact path='/report' component={Report}/>
           </Switch>
         </div>

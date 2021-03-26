@@ -36,6 +36,7 @@ func main() {
 		endpoints.RegisterTireEndpoints(m)
 		endpoints.RegisterVehicleEndpoints(m)
 		endpoints.RegisterReportEndpoints(m)
+		endpoints.RegisterTaxEndpoint(m)
 	})
 	m.Run()
 }

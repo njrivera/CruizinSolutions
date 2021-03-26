@@ -21,7 +21,6 @@ export default class Order extends React.Component {
             subtotal: '',
             tax: '',
             total: '',
-            taxRate: .085,
             date: new Date(),
             invoiceNum: null,
             comments: '',
@@ -80,7 +79,7 @@ export default class Order extends React.Component {
         for(var i = 0; i < this.state.items.length; i++) {
             subtotal += parseFloat(this.state.items[i].amount);
             if (this.state.items[i].tax) {
-                tax += this.state.taxRate * parseFloat(this.state.items[i].amount);
+                tax += this.props.taxRate * parseFloat(this.state.items[i].amount);
             }
         }
         this.setState({
