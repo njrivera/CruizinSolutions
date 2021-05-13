@@ -5,8 +5,8 @@ import (
 	"errors"
 	"log"
 
-	"github.com/CruizinSolutions/cruizinserver/models"
-	"github.com/CruizinSolutions/cruizinserver/queries"
+	"github.com/CruizinSolutions/server/models"
+	"github.com/CruizinSolutions/server/queries"
 )
 
 func CreateOrder(order models.Order, items []models.ItemOrder) (int, error) {

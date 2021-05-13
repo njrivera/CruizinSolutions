@@ -2,7 +2,7 @@ package endpoints
 
 import (
 	"os"
-	"github.com/CruizinSolutions/cruizinserver/util"
+	"github.com/CruizinSolutions/server/util"
 	"net/http"
 	"github.com/go-martini/martini"
 )

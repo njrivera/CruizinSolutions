@@ -9,8 +9,8 @@ import (
 	"strconv"
 	"strings"
 
-	"github.com/CruizinSolutions/cruizinserver/models"
-	"github.com/CruizinSolutions/cruizinserver/queries"
+	"github.com/CruizinSolutions/server/models"
+	"github.com/CruizinSolutions/server/queries"
 )
 
 func GetCustomers() ([]models.Customer, error) {

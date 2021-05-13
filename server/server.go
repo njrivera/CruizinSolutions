@@ -3,8 +3,8 @@ package main
 import (
 	"os"
 
-	"github.com/CruizinSolutions/cruizinserver/dbcontext"
-	"github.com/CruizinSolutions/cruizinserver/endpoints"
+	"github.com/CruizinSolutions/server/dbcontext"
+	"github.com/CruizinSolutions/server/endpoints"
 	"github.com/go-martini/martini"
 	"github.com/martini-contrib/auth"
 	_ "github.com/mattn/go-sqlite3"

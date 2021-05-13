@@ -7,9 +7,9 @@ import (
 	"net/http"
 	"strconv"
 
-	"github.com/CruizinSolutions/cruizinserver/dbcontext"
-	"github.com/CruizinSolutions/cruizinserver/models"
-	"github.com/CruizinSolutions/cruizinserver/util"
+	"github.com/CruizinSolutions/server/dbcontext"
+	"github.com/CruizinSolutions/server/models"
+	"github.com/CruizinSolutions/server/util"
 	"github.com/go-martini/martini"
 )
 

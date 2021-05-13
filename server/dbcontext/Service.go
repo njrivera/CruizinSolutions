@@ -5,79 +5,79 @@ import (
 	"errors"
 	"log"
 
-	"github.com/CruizinSolutions/cruizinserver/models"
-	"github.com/CruizinSolutions/cruizinserver/queries"
+	"github.com/CruizinSolutions/server/models"
+	"github.com/CruizinSolutions/server/queries"
 )
 
-func GetPackages() ([]models.Package, error) {
+func GetServices() ([]models.Service, error) {
 	db, err := sql.Open("sqlite3", GetDBPath())
 	if err != nil {
 		log.Println(err)
-		return nil, errors.New("Unable to get packages")
+		return nil, errors.New("Unable to get services")
 	}
 	defer db.Close()
-	rows, err := db.Query(queries.GetPackages)
+	rows, err := db.Query(queries.GetServices)
 	if err != nil {
 		log.Println(err)
-		return nil, errors.New("Unable to get packages")
+		return nil, errors.New("Unable to get services")
 	}
 	defer rows.Close()
 	var itemnum int
 	var description string
 	var price string
-	packages := make([]models.Package, 0)
+	services := make([]models.Service, 0)
 	for rows.Next() {
 		err = rows.Scan(&itemnum, &description, &price)
 		if err != nil {
 			log.Println(err)
-			return nil, errors.New("Unable to get packages")
+			return nil, errors.New("Unable to get services")
 		}
-		packages = append(packages, models.Package{
+		services = append(services, models.Service{
 			ItemNum:     itemnum,
 			Description: description,
 			Price:       price})
 	}
 
-	return packages, nil
+	return services, nil
 }
 
-func CreatePackage(pack models.Package) error {
+func CreateService(service models.Service) error {
 	db, err := sql.Open("sqlite3", GetDBPath())
 	if err != nil {
 		log.Println(err)
-		return errors.New("Unable to add package")
+		return errors.New("Unable to add service")
 	}
 	defer db.Close()
-	statement, err := db.Prepare(queries.CreatePackage)
+	statement, err := db.Prepare(queries.CreateService)
 	if err != nil {
 		log.Println(err)
-		return errors.New("Unable to add package")
+		return errors.New("Unable to add service")
 	}
 	defer statement.Close()
 	_, err = statement.Exec(
-		pack.ItemNum,
-		pack.Description,
-		pack.Price)
+		service.ItemNum,
+		service.Description,
+		service.Price)
 	if err != nil {
 		log.Println(err)
-		return errors.New("Unable to add package")
+		return errors.New("Unable to add service")
 	}
 
 	return nil
 }
 
-func GetPackage(key int) (models.Package, error) {
-	pack := models.Package{}
+func GetService(key int) (models.Service, error) {
+	service := models.Service{}
 	db, err := sql.Open("sqlite3", GetDBPath())
 	if err != nil {
 		log.Println(err)
-		return pack, errors.New("Unable to get package")
+		return service, errors.New("Unable to get service")
 	}
 	defer db.Close()
-	row, err := db.Query(queries.GetPackage, key)
+	row, err := db.Query(queries.GetService, key)
 	if err != nil {
 		log.Println(err)
-		return pack, errors.New("Unable to get package")
+		return service, errors.New("Unable to get service")
 	}
 	defer row.Close()
 	var itemnum int
@@ -87,59 +87,59 @@ func GetPackage(key int) (models.Package, error) {
 		err = row.Scan(&itemnum, &description, &price)
 		if err != nil {
 			log.Println(err)
-			return pack, errors.New("Unable to get package")
+			return service, errors.New("Unable to get service")
 		}
-		pack = models.Package{
+		service = models.Service{
 			ItemNum:     itemnum,
 			Description: description,
 			Price:       price}
 	}
 
-	return pack, nil
+	return service, nil
 }
 
-func DeletePackage(itemnum int) error {
+func DeleteService(itemnum int) error {
 	db, err := sql.Open("sqlite3", GetDBPath())
 	if err != nil {
 		log.Println(err)
-		return errors.New("Unable to delete package")
+		return errors.New("Unable to delete service")
 	}
 	defer db.Close()
-	statement, err := db.Prepare(queries.DeletePackage)
+	statement, err := db.Prepare(queries.DeleteService)
 	if err != nil {
 		log.Println(err)
-		return errors.New("Unable to delete package")
+		return errors.New("Unable to delete service")
 	}
 	defer statement.Close()
 	_, err = statement.Exec(itemnum)
 	if err != nil {
 		log.Println(err)
-		return errors.New("Unable to delete package")
+		return errors.New("Unable to delete service")
 	}
 
 	return nil
 }
 
-func UpdatePackage(pack models.Package) error {
+func UpdateService(service models.Service) error {
 	db, err := sql.Open("sqlite3", GetDBPath())
 	if err != nil {
 		log.Println(err)
-		return errors.New("Unable to update package")
+		return errors.New("Unable to update service")
 	}
 	defer db.Close()
-	statement, err := db.Prepare(queries.UpdatePackage)
+	statement, err := db.Prepare(queries.UpdateService)
 	if err != nil {
 		log.Println(err)
-		return errors.New("Unable to update package")
+		return errors.New("Unable to update service")
 	}
 	defer statement.Close()
 	_, err = statement.Exec(
-		pack.Description,
-		pack.Price,
-		pack.ItemNum)
+		service.Description,
+		service.Price,
+		service.ItemNum)
 	if err != nil {
 		log.Println(err)
-		return errors.New("Unable to update package")
+		return errors.New("Unable to update service")
 	}
 
 	return nil
