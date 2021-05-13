@@ -6,7 +6,7 @@ import (
 )
 
 const (
-	dbPathEnv  = "CRUIZIN_DB_PATH"
+	dbPathEnv  = "DB_PATH"
 	martiniEnv = "MARTINI_ENV"
 )
 
