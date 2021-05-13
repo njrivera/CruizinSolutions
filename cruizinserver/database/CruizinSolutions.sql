@@ -11,7 +11,7 @@ CREATE TABLE IF NOT EXISTS `users` (
 	PRIMARY KEY(`username`)
 );
 CREATE TABLE IF NOT EXISTS `tires` (
-	`itemnum`	INTEGER,
+	`itemnum`	INTEGER NOT NULL,
 	`brand`	TEXT,
 	`model`	TEXT,
 	`size`	TEXT,
@@ -69,8 +69,8 @@ CREATE TABLE IF NOT EXISTS `orders` (
 	`tax`	TEXT,
 	`total`	TEXT,
 	`payment`	TEXT,
-	FOREIGN KEY(`vid`) REFERENCES `vehicles`(`vid`),
-	FOREIGN KEY(`cid`) REFERENCES `customers`(`cid`)
+	FOREIGN KEY(`cid`) REFERENCES `customers`(`cid`),
+	FOREIGN KEY(`vid`) REFERENCES `vehicles`(`vid`)
 );
 CREATE TABLE IF NOT EXISTS `items` (
 	`itemnum`	INTEGER PRIMARY KEY AUTOINCREMENT,
@@ -84,8 +84,8 @@ CREATE TABLE IF NOT EXISTS `itemorders` (
 	`qty`	INTEGER,
 	`amount`	TEXT,
 	`price`	TEXT,
-	FOREIGN KEY(`itemnum`) REFERENCES `items`(`itemnum`),
-	FOREIGN KEY(`ordernum`) REFERENCES `orders`(`ordernum`)
+	FOREIGN KEY(`ordernum`) REFERENCES `orders`(`ordernum`),
+	FOREIGN KEY(`itemnum`) REFERENCES `items`(`itemnum`)
 );
 CREATE TABLE IF NOT EXISTS `customers` (
 	`cid`	INTEGER PRIMARY KEY AUTOINCREMENT,
