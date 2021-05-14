@@ -1,0 +1,7 @@
+FROM nouchka/sqlite3
+
+WORKDIR '/database'
+
+COPY CruizinSolutions.sql .
+
+RUN cat CruizinSolutions.sql | sqlite3 CruizinSolutions.db
