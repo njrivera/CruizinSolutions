@@ -1,0 +1,11 @@
+FROM golang:buster
+
+WORKDIR '/app'
+
+COPY go.mod .
+COPY go.sum .
+COPY server/ ./server
+
+RUN cd server && go build
+
+CMD ["/app/server/server"]
