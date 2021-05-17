@@ -1,0 +1,9 @@
+sudo: required
+services:
+  - docker
+
+before_install:
+  - docker build -t njrivera:CruizinSolutions -f ./docker/Dockerfile.client .
+
+script:
+  - docker run njrivera:CruizinSolutions npm run test -- --coverage
