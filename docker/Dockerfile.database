@@ -6,5 +6,3 @@ COPY CruizinSolutions.sql .
 
 RUN cat CruizinSolutions.sql | sqlite3 CruizinSolutions.db
 RUN rm CruizinSolutions.sql
-
-CMD ["mv", "CruizinSolutions.db", "/app/data/"]

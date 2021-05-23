@@ -1,0 +1,22 @@
+version: "3"
+services:
+    server:
+        build:
+            dockerfile: ./docker/Dockerfile.server
+            context: .
+        ports:
+            - "3000:3000"
+        env_file:
+            - ./docker/env.list
+        volumes:
+            - CruizinVolume:/app/opt
+        depends_on:
+            - "client"
+    client:
+        build:
+            dockerfile: ./docker/Dockerfile.client
+            context: .
+        volumes:
+            - CruizinVolume:/app/opt
+volumes:
+    CruizinVolume:
