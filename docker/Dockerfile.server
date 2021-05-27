@@ -2,10 +2,13 @@ FROM golang:buster
 
 WORKDIR '/app'
 
-COPY go.mod .
-COPY go.sum .
-COPY server/ ./server
+COPY ./go.mod .
+COPY ./go.sum .
+COPY ./server/ ./server
 
-RUN cd server && go build
+RUN cd server && go build -o ../cruizinserver && cd ../
+RUN rm ./go.*
+RUN rm -rf server
 
-CMD ["/app/server/server"]
+CMD ["mv", "./cruizinserver", "./opt"]
+CMD ["./opt/cruizinserver"]
