@@ -2,7 +2,9 @@ FROM keinos/sqlite3:latest
 
 WORKDIR '/app'
 
-COPY CruizinSolutions.sql .
+COPY ./server/database/CruizinSolutions.sql .
 
 RUN cat CruizinSolutions.sql | sqlite3 CruizinSolutions.db
 RUN rm CruizinSolutions.sql
+
+CMD ["mv", "./CruizinSolutions.db", "./opt"]

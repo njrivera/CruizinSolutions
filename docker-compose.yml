@@ -1,5 +1,14 @@
 version: "3"
 services:
+    client:
+        build:
+            dockerfile: ./docker/Dockerfile.client
+            context: .
+        user: root
+        volumes:
+            - CruizinVolume:/app/opt
+        depends_on:
+            - "db"
     server:
         build:
             dockerfile: ./docker/Dockerfile.server
@@ -8,14 +17,16 @@ services:
             - "3000:3000"
         env_file:
             - ./docker/env.list
+        user: root
         volumes:
             - CruizinVolume:/app/opt
         depends_on:
             - "client"
-    client:
+    db:
         build:
-            dockerfile: ./docker/Dockerfile.client
+            dockerfile: ./docker/Dockerfile.database
             context: .
+        user: root
         volumes:
             - CruizinVolume:/app/opt
 volumes:

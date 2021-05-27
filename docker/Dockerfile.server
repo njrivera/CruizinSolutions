@@ -5,9 +5,10 @@ WORKDIR '/app'
 COPY ./go.mod .
 COPY ./go.sum .
 COPY ./server/ ./server
-COPY ./prod.env .
 
-RUN cd server && go build -o cruizinserver
+RUN cd server && go build -o ../cruizinserver && cd ../
+RUN rm ./go.*
+RUN rm -rf server
 
-CMD ["mv", "./server/cruizinserver", "./opt"]
+CMD ["mv", "./cruizinserver", "./opt"]
 CMD ["./opt/cruizinserver"]
